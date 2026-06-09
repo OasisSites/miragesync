@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oasis Smart Homes — Order Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --navy:#0D1B2A;--teal:#0A8754;--teal-m:#1D9E75;--teal-l:#E1F5EE;
+  --amber:#E8A020;--amber-l:#FAEEDA;--red:#DC2626;--red-l:#FEE2E2;
+  --orange:#C2410C;--orange-l:#FFF7ED;
+  --blue-l:#E6F1FB;--blue:#185FA5;--purple-l:#EEEDFE;--purple:#3C3489;
+  --green-l:#EAF3DE;--green:#27500A;
+  --gray-50:#F8F9FA;--gray-100:#F1F3F5;--gray-200:#E9ECEF;
+  --gray-400:#868E96;--gray-600:#495057;--gray-900:#212529;
+  --border:#E9ECEF;--radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#F4F6F8;color:var(--gray-900);font-size:13px;line-height:1.5}
+
+/* ── Topbar ── */
+.topbar{background:var(--navy);padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.wordmark{font-family:'DM Serif Display',serif;font-size:17px;color:#fff;line-height:1}
+.top-sub{font-size:9px;color:rgba(255,255,255,.4);font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+.src-pill{font-size:9px;font-weight:600;padding:2px 7px;border-radius:20px;letter-spacing:.04em}
+.sp-p{background:var(--purple-l);color:var(--purple)}
+.sp-q{background:var(--green-l);color:var(--green)}
+.sp-m{background:var(--blue-l);color:var(--blue)}
+.sp-s{background:var(--orange-l);color:var(--orange)}
+
+/* ── Job bar ── */
+.job-bar{background:#fff;border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:8px;overflow-x:auto}
+.bar-label{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;margin-right:4px}
+.job-btn{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--gray-600);transition:all .15s;white-space:nowrap}
+.job-btn:hover{border-color:var(--teal-m);color:var(--teal)}
+.job-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* ── Content ── */
+.content{padding:18px 20px;max-width:1100px;margin:0 auto}
+
+/* ── Summary cards ── */
+.summary-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+.metric-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:13px 15px}
+.metric-label{font-size:10px;font-weight:500;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase;margin-bottom:3px}
+.metric-value{font-size:19px;font-weight:600}
+.metric-sub{font-size:10px;color:var(--gray-400);margin-top:2px}
+
+/* ── Section ── */
+.section{background:#fff;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;overflow:hidden}
+.section-head{padding:13px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.section-title{font-size:12px;font-weight:600;color:var(--gray-600);letter-spacing:.05em;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.section-sources{display:flex;gap:4px;align-items:center}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;white-space:nowrap}
+.b-green{background:var(--green-l);color:var(--green)}
+.b-amber{background:var(--amber-l);color:#633806}
+.b-red{background:var(--red-l);color:#791F1F}
+.b-blue{background:var(--blue-l);color:var(--blue)}
+.b-purple{background:var(--purple-l);color:var(--purple)}
+.b-gray{background:var(--gray-100);color:var(--gray-600)}
+.b-orange{background:var(--orange-l);color:var(--orange)}
+.b-teal{background:var(--teal-l);color:#085041}
+.b-navy{background:#E8EBF0;color:var(--navy)}
+
+/* ── Parts table ── */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase;padding:9px 14px 7px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+.tbl th.r{text-align:right}
+.tbl th.c{text-align:center}
+.tbl td{padding:10px 14px;border-bottom:1px solid var(--gray-100);vertical-align:middle}
+.tbl td.r{text-align:right;font-variant-numeric:tabular-nums}
+.tbl td.c{text-align:center}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr:hover{background:var(--gray-50)}
+.tbl tfoot td{padding:10px 14px;font-weight:600;background:#F8F9FA;border-top:2px solid var(--border)}
+.tbl tfoot td.r{text-align:right}
+
+.row-name{font-weight:500;font-size:12px;color:var(--gray-900)}
+.row-sub{font-size:10px;color:var(--gray-400);margin-top:1px}
+.row-sku{font-size:10px;font-family:monospace;color:var(--gray-400)}
+
+/* ── Stock indicator ── */
+.stock-cell{display:flex;align-items:center;gap:6px}
+.stock-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sd-in{background:var(--teal-m)}
+.sd-low{background:var(--amber)}
+.sd-out{background:var(--red)}
+.sd-na{background:var(--gray-400)}
+.stock-qty{font-size:12px;font-weight:500}
+.needed-qty{font-size:12px;font-weight:600}
+.to-order{font-size:12px;font-weight:700}
+
+/* ── PO action buttons ── */
+.po-btn{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:5px 11px;border-radius:var(--radius-sm);cursor:pointer;border:none;transition:all .15s;text-decoration:none;white-space:nowrap}
+.po-btn-primary{background:var(--navy);color:#fff}
+.po-btn-primary:hover{background:#1a2f47}
+.po-btn-vendor{background:var(--blue-l);color:var(--blue)}
+.po-btn-vendor:hover{background:#bee3fd}
+.po-btn-qbo{background:var(--green-l);color:var(--green)}
+.po-btn-qbo:hover{background:#c6e8c4}
+.po-btn-sm{font-size:10px;padding:3px 8px;border-radius:4px}
+
+/* ── PO builder panel ── */
+.po-panel{background:var(--gray-50);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;margin:12px 16px}
+.po-panel-title{font-size:12px;font-weight:600;color:var(--gray-900);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.po-line{display:grid;grid-template-columns:3fr 1fr 1fr 1fr auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px}
+.po-line:last-of-type{border-bottom:none}
+.po-head{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase;display:grid;grid-template-columns:3fr 1fr 1fr 1fr auto;gap:8px;padding-bottom:6px;border-bottom:1px solid var(--border);margin-bottom:4px}
+.po-qty-input{width:54px;font-size:12px;padding:4px 6px;border:1px solid var(--border);border-radius:4px;text-align:center;outline:none;font-family:inherit}
+.po-qty-input:focus{border-color:var(--teal-m)}
+.po-remove{background:none;border:none;color:var(--gray-400);cursor:pointer;font-size:14px;padding:2px 4px;border-radius:3px}
+.po-remove:hover{color:var(--red);background:var(--red-l)}
+.po-footer{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.po-total{font-size:13px;font-weight:600;color:var(--gray-900)}
+
+/* ── Vendor group ── */
+.vendor-group{margin-bottom:14px}
+.vendor-header{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:var(--gray-50);border-bottom:1px solid var(--border);cursor:pointer}
+.vendor-name{font-size:12px;font-weight:600;color:var(--gray-900);display:flex;align-items:center;gap:7px}
+.vendor-meta{font-size:11px;color:var(--gray-400)}
+.vendor-actions{display:flex;gap:6px;align-items:center}
+.vendor-body{display:none}
+.vendor-body.open{display:block}
+
+/* ── Filter bar ── */
+.filter-bar{display:flex;gap:8px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.filter-btn{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--gray-600);transition:all .12s}
+.filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.filter-search{font-size:12px;padding:5px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);outline:none;width:200px;margin-left:auto}
+.filter-search:focus{border-color:var(--teal-m)}
+
+/* ── PO summary cards ── */
+.po-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px 16px;border-bottom:1px solid var(--border)}
+.po-card{border-radius:var(--radius-sm);padding:10px 12px;border:1px solid transparent}
+.po-card-red{background:var(--red-l);border-color:#FCA5A5}
+.po-card-amber{background:var(--amber-l);border-color:#FDE68A}
+.po-card-blue{background:var(--blue-l);border-color:#BFDBFE}
+.po-card-label{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:3px}
+.po-card-val{font-size:18px;font-weight:600}
+.po-card-sub{font-size:10px;margin-top:2px}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-size:12px;font-weight:500;z-index:9999;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.2);transform:translateY(80px);opacity:0;transition:all .3s}
+.toast.show{transform:translateY(0);opacity:1}
+
+.footer{background:#fff;border-top:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;font-size:10px;color:var(--gray-400);margin-top:8px}
+
+@media(max-width:700px){
+  .summary-grid{grid-template-columns:repeat(2,1fr)}
+  .po-summary{grid-template-columns:1fr}
+  .po-head,.po-line{grid-template-columns:2fr 1fr 1fr auto}
+  .po-head > *:nth-child(3),.po-line > *:nth-child(3){display:none}
+}
+
+/* ══ SLACK PANEL ══════════════════════════════════════════════════ */
+.slack-toggle-btn{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+  color:#fff;padding:5px 12px;border-radius:20px;cursor:pointer;
+  font-size:11px;font-weight:600;letter-spacing:.03em;
+  transition:background .15s;position:relative;
+}
+.slack-toggle-btn:hover{background:rgba(255,255,255,.2)}
+.slack-toggle-btn .slack-logo{
+  width:16px;height:16px;display:flex;align-items:center;justify-content:center;
+}
+.slack-unread{
+  position:absolute;top:-4px;right:-4px;
+  width:15px;height:15px;border-radius:50%;
+  background:#E8A020;color:#fff;font-size:8px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--navy,#0D1B2A);
+}
+
+/* Panel overlay */
+.slack-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.2);
+  z-index:900;opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.slack-overlay.open{opacity:1;pointer-events:auto}
+
+/* Panel drawer */
+.slack-panel{
+  position:fixed;top:0;right:0;bottom:0;width:380px;
+  background:#fff;border-left:1px solid #E9ECEF;
+  box-shadow:-4px 0 24px rgba(0,0,0,.12);
+  z-index:901;display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);
+}
+.slack-panel.open{transform:translateX(0)}
+
+/* Panel header */
+.slack-panel-head{
+  background:#0D1B2A;padding:0 16px;height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.slack-head-left{display:flex;align-items:center;gap:8px}
+.slack-head-logo{
+  width:20px;height:20px;
+  display:grid;grid-template-columns:1fr 1fr;gap:2px;
+}
+.slack-head-logo span{
+  border-radius:3px;display:block;
+}
+.slack-channel-name{
+  font-size:13px;font-weight:600;color:#fff;
+}
+.slack-channel-desc{
+  font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.03em;
+}
+.slack-close{
+  background:none;border:none;color:rgba(255,255,255,.55);
+  cursor:pointer;font-size:18px;line-height:1;padding:4px;
+  transition:color .12s;
+}
+.slack-close:hover{color:#fff}
+
+/* Channel selector */
+.slack-channel-bar{
+  background:#F8F9FA;border-bottom:1px solid #E9ECEF;
+  padding:8px 12px;display:flex;gap:6px;flex-wrap:nowrap;
+  overflow-x:auto;flex-shrink:0;
+}
+.slack-ch-btn{
+  padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;
+  border:1px solid #E9ECEF;background:#fff;color:#495057;
+  cursor:pointer;white-space:nowrap;transition:all .12s;flex-shrink:0;
+}
+.slack-ch-btn:hover{border-color:#1D9E75;color:#0A8754}
+.slack-ch-btn.active{background:#0D1B2A;color:#fff;border-color:#0D1B2A}
+
+/* Messages area */
+.slack-messages{
+  flex:1;overflow-y:auto;padding:12px 16px;
+  display:flex;flex-direction:column;gap:0;
+}
+.slack-date-divider{
+  display:flex;align-items:center;gap:8px;
+  margin:12px 0 8px;font-size:10px;font-weight:600;
+  color:#868E96;letter-spacing:.04em;text-transform:uppercase;
+}
+.slack-date-divider::before,.slack-date-divider::after{
+  content:'';flex:1;height:1px;background:#E9ECEF;
+}
+.slack-msg{
+  display:flex;gap:9px;padding:4px 0;
+  position:relative;border-radius:6px;transition:background .1s;
+}
+.slack-msg:hover{background:#F8F9FA;margin:0 -8px;padding:4px 8px;}
+.slack-avatar{
+  width:30px;height:30px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;
+}
+.slack-msg-body{flex:1;min-width:0}
+.slack-msg-meta{display:flex;align-items:baseline;gap:6px;margin-bottom:2px}
+.slack-msg-name{font-size:12px;font-weight:600;color:#212529}
+.slack-msg-time{font-size:10px;color:#868E96}
+.slack-msg-text{font-size:12px;color:#343a40;line-height:1.5;word-break:break-word}
+.slack-msg-text .mention{
+  color:#185FA5;background:#E6F1FB;
+  padding:0 3px;border-radius:3px;font-weight:500;
+}
+.slack-msg-text .jobref{
+  color:#0A8754;font-weight:500;
+}
+.slack-reaction{
+  display:inline-flex;align-items:center;gap:3px;
+  background:#F1F3F5;border:1px solid #E9ECEF;
+  border-radius:12px;padding:1px 7px;font-size:11px;
+  cursor:pointer;margin-top:3px;transition:background .1s;
+}
+.slack-reaction:hover{background:#E9ECEF}
+.slack-file-attach{
+  display:flex;align-items:center;gap:8px;
+  background:#F8F9FA;border:1px solid #E9ECEF;border-radius:6px;
+  padding:8px 10px;margin-top:4px;cursor:pointer;
+  transition:border-color .12s;
+}
+.slack-file-attach:hover{border-color:#1D9E75}
+.slack-file-icon{font-size:16px;color:#868E96}
+.slack-file-name{font-size:11px;font-weight:500;color:#212529}
+.slack-file-size{font-size:10px;color:#868E96}
+
+/* Compose area */
+.slack-compose{
+  border-top:1px solid #E9ECEF;padding:12px 14px;flex-shrink:0;
+}
+.slack-compose-box{
+  border:1.5px solid #E9ECEF;border-radius:8px;
+  background:#fff;overflow:hidden;transition:border-color .15s;
+}
+.slack-compose-box:focus-within{border-color:#1D9E75}
+.slack-compose-input{
+  width:100%;border:none;outline:none;padding:10px 12px;
+  font-family:inherit;font-size:12.5px;color:#212529;
+  resize:none;min-height:70px;max-height:120px;
+  background:transparent;line-height:1.5;
+}
+.slack-compose-toolbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 8px 6px 10px;border-top:1px solid #F1F3F5;
+}
+.slack-toolbar-left{display:flex;align-items:center;gap:2px}
+.slack-tool-btn{
+  background:none;border:none;color:#868E96;cursor:pointer;
+  padding:4px 6px;border-radius:4px;font-size:13px;line-height:1;
+  transition:all .12s;
+}
+.slack-tool-btn:hover{background:#F1F3F5;color:#495057}
+.slack-send-btn{
+  background:#0D1B2A;color:#fff;border:none;
+  padding:6px 16px;border-radius:6px;font-size:12px;font-weight:600;
+  cursor:pointer;display:flex;align-items:center;gap:5px;
+  transition:background .12s;
+}
+.slack-send-btn:hover{background:#1D9E75}
+.slack-send-btn:disabled{background:#E9ECEF;color:#868E96;cursor:default}
+
+/* notification pill below compose */
+.slack-note{
+  font-size:10px;color:#868E96;margin-top:6px;
+  display:flex;align-items:center;gap:4px;
+}
+
+@media(max-width:500px){
+  .slack-panel{width:100%}
+}
+/* ══ END SLACK PANEL ══════════════════════════════════════════════ */
+
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"><i class="ti ti-check" style="font-size:14px"></i> <span id="toast-msg">Done</span></div>
+
+<div class="topbar">
+  <div>
+    <div class="wordmark">Oasis Smart Homes</div>
+    <div class="top-sub">Order & purchasing dashboard</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px">
+    <span class="src-pill sp-p">Portal.io</span>
+    <span class="src-pill sp-q">QBO</span>
+    <span class="src-pill sp-s">SOS Inv.</span>
+
+    <button class="slack-toggle-btn" onclick="toggleSlack()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <path d="M5.042 15.165a2.528 2.528 0 01-2.52 2.523A2.528 2.528 0 010 15.165a2.527 2.527 0 012.522-2.52h2.52v2.52z" fill="#E01E5A"/>
+        <path d="M6.313 15.165a2.527 2.527 0 012.521-2.52 2.527 2.527 0 012.521 2.52v6.313A2.528 2.528 0 018.834 24a2.528 2.528 0 01-2.521-2.522v-6.313z" fill="#E01E5A"/>
+        <path d="M8.834 5.042a2.528 2.528 0 01-2.521-2.52A2.528 2.528 0 018.834 0a2.527 2.527 0 012.521 2.522v2.52H8.834z" fill="#36C5F0"/>
+        <path d="M8.834 6.313a2.528 2.528 0 012.521 2.521 2.528 2.528 0 01-2.521 2.521H2.522A2.528 2.528 0 010 8.834a2.528 2.528 0 012.522-2.521h6.312z" fill="#36C5F0"/>
+        <path d="M18.956 8.834a2.528 2.528 0 012.522-2.521A2.528 2.528 0 0124 8.834a2.527 2.527 0 01-2.522 2.521h-2.522V8.834z" fill="#2EB67D"/>
+        <path d="M17.688 8.834a2.528 2.528 0 01-2.523 2.521 2.527 2.527 0 01-2.52-2.521V2.522A2.527 2.527 0 0115.165 0a2.528 2.528 0 012.523 2.522v6.312z" fill="#2EB67D"/>
+        <path d="M15.165 18.956a2.528 2.528 0 012.523 2.522A2.528 2.528 0 0115.165 24a2.527 2.527 0 01-2.52-2.522v-2.522h2.52z" fill="#ECB22E"/>
+        <path d="M15.165 17.688a2.527 2.527 0 01-2.52-2.523 2.526 2.526 0 012.52-2.52h6.313A2.527 2.527 0 0124 15.165a2.528 2.528 0 01-2.522 2.523h-6.313z" fill="#ECB22E"/>
+      </svg>
+      Slack
+      <span class="slack-unread">3</span>
+    </button>
+  </div>
+</div>
+
+<div class="job-bar">
+  <span class="bar-label">Job</span>
+  <button class="job-btn active" onclick="setJob(0,this)">Morrison Residence</button>
+  <button class="job-btn" onclick="setJob(1,this)">Patel AV</button>
+  <button class="job-btn" onclick="setJob(2,this)">Dew Residence PW</button>
+  <button class="job-btn" onclick="setJob(3,this)">Yates AV</button>
+  <button class="job-btn" onclick="setJob(4,this)">Gardener AV</button>
+</div>
+
+<div class="content">
+
+  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:6px">
+    <div>
+      <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--navy)" id="j-title">Morrison Residence</div>
+      <div style="font-size:11px;color:var(--gray-400);margin-top:2px" id="j-meta">Job #8241 · Builder: Gurczak · PM: James Lacek · Phase: Rough Complete</div>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center">
+      <button class="po-btn po-btn-primary" onclick="createAllPOs()">
+        <i class="ti ti-plus" style="font-size:13px"></i> Create all POs in QBO
+      </button>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-grid">
+    <div class="metric-card"><div class="metric-label">Total parts on estimate</div><div class="metric-value" style="color:var(--blue)" id="s-total-parts">$0</div><div class="metric-sub" id="s-total-items">0 line items</div></div>
+    <div class="metric-card"><div class="metric-label">In stock — ready</div><div class="metric-value" style="color:var(--teal)" id="s-instock">$0</div><div class="metric-sub" id="s-instock-ct">0 items</div></div>
+    <div class="metric-card"><div class="metric-label">Need to order</div><div class="metric-value" style="color:var(--red)" id="s-toorder">$0</div><div class="metric-sub" id="s-toorder-ct">0 items</div></div>
+    <div class="metric-card"><div class="metric-label">On order / PO open</div><div class="metric-value" style="color:var(--amber)" id="s-onorder">$0</div><div class="metric-sub" id="s-onorder-ct">0 items</div></div>
+    <div class="metric-card"><div class="metric-label">POs already created</div><div class="metric-value" style="color:var(--gray-600)" id="s-pos">0</div><div class="metric-sub">linked to this job</div></div>
+  </div>
+
+  <!-- PO Status summary -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><i class="ti ti-clipboard-list" style="font-size:14px"></i> PO status overview</div>
+      <div class="section-sources"><span class="src-pill sp-q">QBO</span></div>
+    </div>
+    <div class="po-summary">
+      <div class="po-card po-card-red">
+        <div class="po-card-label" style="color:var(--red)">Needs PO — not ordered</div>
+        <div class="po-card-val" style="color:var(--red)" id="ps-need">0 items</div>
+        <div class="po-card-sub" style="color:#9A3412" id="ps-need-val">$0 estimated</div>
+      </div>
+      <div class="po-card po-card-amber">
+        <div class="po-card-label" style="color:#92400E">PO open — awaiting delivery</div>
+        <div class="po-card-val" style="color:#B45309" id="ps-open">0 items</div>
+        <div class="po-card-sub" style="color:#92400E" id="ps-open-val">$0 on order</div>
+      </div>
+      <div class="po-card po-card-blue">
+        <div class="po-card-label" style="color:var(--blue)">Received — in stock / on site</div>
+        <div class="po-card-val" style="color:var(--blue)" id="ps-recv">0 items</div>
+        <div class="po-card-sub" style="color:#1E40AF" id="ps-recv-val">$0 value</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Parts list by vendor -->
+  <div class="section" id="parts-section">
+    <div class="section-head">
+      <div class="section-title"><i class="ti ti-package" style="font-size:14px"></i> Approved estimate parts — by vendor</div>
+      <div class="section-sources">
+        <span class="src-pill sp-p">Portal.io</span>
+        <span class="src-pill sp-q">QBO Inventory</span>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="setFilter('all',this)">All items</button>
+      <button class="filter-btn" onclick="setFilter('order',this)">Needs ordering</button>
+      <button class="filter-btn" onclick="setFilter('onorder',this)">On order</button>
+      <button class="filter-btn" onclick="setFilter('instock',this)">In stock</button>
+      <input class="filter-search" type="text" placeholder="Search part..." oninput="filterParts(this.value)" id="part-search">
+    </div>
+
+    <div id="vendor-groups"></div>
+
+    <!-- Totals footer -->
+    <div style="padding:10px 16px;display:flex;justify-content:flex-end;gap:24px;background:#F8F9FA;border-top:2px solid var(--border);font-size:12px">
+      <span style="color:var(--gray-600)">Total parts value: <strong style="color:var(--blue)" id="f-total">$0</strong></span>
+      <span style="color:var(--gray-600)">To order: <strong style="color:var(--red)" id="f-toorder">$0</strong></span>
+      <span style="color:var(--gray-600)">In stock: <strong style="color:var(--teal)" id="f-instock">$0</strong></span>
+    </div>
+  </div>
+
+  <!-- PO builder -->
+  <div class="section" id="po-builder-section" style="display:none">
+    <div class="section-head">
+      <div class="section-title"><i class="ti ti-file-plus" style="font-size:14px"></i> PO builder — ready to send to QBO</div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="po-btn po-btn-vendor po-btn-sm" onclick="clearPOBuilder()">Clear</button>
+        <span class="src-pill sp-q">QBO</span>
+      </div>
+    </div>
+    <div id="po-builder-body"></div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span>Oasis Smart Homes · Order Dashboard · Live version connects to Portal.io, QBO, SOS Inventory</span>
+  <span>Sample data — June 1, 2026</span>
+</div>
+
+<script>
+let currentFilter='all';
+let currentSearch='';
+let currentJobIdx=0;
+let poCart={};// vendor -> [items]
+
+const jobs=[
+  {
+    id:0,title:'Morrison Residence',meta:'Job #8241 · Builder: Gurczak · PM: James Lacek · Phase: Rough Complete',
+    parts:[
+      // Control4
+      {sku:'C4-EA3',name:'Control4 EA-3 Controller',vendor:'Control4 Direct',cat:'AV Control',qty:1,unitCost:2840,unitSell:4200,stock:0,stockStatus:'out',poStatus:'received',poNum:'PO-4421'},
+      {sku:'C4-T3-WH',name:'Control4 T3 Touchscreen 7"',vendor:'Control4 Direct',cat:'AV Control',qty:2,unitCost:890,unitSell:1380,stock:1,stockStatus:'low',poStatus:'open',poNum:'PO-4438'},
+      {sku:'C4-SW-16',name:'Control4 16-Port Network Switch',vendor:'Control4 Direct',cat:'Networking',qty:1,unitCost:620,unitSell:980,stock:3,stockStatus:'in',poStatus:'instock',poNum:''},
+      // Lutron
+      {sku:'HQP7',name:'Lutron Homeworks QSX Processor',vendor:'Lutron Electronics',cat:'Lighting',qty:1,unitCost:5800,unitSell:8600,stock:0,stockStatus:'out',poStatus:'open',poNum:'PO-4440'},
+      {sku:'HQRD-10A-WH',name:'Lutron HW Dimmer Module x6',vendor:'Lutron Electronics',cat:'Lighting',qty:6,unitCost:380,unitSell:560,stock:4,stockStatus:'low',poStatus:'order',poNum:''},
+      {sku:'PICO-WBX-ADAPT',name:'Lutron Pico Remote x12',vendor:'Lutron Electronics',cat:'Lighting',qty:12,unitCost:48,unitSell:75,stock:8,stockStatus:'low',poStatus:'order',poNum:''},
+      // Somfy
+      {sku:'SMF-RTS-28',name:'Somfy RTS Motor 28Nm x8',vendor:'Somfy Systems',cat:'Shades',qty:8,unitCost:410,unitSell:625,stock:0,stockStatus:'out',poStatus:'received',poNum:'PO-4455'},
+      {sku:'SMF-URTSI2',name:'Somfy URTSI II Interface',vendor:'Somfy Systems',cat:'Shades',qty:1,unitCost:280,unitSell:420,stock:2,stockStatus:'in',poStatus:'instock',poNum:''},
+      // Ketra
+      {sku:'N3-FS-TW',name:'Ketra N3 Fixture Tunable White x24',vendor:'Ketra / Lutron',cat:'Lighting',qty:24,unitCost:220,unitSell:340,stock:0,stockStatus:'out',poStatus:'order',poNum:''},
+      {sku:'N4-ROSETTE',name:'Ketra N4 Rosette Fixture x6',vendor:'Ketra / Lutron',cat:'Lighting',qty:6,unitCost:310,unitSell:480,stock:0,stockStatus:'out',poStatus:'order',poNum:''},
+      // Snap One
+      {sku:'WB-RACK-12U',name:'WB Rack 12U Enclosure',vendor:'Snap One',cat:'Infrastructure',qty:1,unitCost:480,unitSell:750,stock:1,stockStatus:'in',poStatus:'instock',poNum:''},
+      {sku:'VSSL-A.6X',name:'VSSL A.6X Streaming Amplifier',vendor:'Snap One',cat:'Audio',qty:1,unitCost:1240,unitSell:1900,stock:0,stockStatus:'out',poStatus:'order',poNum:''},
+      {sku:'KLIPSCH-IN-800',name:'Klipsch In-Ceiling 8" x8',vendor:'Snap One',cat:'Audio',qty:8,unitCost:210,unitSell:320,stock:6,stockStatus:'low',poStatus:'order',poNum:''},
+    ]
+  },
+  {
+    id:1,title:'Patel AV',meta:'Job #10627 · Builder: Integrity · PM: James Lacek',
+    parts:[
+      {sku:'C4-EA1',name:'Control4 EA-1 Controller',vendor:'Control4 Direct',cat:'AV Control',qty:1,unitCost:1240,unitSell:1850,stock:2,stockStatus:'in',poStatus:'instock',poNum:''},
+      {sku:'SONY-XR75',name:'Sony XR 75" Display',vendor:'Sony Pro',cat:'Display',qty:1,unitCost:2800,unitSell:4200,stock:0,stockStatus:'out',poStatus:'received',poNum:'PO-4461'},
+      {sku:'SONOS-AMP',name:'Sonos Amp x3',vendor:'Snap One',cat:'Audio',qty:3,unitCost:620,unitSell:960,stock:1,stockStatus:'low',poStatus:'order',poNum:''},
+      {sku:'KLIPSCH-IN-600',name:'Klipsch In-Ceiling 6.5" x6',vendor:'Snap One',cat:'Audio',qty:6,unitCost:160,unitSell:250,stock:8,stockStatus:'in',poStatus:'instock',poNum:''},
+    ]
+  },
+  {
+    id:2,title:'Dew Residence PW',meta:'Job #9141 · Builder: Cameron · PM: James Lacek',
+    parts:[
+      {sku:'EMT-3/4',name:'3/4" EMT Conduit x50ft',vendor:'Oasis Warehouse',cat:'Infrastructure',qty:50,unitCost:4.20,unitSell:7.50,stock:200,stockStatus:'in',poStatus:'instock',poNum:''},
+      {sku:'CAT6-1000',name:'Cat6 Cable 1000ft spool x3',vendor:'Oasis Warehouse',cat:'Cabling',qty:3,unitCost:180,unitSell:280,stock:5,stockStatus:'in',poStatus:'instock',poNum:''},
+      {sku:'HDMI-PLT-2.1',name:'HDMI 2.1 Plenum Cable 50ft x8',vendor:'Snap One',cat:'Cabling',qty:8,unitCost:58,unitSell:90,stock:4,stockStatus:'low',poStatus:'order',poNum:''},
+    ]
+  },
+  {
+    id:3,title:'Yates AV',meta:'Job #7820 · Builder: Integrity · PM: James Lacek',
+    parts:[
+      {sku:'C4-EA5',name:'Control4 EA-5 Controller',vendor:'Control4 Direct',cat:'AV Control',qty:1,unitCost:4200,unitSell:6400,stock:0,stockStatus:'out',poStatus:'order',poNum:''},
+      {sku:'HQP7',name:'Lutron Homeworks QSX Processor',vendor:'Lutron Electronics',cat:'Lighting',qty:2,unitCost:5800,unitSell:8600,stock:0,stockStatus:'out',poStatus:'open',poNum:'PO-4502'},
+      {sku:'N3-FS-TW',name:'Ketra N3 Fixture x36',vendor:'Ketra / Lutron',cat:'Lighting',qty:36,unitCost:220,unitSell:340,stock:0,stockStatus:'out',poStatus:'order',poNum:''},
+      {sku:'SONY-XR85',name:'Sony XR 85" Display x2',vendor:'Sony Pro',cat:'Display',qty:2,unitCost:5200,unitSell:7800,stock:0,stockStatus:'out',poStatus:'order',poNum:''},
+      {sku:'WB-RACK-16U',name:'WB Rack 16U Enclosure',vendor:'Snap One',cat:'Infrastructure',qty:1,unitCost:640,unitSell:980,stock:0,stockStatus:'out',poStatus:'order',poNum:''},
+    ]
+  },
+  {
+    id:4,title:'Gardener AV',meta:'Job #8812 · Builder: Gurczak · PM: James Lacek',
+    parts:[
+      {sku:'C4-EA3',name:'Control4 EA-3 Controller',vendor:'Control4 Direct',cat:'AV Control',qty:1,unitCost:2840,unitSell:4200,stock:0,stockStatus:'in',poStatus:'instock',poNum:''},
+      {sku:'VSSL-A.3X',name:'VSSL A.3X Streaming Amplifier',vendor:'Snap One',cat:'Audio',qty:1,unitCost:840,unitSell:1280,stock:0,stockStatus:'out',poStatus:'order',poNum:''},
+      {sku:'KLIPSCH-IN-800',name:'Klipsch In-Ceiling 8" x6',vendor:'Snap One',cat:'Audio',qty:6,unitCost:210,unitSell:320,stock:6,stockStatus:'in',poStatus:'instock',poNum:''},
+      {sku:'HQRD-10A-WH',name:'Lutron HW Dimmer Module x4',vendor:'Lutron Electronics',cat:'Lighting',qty:4,unitCost:380,unitSell:560,stock:4,stockStatus:'in',poStatus:'instock',poNum:''},
+    ]
+  },
+];
+
+function fmt(n){return '$'+Math.round(n).toLocaleString()}
+
+function stockBadge(s,stock,poStatus,poNum){
+  if(poStatus==='received') return `<span class="badge b-teal"><i class="ti ti-check" style="font-size:10px"></i> Received</span>`;
+  if(poStatus==='open') return `<span class="badge b-amber"><i class="ti ti-truck" style="font-size:10px"></i> On order ${poNum?'#'+poNum:''}</span>`;
+  if(s==='in') return `<span class="badge b-green"><i class="ti ti-check" style="font-size:10px"></i> In stock (${stock})</span>`;
+  if(s==='low') return `<span class="badge b-amber"><i class="ti ti-alert-triangle" style="font-size:10px"></i> Low stock (${stock})</span>`;
+  return `<span class="badge b-red"><i class="ti ti-x" style="font-size:10px"></i> Out of stock</span>`;
+}
+
+function needsOrder(p){
+  return p.poStatus==='order';
+}
+function isOnOrder(p){return p.poStatus==='open'}
+function isReceived(p){return p.poStatus==='received'||p.poStatus==='instock'}
+
+function addToPOCart(part,job){
+  const key=part.vendor;
+  if(!poCart[key]) poCart[key]=[];
+  const exists=poCart[key].find(x=>x.sku===part.sku);
+  if(!exists){
+    poCart[key].push({...part,orderQty:Math.max(part.qty-Math.max(part.stock,0),1)});
+    showToast(`Added ${part.name.substring(0,30)}... to PO`);
+    renderPOBuilder();
+  } else {
+    showToast('Already in PO builder');
+  }
+}
+
+function renderPOBuilder(){
+  const section=document.getElementById('po-builder-section');
+  const body=document.getElementById('po-builder-body');
+  const vendors=Object.keys(poCart).filter(v=>poCart[v].length>0);
+  if(!vendors.length){section.style.display='none';return;}
+  section.style.display='block';
+  body.innerHTML='';
+
+  vendors.forEach(vendor=>{
+    const items=poCart[vendor];
+    const vendorTotal=items.reduce((a,i)=>a+i.orderQty*i.unitCost,0);
+    const div=document.createElement('div');
+    div.className='po-panel';
+    div.innerHTML=`<div class="po-panel-title"><i class="ti ti-building-store" style="font-size:13px;color:var(--blue)"></i> ${vendor} <span style="font-size:10px;font-weight:400;color:var(--gray-400);margin-left:4px">${items.length} item${items.length!==1?'s':''}</span></div>
+      <div class="po-head"><div>Item</div><div style="text-align:right">Unit cost</div><div style="text-align:right">Qty to order</div><div style="text-align:right">Subtotal</div><div></div></div>
+      ${items.map((item,ii)=>`
+        <div class="po-line" id="po-line-${vendor.replace(/\s/g,'_')}-${ii}">
+          <div><div class="row-name" style="font-size:11px">${item.name}</div><div class="row-sku">${item.sku}</div></div>
+          <div style="text-align:right;font-size:11px">${fmt(item.unitCost)}</div>
+          <div style="text-align:right"><input class="po-qty-input" type="number" value="${item.orderQty}" min="1" onchange="updateQty('${vendor}','${item.sku}',this.value)"></div>
+          <div style="text-align:right;font-weight:600;font-size:11px" id="line-total-${vendor.replace(/\s/g,'_')}-${item.sku.replace(/[^a-z0-9]/gi,'_')}">${fmt(item.orderQty*item.unitCost)}</div>
+          <button class="po-remove" onclick="removeFromPO('${vendor}','${item.sku}')"><i class="ti ti-x" style="font-size:12px"></i></button>
+        </div>`).join('')}
+      <div class="po-footer">
+        <div class="po-total">PO total: <span style="color:var(--blue)">${fmt(vendorTotal)}</span></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="po-btn po-btn-vendor" onclick="openQBOPO('${vendor}')"><i class="ti ti-external-link" style="font-size:12px"></i> Create PO in QBO</button>
+          <button class="po-btn po-btn-qbo po-btn-sm" onclick="emailVendor('${vendor}')"><i class="ti ti-mail" style="font-size:12px"></i> Email vendor</button>
+        </div>
+      </div>`;
+    body.appendChild(div);
+  });
+
+  const grandTotal=vendors.reduce((a,v)=>a+poCart[v].reduce((b,i)=>b+i.orderQty*i.unitCost,0),0);
+  const grandDiv=document.createElement('div');
+  grandDiv.style.cssText='padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border)';
+  grandDiv.innerHTML=`<div style="font-size:12px;color:var(--gray-400)">Grand total across ${vendors.length} vendor${vendors.length!==1?'s':''}</div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="font-size:14px;font-weight:700;color:var(--navy)">${fmt(grandTotal)}</div>
+      <button class="po-btn po-btn-primary" onclick="createAllPOsFromCart()"><i class="ti ti-checks" style="font-size:12px"></i> Create all POs in QBO</button>
+    </div>`;
+  body.appendChild(grandDiv);
+}
+
+function updateQty(vendor,sku,val){
+  const item=poCart[vendor]?.find(x=>x.sku===sku);
+  if(item){
+    item.orderQty=Math.max(1,parseInt(val)||1);
+    renderPOBuilder();
+  }
+}
+
+function removeFromPO(vendor,sku){
+  if(!poCart[vendor]) return;
+  poCart[vendor]=poCart[vendor].filter(x=>x.sku!==sku);
+  if(!poCart[vendor].length) delete poCart[vendor];
+  renderPOBuilder();
+}
+
+function clearPOBuilder(){poCart={};renderPOBuilder();}
+
+function openQBOPO(vendor){
+  showToast(`Opening QBO to create PO for ${vendor}...`);
+  setTimeout(()=>{
+    window.open('https://app.qbo.intuit.com/app/purchaseorder','_blank');
+  },600);
+}
+
+function emailVendor(vendor){
+  showToast(`Drafting vendor email for ${vendor}...`);
+}
+
+function createAllPOs(){
+  const job=jobs[currentJobIdx];
+  const toOrder=job.parts.filter(p=>needsOrder(p));
+  const byVendor={};
+  toOrder.forEach(p=>{
+    if(!byVendor[p.vendor]) byVendor[p.vendor]=[];
+    byVendor[p.vendor].push(p);
+  });
+  poCart=JSON.parse(JSON.stringify(byVendor));
+  Object.keys(poCart).forEach(v=>{
+    poCart[v].forEach(item=>{item.orderQty=Math.max(item.qty-Math.max(item.stock,0),1)});
+  });
+  renderPOBuilder();
+  document.getElementById('po-builder-section').scrollIntoView({behavior:'smooth',block:'start'});
+  showToast(`Added ${toOrder.length} items across ${Object.keys(byVendor).length} vendors to PO builder`);
+}
+
+function createAllPOsFromCart(){
+  const vendors=Object.keys(poCart);
+  showToast(`Creating ${vendors.length} POs in QBO...`);
+  setTimeout(()=>{
+    window.open('https://app.qbo.intuit.com/app/purchaseorder','_blank');
+  },800);
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+function setFilter(f,el){
+  currentFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderVendorGroups();
+}
+
+function filterParts(val){
+  currentSearch=val.toLowerCase();
+  renderVendorGroups();
+}
+
+function getFilteredParts(parts){
+  return parts.filter(p=>{
+    if(currentFilter==='order'&&!needsOrder(p)) return false;
+    if(currentFilter==='onorder'&&!isOnOrder(p)) return false;
+    if(currentFilter==='instock'&&!isReceived(p)) return false;
+    if(currentSearch&&!p.name.toLowerCase().includes(currentSearch)&&!p.sku.toLowerCase().includes(currentSearch)&&!p.vendor.toLowerCase().includes(currentSearch)) return false;
+    return true;
+  });
+}
+
+function renderVendorGroups(){
+  const job=jobs[currentJobIdx];
+  const container=document.getElementById('vendor-groups');
+  container.innerHTML='';
+
+  // Group by vendor
+  const vendors={};
+  job.parts.forEach(p=>{
+    if(!vendors[p.vendor]) vendors[p.vendor]=[];
+    vendors[p.vendor].push(p);
+  });
+
+  let totalVal=0,totalInstock=0,totalOrder=0;
+
+  Object.entries(vendors).forEach(([vendor,parts])=>{
+    const filtered=getFilteredParts(parts);
+    if(!filtered.length) return;
+
+    const vendorTotal=parts.reduce((a,p)=>a+p.qty*p.unitSell,0);
+    const vendorNeedOrder=parts.filter(p=>needsOrder(p));
+    const vendorOnOrder=parts.filter(p=>isOnOrder(p));
+    const vendorInstock=parts.filter(p=>isReceived(p));
+    totalVal+=vendorTotal;
+    totalInstock+=vendorInstock.reduce((a,p)=>a+p.qty*p.unitSell,0);
+    totalOrder+=vendorNeedOrder.reduce((a,p)=>a+p.qty*p.unitSell,0);
+
+    const groupEl=document.createElement('div');
+    groupEl.className='vendor-group';
+    const vKey=vendor.replace(/\s/g,'_');
+
+    let statusHtml='';
+    if(vendorNeedOrder.length) statusHtml+=`<span class="badge b-red" style="font-size:9px">${vendorNeedOrder.length} to order</span>`;
+    if(vendorOnOrder.length) statusHtml+=`<span class="badge b-amber" style="font-size:9px">${vendorOnOrder.length} on order</span>`;
+    if(vendorInstock.length) statusHtml+=`<span class="badge b-teal" style="font-size:9px">${vendorInstock.length} ready</span>`;
+
+    groupEl.innerHTML=`
+      <div class="vendor-header" onclick="toggleVendor('${vKey}')">
+        <div class="vendor-name">
+          <i class="ti ti-building-store" style="font-size:13px;color:var(--blue)"></i>
+          ${vendor}
+          <span style="font-size:10px;font-weight:400;color:var(--gray-400)">${parts.length} items · ${fmt(vendorTotal)}</span>
+          <div style="display:flex;gap:4px;margin-left:4px">${statusHtml}</div>
+        </div>
+        <div class="vendor-actions">
+          ${vendorNeedOrder.length?`<button class="po-btn po-btn-vendor po-btn-sm" onclick="event.stopPropagation();addVendorToPO('${vendor}')"><i class="ti ti-plus" style="font-size:11px"></i> Add all to PO</button>`:''}
+          <button class="po-btn po-btn-primary po-btn-sm" onclick="event.stopPropagation();openQBOPO('${vendor}')"><i class="ti ti-external-link" style="font-size:11px"></i> Create PO in QBO</button>
+          <i class="ti ti-chevron-down" style="font-size:14px;color:var(--gray-400);transition:transform .2s" id="chevron-${vKey}"></i>
+        </div>
+      </div>
+      <div class="vendor-body open" id="vbody-${vKey}">
+        <table class="tbl">
+          <thead><tr>
+            <th>Part / SKU</th>
+            <th class="c">Category</th>
+            <th class="r">Est. qty</th>
+            <th class="c">QBO stock</th>
+            <th class="r">To order</th>
+            <th class="r">Unit cost</th>
+            <th class="r">Total (sell)</th>
+            <th class="c">PO status</th>
+            <th class="c">Actions</th>
+          </tr></thead>
+          <tbody>
+            ${filtered.map(p=>{
+              const toOrder=Math.max(p.qty-Math.max(p.stock,0),0);
+              const rowBg=needsOrder(p)?'background:#FFF5F5':isOnOrder(p)?'background:#FFFBF0':'';
+              return `<tr style="${rowBg}">
+                <td>
+                  <div class="row-name">${p.name}</div>
+                  <div class="row-sku">${p.sku}</div>
+                </td>
+                <td class="c"><span class="badge b-gray" style="font-size:9px">${p.cat}</span></td>
+                <td class="r" style="font-weight:500">${p.qty}</td>
+                <td class="c">
+                  <div class="stock-cell" style="justify-content:center">
+                    <div class="stock-dot sd-${p.stockStatus}"></div>
+                    <span class="stock-qty" style="color:${p.stockStatus==='in'?'var(--teal)':p.stockStatus==='low'?'#854F0B':'var(--red)'}">${p.stock}</span>
+                  </div>
+                </td>
+                <td class="r">
+                  <span class="to-order" style="color:${toOrder>0?'var(--red)':'var(--teal)'}">${toOrder>0?toOrder:'—'}</span>
+                </td>
+                <td class="r">${fmt(p.unitCost)}</td>
+                <td class="r" style="font-weight:500">${fmt(p.qty*p.unitSell)}</td>
+                <td class="c">${stockBadge(p.stockStatus,p.stock,p.poStatus,p.poNum)}</td>
+                <td class="c">
+                  <div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap">
+                    ${needsOrder(p)?`<button class="po-btn po-btn-vendor po-btn-sm" onclick="addToPOCart(${JSON.stringify(p).replace(/"/g,"'")},null)"><i class="ti ti-plus" style="font-size:10px"></i> Add to PO</button>`:''}
+                    ${needsOrder(p)?`<button class="po-btn po-btn-primary po-btn-sm" onclick="openQBOPO('${p.vendor}')"><i class="ti ti-external-link" style="font-size:10px"></i> QBO</button>`:''}
+                  </div>
+                </td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>`;
+    container.appendChild(groupEl);
+  });
+
+  document.getElementById('f-total').textContent=fmt(totalVal);
+  document.getElementById('f-toorder').textContent=fmt(totalOrder);
+  document.getElementById('f-instock').textContent=fmt(totalInstock);
+}
+
+function toggleVendor(key){
+  const body=document.getElementById('vbody-'+key);
+  const chev=document.getElementById('chevron-'+key);
+  const open=body.classList.contains('open');
+  body.classList.toggle('open',!open);
+  if(chev) chev.style.transform=open?'':'rotate(180deg)';
+}
+
+function addVendorToPO(vendor){
+  const job=jobs[currentJobIdx];
+  const toAdd=job.parts.filter(p=>p.vendor===vendor&&needsOrder(p));
+  toAdd.forEach(p=>addToPOCart(p,null));
+  document.getElementById('po-builder-section').scrollIntoView({behavior:'smooth'});
+}
+
+function updateSummary(){
+  const job=jobs[currentJobIdx];
+  const parts=job.parts;
+  const total=parts.reduce((a,p)=>a+p.qty*p.unitSell,0);
+  const instockParts=parts.filter(p=>isReceived(p));
+  const toOrderParts=parts.filter(p=>needsOrder(p));
+  const onOrderParts=parts.filter(p=>isOnOrder(p));
+  const posCreated=parts.filter(p=>p.poNum).map(p=>p.poNum).filter((v,i,a)=>a.indexOf(v)===i).length;
+
+  document.getElementById('s-total-parts').textContent=fmt(total);
+  document.getElementById('s-total-items').textContent=parts.length+' line items';
+  document.getElementById('s-instock').textContent=fmt(instockParts.reduce((a,p)=>a+p.qty*p.unitSell,0));
+  document.getElementById('s-instock-ct').textContent=instockParts.length+' items';
+  document.getElementById('s-toorder').textContent=fmt(toOrderParts.reduce((a,p)=>a+p.qty*p.unitSell,0));
+  document.getElementById('s-toorder-ct').textContent=toOrderParts.length+' items';
+  document.getElementById('s-onorder').textContent=fmt(onOrderParts.reduce((a,p)=>a+p.qty*p.unitSell,0));
+  document.getElementById('s-onorder-ct').textContent=onOrderParts.length+' items';
+  document.getElementById('s-pos').textContent=posCreated;
+
+  document.getElementById('ps-need').textContent=toOrderParts.length+' items';
+  document.getElementById('ps-need-val').textContent=fmt(toOrderParts.reduce((a,p)=>a+p.qty*p.unitCost,0))+' estimated cost';
+  document.getElementById('ps-open').textContent=onOrderParts.length+' items';
+  document.getElementById('ps-open-val').textContent=fmt(onOrderParts.reduce((a,p)=>a+p.qty*p.unitCost,0))+' on order';
+  document.getElementById('ps-recv').textContent=instockParts.length+' items';
+  document.getElementById('ps-recv-val').textContent=fmt(instockParts.reduce((a,p)=>a+p.qty*p.unitSell,0))+' value';
+}
+
+function setJob(i,el){
+  currentJobIdx=i;
+  poCart={};
+  document.querySelectorAll('.job-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('j-title').textContent=jobs[i].title;
+  document.getElementById('j-meta').textContent=jobs[i].meta;
+  document.getElementById('part-search').value='';
+  currentSearch='';
+  document.getElementById('po-builder-section').style.display='none';
+  updateSummary();
+  renderVendorGroups();
+}
+
+updateSummary();
+renderVendorGroups();
+</script>
+
+<div class="slack-overlay" id="slackOverlay" onclick="toggleSlack()"></div>
+<div class="slack-panel" id="slackPanel">
+  <div class="slack-panel-head">
+    <div class="slack-head-left">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M5.042 15.165a2.528 2.528 0 01-2.52 2.523A2.528 2.528 0 010 15.165a2.527 2.527 0 012.522-2.52h2.52v2.52z" fill="#E01E5A"/>
+        <path d="M6.313 15.165a2.527 2.527 0 012.521-2.52 2.527 2.527 0 012.521 2.52v6.313A2.528 2.528 0 018.834 24a2.528 2.528 0 01-2.521-2.522v-6.313z" fill="#E01E5A"/>
+        <path d="M8.834 5.042a2.528 2.528 0 01-2.521-2.52A2.528 2.528 0 018.834 0a2.527 2.527 0 012.521 2.522v2.52H8.834z" fill="#36C5F0"/>
+        <path d="M8.834 6.313a2.528 2.528 0 012.521 2.521 2.528 2.528 0 01-2.521 2.521H2.522A2.528 2.528 0 010 8.834a2.528 2.528 0 012.522-2.521h6.312z" fill="#36C5F0"/>
+        <path d="M18.956 8.834a2.528 2.528 0 012.522-2.521A2.528 2.528 0 0124 8.834a2.527 2.527 0 01-2.522 2.521h-2.522V8.834z" fill="#2EB67D"/>
+        <path d="M17.688 8.834a2.528 2.528 0 01-2.523 2.521 2.527 2.527 0 01-2.52-2.521V2.522A2.527 2.527 0 0115.165 0a2.528 2.528 0 012.523 2.522v6.312z" fill="#2EB67D"/>
+        <path d="M15.165 18.956a2.528 2.528 0 012.523 2.522A2.528 2.528 0 0115.165 24a2.527 2.527 0 01-2.52-2.522v-2.522h2.52z" fill="#ECB22E"/>
+        <path d="M15.165 17.688a2.527 2.527 0 01-2.52-2.523 2.526 2.526 0 012.52-2.52h6.313A2.527 2.527 0 0124 15.165a2.528 2.528 0 01-2.522 2.523h-6.313z" fill="#ECB22E"/>
+      </svg>
+      <div>
+        <div class="slack-channel-name" id="slackChannelName">#purchasing</div>
+        <div class="slack-channel-desc">Oasis Smart Homes · Team Workspace</div>
+      </div>
+    </div>
+    <button class="slack-close" onclick="toggleSlack()">&#x2715;</button>
+  </div>
+
+  <div class="slack-channel-bar">
+    <button class="slack-ch-btn active" onclick="switchChannel('purchasing',this)">#purchasing</button>
+<button class="slack-ch-btn " onclick="switchChannel('morrison-po',this)">#morrison-po</button>
+<button class="slack-ch-btn " onclick="switchChannel('parts',this)">#parts-updates</button>
+<button class="slack-ch-btn " onclick="switchChannel('vendors',this)">#vendor-issues</button>
+
+  </div>
+
+  <div class="slack-messages" id="slackMessages"></div>
+
+  <div class="slack-compose">
+    <div class="slack-compose-box">
+      <textarea class="slack-compose-input" id="slackInput"
+        placeholder="Message #&#x2060;" rows="3"
+        onkeydown="handleCompose(event)"></textarea>
+      <div class="slack-compose-toolbar">
+        <div class="slack-toolbar-left">
+          <button class="slack-tool-btn" title="Attach file">
+            <i class="ti ti-paperclip"></i>
+          </button>
+          <button class="slack-tool-btn" title="Mention">
+            <i class="ti ti-at"></i>
+          </button>
+          <button class="slack-tool-btn" title="Emoji">
+            <i class="ti ti-mood-smile"></i>
+          </button>
+          <button class="slack-tool-btn" title="Bold">
+            <i class="ti ti-bold"></i>
+          </button>
+        </div>
+        <button class="slack-send-btn" id="slackSendBtn" onclick="sendMsg()" disabled>
+          <i class="ti ti-send"></i> Send
+        </button>
+      </div>
+    </div>
+    <div class="slack-note">
+      <i class="ti ti-brand-slack" style="font-size:11px"></i>
+      Messages post directly to Slack · <a href="#" style="color:#185FA5">Open in Slack ↗</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var allMessages = {"purchasing":[{name:'Melissa Busse',time:'8:05 AM',text:'Morning PO update: Ketra fixtures for Morrison confirmed shipping June 9. ETA June 11-12.',initials:'MB',color:'#27500A',bg:'#EAF3DE'},{name:'Kyra Stacy',time:'8:18 AM',text:'Control4 order for Nguyen job — do we want to use the new dealer portal or go through the rep?',initials:'KS',color:'#633806',bg:'#FAEEDA'},{name:'Melissa Busse',time:'8:24 AM',text:'Dealer portal is faster. Go ahead and place it — I\'ll approve in QBO this morning.',initials:'MB',color:'#27500A',bg:'#EAF3DE'},{name:'System',time:'9:30 AM',text:'Auto-alert: Lutron Homeworks panel for Henderson job marked Received. PO #4438 closed.',initials:'📦',color:'#185FA5',bg:'#E6F1FB'},{name:'Kyra Stacy',time:'10:15 AM',text:'SOS inventory shows we have 4 Somfy motors in stock — do we pull those for Martin shades or keep as buffer?',initials:'KS',color:'#633806',bg:'#FAEEDA'},{name:'Melissa Busse',time:'10:22 AM',text:'Pull 4 for Martin. We can reorder — lead time is only 5 days.',initials:'MB',color:'#27500A',bg:'#EAF3DE'},],"morrison-po":[{name:'Melissa Busse',time:'Yesterday 2:00 PM',text:'All Morrison POs received except Ketra. See tracker in Monday. Still need to close out PO #4502 when they arrive.',initials:'MB',color:'#27500A',bg:'#EAF3DE'},{name:'Tyler Wagner',time:'Yesterday 2:10 PM',text:'I\'ll receive them in QBO when they hit the shop June 11. Will tag you.',initials:'TW',color:'#0C447C',bg:'#E6F1FB'},],"parts":[{name:'System',time:'8:00 AM',text:'Daily parts update:\n• Morrison Ketra: ships June 9 ✓\n• Nguyen Control4 EA-3: ordered, 5-day lead\n• Martin Somfy: pulling from stock ✓\n• Henderson Lutron: received ✅',initials:'📦',color:'#185FA5',bg:'#E6F1FB'},{name:'Kyra Stacy',time:'8:05 AM',text:'Thanks — Henderson Lutron is confirmed received on my end too. Ready for install.',initials:'KS',color:'#633806',bg:'#FAEEDA'},],"vendors":[{name:'Melissa Busse',time:'Yesterday 11:00 AM',text:'Heads up — Crestron is showing 8-week lead time on the NVX-350 processor. If any jobs need it, order now.',initials:'MB',color:'#27500A',bg:'#EAF3DE'},{name:'Tyler Wagner',time:'Yesterday 11:20 AM',text:'Flagging this for the Nguyen job — they specified Crestron. @Melissa let\'s order one proactively.',initials:'TW',color:'#0C447C',bg:'#E6F1FB'},{name:'Melissa Busse',time:'Yesterday 11:35 AM',text:'Order placed. PO #4511 in QBO. 8 weeks puts arrival at ~August 4.',initials:'MB',color:'#27500A',bg:'#EAF3DE'},],};
+  var allReactions = {"purchasing-2":"👍 2","purchasing-3":"✅ 3","purchasing-5":"👍 1","morrison-po-1":"👍 2","parts-1":"✅ 2","vendors-1":"⚠️ 1",};
+  var currentChannel = 'purchasing';
+  var channels = [{"id": "purchasing", "label": "purchasing"}, {"id": "morrison-po", "label": "morrison-po"}, {"id": "parts", "label": "parts-updates"}, {"id": "vendors", "label": "vendor-issues"}];
+
+  function av(initials,bg,color){
+    return '<div class="slack-avatar" style="background:'+bg+';color:'+color+'">'+initials+'</div>';
+  }
+
+  function renderMessages(chId){
+    var msgs = allMessages[chId]||[];
+    var container = document.getElementById('slackMessages');
+    var html = '<div class="slack-date-divider">Today</div>';
+    msgs.forEach(function(m,i){
+      var txt = m.text
+        .replace(/\n/g,'<br>')
+        .replace(/@(\w+)/g,'<span class="mention">@$1</span>')
+        .replace(/#([\w-]+)/g,'<span class="jobref">#$1</span>');
+      var reaction = allReactions[chId+'-'+i];
+      var reactionHtml = reaction ? '<div><span class="slack-reaction">'+reaction+'</span></div>' : '';
+      html += '<div class="slack-msg">'+av(m.initials,m.bg,m.color)+
+        '<div class="slack-msg-body">'+
+        '<div class="slack-msg-meta"><span class="slack-msg-name">'+m.name+'</span><span class="slack-msg-time">'+m.time+'</span></div>'+
+        '<div class="slack-msg-text">'+txt+'</div>'+reactionHtml+
+        '</div></div>';
+    });
+    container.innerHTML = html;
+    container.scrollTop = container.scrollHeight;
+  }
+
+  window.switchChannel = function(chId, btn){
+    currentChannel = chId;
+    document.querySelectorAll('.slack-ch-btn').forEach(function(b){b.classList.remove('active')});
+    btn.classList.add('active');
+    var ch = channels.find(function(c){return c.id===chId});
+    document.getElementById('slackChannelName').textContent = '#'+(ch?ch.label:chId);
+    document.getElementById('slackInput').placeholder = 'Message #'+(ch?ch.label:chId);
+    renderMessages(chId);
+  };
+
+  window.toggleSlack = function(){
+    var panel = document.getElementById('slackPanel');
+    var overlay = document.getElementById('slackOverlay');
+    var isOpen = panel.classList.contains('open');
+    panel.classList.toggle('open',!isOpen);
+    overlay.classList.toggle('open',!isOpen);
+    if(!isOpen) renderMessages(currentChannel);
+  };
+
+  window.sendMsg = function(){
+    var input = document.getElementById('slackInput');
+    var txt = input.value.trim();
+    if(!txt) return;
+    var msgs = allMessages[currentChannel];
+    var now = new Date();
+    var h = now.getHours()%12||12;
+    var m = String(now.getMinutes()).padStart(2,'0');
+    var ap = now.getHours()>=12?'PM':'AM';
+    msgs.push({name:'You',time:h+':'+m+' '+ap,text:txt,initials:'JW',color:'#0C447C',bg:'#E6F1FB'});
+    input.value='';
+    document.getElementById('slackSendBtn').disabled=true;
+    renderMessages(currentChannel);
+  };
+
+  window.handleCompose = function(e){
+    var btn = document.getElementById('slackSendBtn');
+    btn.disabled = e.target.value.trim().length===0;
+    if(e.key==='Enter' && (e.metaKey||e.ctrlKey)) sendMsg();
+  };
+
+  // init
+  renderMessages(currentChannel);
+})();
+</script>
+
+</body>
+</html>

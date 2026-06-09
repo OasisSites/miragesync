@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oasis Smart Homes — Job Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --navy:#0D1B2A;--teal:#0A8754;--teal-m:#1D9E75;--teal-l:#E1F5EE;
+  --amber:#E8A020;--amber-l:#FAEEDA;--red:#DC2626;--red-l:#FEE2E2;
+  --blue-l:#E6F1FB;--blue:#185FA5;--purple-l:#EEEDFE;--purple:#3C3489;
+  --green-l:#EAF3DE;--green:#27500A;
+  --gray-50:#F8F9FA;--gray-100:#F1F3F5;--gray-200:#E9ECEF;
+  --gray-400:#868E96;--gray-600:#495057;--gray-900:#212529;
+  --border:#E9ECEF;--radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#F4F6F8;color:var(--gray-900);font-size:13px;line-height:1.5}
+
+/* ── Top bar ── */
+.topbar{background:var(--navy);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between}
+.topbar-brand{display:flex;align-items:center;gap:10px}
+.topbar-brand .wordmark{font-family:'DM Serif Display',serif;font-size:18px;color:#fff;letter-spacing:.01em}
+.topbar-brand .sub{font-size:10px;color:rgba(255,255,255,.45);font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--teal-m);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.live-label{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.05em}
+.src-pill{font-size:9px;font-weight:600;padding:2px 7px;border-radius:20px;letter-spacing:.04em}
+.sp-p{background:var(--purple-l);color:var(--purple)}
+.sp-q{background:var(--green-l);color:var(--green)}
+.sp-m{background:var(--blue-l);color:var(--blue)}
+.sp-c{background:var(--amber-l);color:#633806}
+.sp-t{background:var(--red-l);color:#791F1F}
+
+/* ── Rep filter bar ── */
+.rep-bar{background:#fff;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;overflow-x:auto}
+.rep-label{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:.06em;text-transform:uppercase;margin-right:4px;white-space:nowrap}
+.rep-btn{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--gray-600);transition:all .15s;white-space:nowrap}
+.rep-btn:hover{border-color:var(--teal-m);color:var(--teal)}
+.rep-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* ── Main layout ── */
+.main{display:flex;gap:0;min-height:calc(100vh - 102px)}
+.sidebar{width:220px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);padding:16px 0}
+.sidebar-label{font-size:9px;font-weight:600;color:var(--gray-400);letter-spacing:.08em;text-transform:uppercase;padding:0 16px 8px}
+.job-chip{padding:9px 16px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .12s;border-left:3px solid transparent}
+.job-chip:hover{background:var(--gray-50)}
+.job-chip.active{background:var(--teal-l);border-left-color:var(--teal-m)}
+.job-chip-name{font-size:12px;font-weight:500;color:var(--gray-900)}
+.job-chip-meta{font-size:10px;color:var(--gray-400);margin-top:1px}
+.job-chip.active .job-chip-name{color:var(--teal)}
+
+/* ── Content ── */
+.content{flex:1;padding:20px 24px;overflow-x:hidden}
+
+/* ── Job header ── */
+.job-header{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.job-title{font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);line-height:1.1}
+.job-subtitle{font-size:11px;color:var(--gray-400);margin-top:4px}
+.badge-row{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;letter-spacing:.02em}
+.b-amber{background:var(--amber-l);color:#633806}
+.b-green{background:var(--green-l);color:var(--green)}
+.b-red{background:var(--red-l);color:#791F1F}
+.b-blue{background:var(--blue-l);color:var(--blue)}
+.b-purple{background:var(--purple-l);color:var(--purple)}
+.b-gray{background:var(--gray-100);color:var(--gray-600)}
+
+/* ── Metrics grid ── */
+.metrics-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
+.metric-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
+.metric-label{font-size:10px;font-weight:500;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px}
+.metric-value{font-size:20px;font-weight:600;color:var(--gray-900)}
+.metric-value.blue{color:var(--blue)}
+.metric-value.green{color:var(--teal)}
+.metric-value.amber{color:#854F0B}
+.metric-value.muted{color:var(--gray-400)}
+
+/* ── Progress ── */
+.progress-row{display:flex;justify-content:space-between;font-size:10px;color:var(--gray-400);margin-bottom:4px}
+.progress-track{height:4px;background:var(--gray-200);border-radius:2px;overflow:hidden;margin-bottom:16px}
+.progress-fill{height:100%;border-radius:2px;background:var(--teal-m);transition:width .4s}
+
+/* ── Section card ── */
+.section{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-title{font-size:11px;font-weight:600;color:var(--gray-600);letter-spacing:.05em;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.section-sources{display:flex;gap:4px}
+
+/* ── Tables ── */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase;padding:0 6px 7px;border-bottom:1px solid var(--border);text-align:left}
+.tbl th.r{text-align:right}
+.tbl th.c{text-align:center}
+.tbl td{padding:7px 6px;border-bottom:1px solid var(--gray-100);font-size:12px;color:var(--gray-900);vertical-align:top}
+.tbl td.r{text-align:right}
+.tbl td.c{text-align:center}
+.tbl tr:last-child td{border-bottom:none}
+.tbl .row-name{font-weight:500}
+.tbl .row-sub{font-size:10px;color:var(--gray-400);margin-top:1px}
+
+/* ── Profit summary bar ── */
+.profit-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.profit-cell{flex:1;min-width:90px;background:var(--gray-50);border-radius:var(--radius-sm);padding:10px 12px;border:1px solid var(--border)}
+.profit-cell .lbl{font-size:9px;font-weight:600;color:var(--gray-400);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
+.profit-cell .val{font-size:16px;font-weight:600}
+
+/* ── Statement ── */
+.statement-box{background:var(--gray-50);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:10px}
+.statement-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.stmt-tbl{width:100%;border-collapse:collapse}
+.stmt-tbl th{font-size:9px;font-weight:600;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase;padding:0 6px 6px;border-bottom:1px solid var(--border);text-align:left}
+.stmt-tbl th.r{text-align:right}
+.stmt-tbl td{padding:5px 6px;border-bottom:1px solid var(--gray-200);font-size:11px}
+.stmt-tbl td.r{text-align:right}
+.stmt-tbl tr:last-child td{border-bottom:none}
+.stmt-total{display:flex;justify-content:flex-end;align-items:center;gap:16px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+
+/* ── Photos ── */
+.photo-group-label{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase;margin:10px 0 6px}
+.photo-strip{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px}
+.photo-thumb{width:68px;height:55px;border-radius:var(--radius-sm);background:var(--gray-100);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--gray-400);cursor:pointer;transition:border-color .12s}
+.photo-thumb:hover{border-color:var(--teal-m)}
+.photo-more{font-size:10px;font-weight:600;color:var(--gray-400)}
+
+/* ── CRM contacts ── */
+.contacts-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.contact-card{display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--gray-50);border-radius:var(--radius-sm);border:1px solid var(--border)}
+.avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+.contact-name{font-size:12px;font-weight:600;color:var(--gray-900)}
+.contact-role{font-size:10px;color:var(--gray-400);margin-top:1px}
+.contact-detail{font-size:10px;color:var(--gray-600);margin-top:3px;display:flex;align-items:center;gap:4px}
+.contact-detail a{color:var(--blue);text-decoration:none}
+
+/* ── Job details grid ── */
+.details-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.detail-row{display:flex;flex-direction:column;gap:2px}
+.detail-label{font-size:10px;font-weight:500;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase}
+.detail-value{font-size:12px;font-weight:500;color:var(--gray-900)}
+
+/* ── Action buttons ── */
+.action-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--gray-100)}
+.action-btn{font-size:11px;color:var(--blue);background:var(--blue-l);border:none;padding:5px 11px;border-radius:20px;cursor:pointer;font-weight:500;transition:background .12s;display:inline-flex;align-items:center;gap:4px}
+.action-btn:hover{background:#cde2f8}
+
+/* ── Footer ── */
+.footer{background:#fff;border-top:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;font-size:10px;color:var(--gray-400)}
+
+@media(max-width:700px){
+  .metrics-grid{grid-template-columns:repeat(2,1fr)}
+  .main{flex-direction:column}
+  .sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border)}
+  .contacts-grid{grid-template-columns:1fr}
+  .details-grid{grid-template-columns:1fr}
+}
+
+/* ══ SLACK PANEL ══════════════════════════════════════════════════ */
+.slack-toggle-btn{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+  color:#fff;padding:5px 12px;border-radius:20px;cursor:pointer;
+  font-size:11px;font-weight:600;letter-spacing:.03em;
+  transition:background .15s;position:relative;
+}
+.slack-toggle-btn:hover{background:rgba(255,255,255,.2)}
+.slack-toggle-btn .slack-logo{
+  width:16px;height:16px;display:flex;align-items:center;justify-content:center;
+}
+.slack-unread{
+  position:absolute;top:-4px;right:-4px;
+  width:15px;height:15px;border-radius:50%;
+  background:#E8A020;color:#fff;font-size:8px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--navy,#0D1B2A);
+}
+
+/* Panel overlay */
+.slack-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.2);
+  z-index:900;opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.slack-overlay.open{opacity:1;pointer-events:auto}
+
+/* Panel drawer */
+.slack-panel{
+  position:fixed;top:0;right:0;bottom:0;width:380px;
+  background:#fff;border-left:1px solid #E9ECEF;
+  box-shadow:-4px 0 24px rgba(0,0,0,.12);
+  z-index:901;display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);
+}
+.slack-panel.open{transform:translateX(0)}
+
+/* Panel header */
+.slack-panel-head{
+  background:#0D1B2A;padding:0 16px;height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.slack-head-left{display:flex;align-items:center;gap:8px}
+.slack-head-logo{
+  width:20px;height:20px;
+  display:grid;grid-template-columns:1fr 1fr;gap:2px;
+}
+.slack-head-logo span{
+  border-radius:3px;display:block;
+}
+.slack-channel-name{
+  font-size:13px;font-weight:600;color:#fff;
+}
+.slack-channel-desc{
+  font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.03em;
+}
+.slack-close{
+  background:none;border:none;color:rgba(255,255,255,.55);
+  cursor:pointer;font-size:18px;line-height:1;padding:4px;
+  transition:color .12s;
+}
+.slack-close:hover{color:#fff}
+
+/* Channel selector */
+.slack-channel-bar{
+  background:#F8F9FA;border-bottom:1px solid #E9ECEF;
+  padding:8px 12px;display:flex;gap:6px;flex-wrap:nowrap;
+  overflow-x:auto;flex-shrink:0;
+}
+.slack-ch-btn{
+  padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;
+  border:1px solid #E9ECEF;background:#fff;color:#495057;
+  cursor:pointer;white-space:nowrap;transition:all .12s;flex-shrink:0;
+}
+.slack-ch-btn:hover{border-color:#1D9E75;color:#0A8754}
+.slack-ch-btn.active{background:#0D1B2A;color:#fff;border-color:#0D1B2A}
+
+/* Messages area */
+.slack-messages{
+  flex:1;overflow-y:auto;padding:12px 16px;
+  display:flex;flex-direction:column;gap:0;
+}
+.slack-date-divider{
+  display:flex;align-items:center;gap:8px;
+  margin:12px 0 8px;font-size:10px;font-weight:600;
+  color:#868E96;letter-spacing:.04em;text-transform:uppercase;
+}
+.slack-date-divider::before,.slack-date-divider::after{
+  content:'';flex:1;height:1px;background:#E9ECEF;
+}
+.slack-msg{
+  display:flex;gap:9px;padding:4px 0;
+  position:relative;border-radius:6px;transition:background .1s;
+}
+.slack-msg:hover{background:#F8F9FA;margin:0 -8px;padding:4px 8px;}
+.slack-avatar{
+  width:30px;height:30px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;
+}
+.slack-msg-body{flex:1;min-width:0}
+.slack-msg-meta{display:flex;align-items:baseline;gap:6px;margin-bottom:2px}
+.slack-msg-name{font-size:12px;font-weight:600;color:#212529}
+.slack-msg-time{font-size:10px;color:#868E96}
+.slack-msg-text{font-size:12px;color:#343a40;line-height:1.5;word-break:break-word}
+.slack-msg-text .mention{
+  color:#185FA5;background:#E6F1FB;
+  padding:0 3px;border-radius:3px;font-weight:500;
+}
+.slack-msg-text .jobref{
+  color:#0A8754;font-weight:500;
+}
+.slack-reaction{
+  display:inline-flex;align-items:center;gap:3px;
+  background:#F1F3F5;border:1px solid #E9ECEF;
+  border-radius:12px;padding:1px 7px;font-size:11px;
+  cursor:pointer;margin-top:3px;transition:background .1s;
+}
+.slack-reaction:hover{background:#E9ECEF}
+.slack-file-attach{
+  display:flex;align-items:center;gap:8px;
+  background:#F8F9FA;border:1px solid #E9ECEF;border-radius:6px;
+  padding:8px 10px;margin-top:4px;cursor:pointer;
+  transition:border-color .12s;
+}
+.slack-file-attach:hover{border-color:#1D9E75}
+.slack-file-icon{font-size:16px;color:#868E96}
+.slack-file-name{font-size:11px;font-weight:500;color:#212529}
+.slack-file-size{font-size:10px;color:#868E96}
+
+/* Compose area */
+.slack-compose{
+  border-top:1px solid #E9ECEF;padding:12px 14px;flex-shrink:0;
+}
+.slack-compose-box{
+  border:1.5px solid #E9ECEF;border-radius:8px;
+  background:#fff;overflow:hidden;transition:border-color .15s;
+}
+.slack-compose-box:focus-within{border-color:#1D9E75}
+.slack-compose-input{
+  width:100%;border:none;outline:none;padding:10px 12px;
+  font-family:inherit;font-size:12.5px;color:#212529;
+  resize:none;min-height:70px;max-height:120px;
+  background:transparent;line-height:1.5;
+}
+.slack-compose-toolbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 8px 6px 10px;border-top:1px solid #F1F3F5;
+}
+.slack-toolbar-left{display:flex;align-items:center;gap:2px}
+.slack-tool-btn{
+  background:none;border:none;color:#868E96;cursor:pointer;
+  padding:4px 6px;border-radius:4px;font-size:13px;line-height:1;
+  transition:all .12s;
+}
+.slack-tool-btn:hover{background:#F1F3F5;color:#495057}
+.slack-send-btn{
+  background:#0D1B2A;color:#fff;border:none;
+  padding:6px 16px;border-radius:6px;font-size:12px;font-weight:600;
+  cursor:pointer;display:flex;align-items:center;gap:5px;
+  transition:background .12s;
+}
+.slack-send-btn:hover{background:#1D9E75}
+.slack-send-btn:disabled{background:#E9ECEF;color:#868E96;cursor:default}
+
+/* notification pill below compose */
+.slack-note{
+  font-size:10px;color:#868E96;margin-top:6px;
+  display:flex;align-items:center;gap:4px;
+}
+
+@media(max-width:500px){
+  .slack-panel{width:100%}
+}
+/* ══ END SLACK PANEL ══════════════════════════════════════════════ */
+
+
+/* ── Tech notes in CompanyCam section ── */
+.tech-notes-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin:14px 0 8px;padding-top:12px;border-top:1px solid var(--gray-100);
+}
+.tech-notes-title{
+  font-size:11px;font-weight:600;color:var(--gray-600);
+  letter-spacing:.05em;text-transform:uppercase;
+  display:flex;align-items:center;gap:6px;
+}
+.tech-note-item{
+  display:flex;gap:9px;padding:9px 0;
+  border-bottom:1px solid var(--gray-100);
+}
+.tech-note-item:last-of-type{border-bottom:none}
+.tn-avatar{
+  width:28px;height:28px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;flex-shrink:0;
+}
+.tn-body{flex:1;min-width:0}
+.tn-meta{display:flex;align-items:center;gap:6px;margin-bottom:3px;flex-wrap:wrap}
+.tn-name{font-size:11px;font-weight:600;color:var(--gray-900)}
+.tn-time{font-size:10px;color:var(--gray-400)}
+.tn-tag{
+  font-size:9px;font-weight:700;padding:1px 6px;
+  border-radius:10px;letter-spacing:.04em;
+}
+.tn-urgent{background:var(--red-l);color:#791F1F}
+.tn-parts{background:var(--amber-l);color:#633806}
+.tn-info{background:var(--blue-l);color:var(--blue)}
+.tn-text{font-size:11.5px;color:var(--gray-600);line-height:1.55}
+.tn-input-row{
+  display:flex;gap:8px;align-items:flex-start;margin-top:10px;
+}
+.tn-input{
+  flex:1;border:1px solid var(--border);border-radius:6px;
+  padding:7px 10px;font-family:inherit;font-size:12px;
+  color:var(--gray-900);resize:none;outline:none;
+  transition:border-color .15s;
+}
+.tn-input:focus{border-color:var(--teal-m)}
+.tn-submit{
+  background:var(--navy);color:#fff;border:none;
+  padding:7px 14px;border-radius:6px;font-size:11px;
+  font-weight:600;cursor:pointer;white-space:nowrap;
+  display:flex;align-items:center;gap:4px;transition:background .12s;
+}
+.tn-submit:hover{background:var(--teal-m)}
+
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <div>
+      <div class="wordmark">Oasis Smart Homes</div>
+      <div class="sub">Job Command Center</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+
+    <button class="slack-toggle-btn" onclick="toggleSlack()">
+      <svg class="slack-logo" width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <path d="M5.042 15.165a2.528 2.528 0 01-2.52 2.523A2.528 2.528 0 010 15.165a2.527 2.527 0 012.522-2.52h2.52v2.52z" fill="#E01E5A"/>
+        <path d="M6.313 15.165a2.527 2.527 0 012.521-2.52 2.527 2.527 0 012.521 2.52v6.313A2.528 2.528 0 018.834 24a2.528 2.528 0 01-2.521-2.522v-6.313z" fill="#E01E5A"/>
+        <path d="M8.834 5.042a2.528 2.528 0 01-2.521-2.52A2.528 2.528 0 018.834 0a2.527 2.527 0 012.521 2.522v2.52H8.834z" fill="#36C5F0"/>
+        <path d="M8.834 6.313a2.528 2.528 0 012.521 2.521 2.528 2.528 0 01-2.521 2.521H2.522A2.528 2.528 0 010 8.834a2.528 2.528 0 012.522-2.521h6.312z" fill="#36C5F0"/>
+        <path d="M18.956 8.834a2.528 2.528 0 012.522-2.521A2.528 2.528 0 0124 8.834a2.527 2.527 0 01-2.522 2.521h-2.522V8.834z" fill="#2EB67D"/>
+        <path d="M17.688 8.834a2.528 2.528 0 01-2.523 2.521 2.527 2.527 0 01-2.52-2.521V2.522A2.527 2.527 0 0115.165 0a2.528 2.528 0 012.523 2.522v6.312z" fill="#2EB67D"/>
+        <path d="M15.165 18.956a2.528 2.528 0 012.523 2.522A2.528 2.528 0 0115.165 24a2.527 2.527 0 01-2.52-2.522v-2.522h2.52z" fill="#ECB22E"/>
+        <path d="M15.165 17.688a2.527 2.527 0 01-2.52-2.523 2.526 2.526 0 012.52-2.52h6.313A2.527 2.527 0 0124 15.165a2.528 2.528 0 01-2.522 2.523h-6.313z" fill="#ECB22E"/>
+      </svg>
+      Slack
+      <span class="slack-unread">3</span>
+    </button>
+
+    <div class="live-dot"></div>
+    <div class="live-label">LIVE DATA</div>
+    <div class="src-pill sp-p">Portal.io</div>
+    <div class="src-pill sp-q">QBO</div>
+    <div class="src-pill sp-t">QB Time</div>
+    <div class="src-pill sp-m">Monday</div>
+    <div class="src-pill sp-c">CompanyCam</div>
+  </div>
+</div>
+
+<div class="rep-bar">
+  <span class="rep-label">Rep</span>
+  <button class="rep-btn active" onclick="setRep(this)">James Lacek</button>
+  <button class="rep-btn" onclick="setRep(this)">Buzz Jensen</button>
+  <button class="rep-btn" onclick="setRep(this)">Seth Pender</button>
+  <button class="rep-btn" onclick="setRep(this)">Scott H</button>
+  <button class="rep-btn" onclick="setRep(this)">All reps</button>
+</div>
+
+<div class="main">
+  <div class="sidebar">
+    <div class="sidebar-label">Active jobs</div>
+    <div class="job-chip active" onclick="setJob(0,this)">
+      <div><div class="job-chip-name">Morrison Residence</div><div class="job-chip-meta">Rough complete · $27,100 due</div></div>
+    </div>
+    <div class="job-chip" onclick="setJob(1,this)">
+      <div><div class="job-chip-name">Patel AV</div><div class="job-chip-meta">Rough complete · Paid</div></div>
+    </div>
+    <div class="job-chip" onclick="setJob(2,this)">
+      <div><div class="job-chip-name">Dew Residence PW</div><div class="job-chip-meta">Waiting on site · $7,002 due</div></div>
+    </div>
+    <div class="job-chip" onclick="setJob(3,this)">
+      <div><div class="job-chip-name">Martin Shades</div><div class="job-chip-meta">Install scheduled · Paid</div></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="job-header">
+      <div>
+        <div class="job-title" id="j-name">Morrison Residence</div>
+        <div class="job-subtitle" id="j-meta">Job #8241 · Builder: Gurczak · PM: James Lacek · Phase: Rough Complete</div>
+      </div>
+      <div class="badge-row" id="j-badges">
+        <span class="badge b-amber">In progress</span>
+        <span class="badge b-green">Rough complete</span>
+        <span class="badge b-red">Final invoice pending</span>
+      </div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card"><div class="metric-label">Total approved</div><div class="metric-value blue" id="m-approved">$134,300</div></div>
+      <div class="metric-card"><div class="metric-label">Collected</div><div class="metric-value green" id="m-collected">$62,300</div></div>
+      <div class="metric-card"><div class="metric-label">Owed now</div><div class="metric-value amber" id="m-owed">$27,100</div></div>
+      <div class="metric-card"><div class="metric-label">Pipeline</div><div class="metric-value muted" id="m-pipe">$44,900</div></div>
+      <div class="metric-card"><div class="metric-label">Gross margin</div><div class="metric-value green" id="m-margin">38%</div></div>
+    </div>
+
+    <div class="progress-row"><span>Collected vs total approved</span><span id="j-pct" style="font-weight:600">46%</span></div>
+    <div class="progress-track"><div class="progress-fill" id="j-bar" style="width:46%"></div></div>
+
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title"><i class="ti ti-file-invoice" style="font-size:14px"></i> Estimates & payments</div>
+        <div class="section-sources"><span class="src-pill sp-p">Portal.io</span><span class="src-pill sp-q">QBO</span></div>
+      </div>
+      <table class="tbl" id="j-estimates">
+        <thead><tr>
+          <th>Estimate</th><th class="r">Amount</th><th class="r">Collected</th><th class="r">Balance</th><th class="c">Status</th>
+        </tr></thead>
+        <tbody>
+          <tr><td><div class="row-name">Est #1 — AV System</div><div class="row-sub">Approved · Deposit received</div></td><td class="r">$54,200</td><td class="r" style="color:var(--teal)">$27,100</td><td class="r" style="color:#854F0B">$27,100</td><td class="c"><span class="badge b-amber">Final due</span></td></tr>
+          <tr><td><div class="row-name">Est #2 — Shades + CO</div><div class="row-sub">Paid in full</div></td><td class="r">$35,200</td><td class="r" style="color:var(--teal)">$35,200</td><td class="r" style="color:var(--teal)">$0</td><td class="c"><span class="badge b-green">Paid</span></td></tr>
+          <tr><td><div class="row-name">Est #3 — Lighting</div><div class="row-sub">Approved · deferred Jul</div></td><td class="r">$44,900</td><td class="r" style="color:var(--gray-400)">$0</td><td class="r" style="color:var(--gray-400)">$44,900</td><td class="c"><span class="badge b-purple">Deferred</span></td></tr>
+        </tbody>
+      </table>
+      <div class="action-row">
+        <button class="action-btn"><i class="ti ti-receipt" style="font-size:12px"></i> Generate client statement</button>
+        <button class="action-btn"><i class="ti ti-mail" style="font-size:12px"></i> Draft follow-up email</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title"><i class="ti ti-chart-bar" style="font-size:14px"></i> Job profitability</div>
+        <div class="section-sources"><span class="src-pill sp-q">QBO</span><span class="src-pill sp-t">QB Time</span></div>
+      </div>
+      <div class="profit-bar">
+        <div class="profit-cell"><div class="lbl">Invoiced</div><div class="val" id="p-invoiced">$89,400</div></div>
+        <div class="profit-cell"><div class="lbl">COGS (POs)</div><div class="val amber" id="p-cogs" style="color:#854F0B">$38,200</div></div>
+        <div class="profit-cell"><div class="lbl">Labor cost</div><div class="val" id="p-labor" style="color:#854F0B">$17,100</div></div>
+        <div class="profit-cell"><div class="lbl">Gross profit</div><div class="val" id="p-profit" style="color:var(--teal)">$34,100</div></div>
+        <div class="profit-cell"><div class="lbl">Margin %</div><div class="val" id="p-margin-pct" style="color:var(--teal)">38%</div></div>
+      </div>
+      <table class="tbl">
+        <thead><tr><th>Phase</th><th class="r">Invoiced</th><th class="r">Parts (POs)</th><th class="r">Labor hrs</th><th class="r">Labor $</th><th class="r">Margin</th></tr></thead>
+        <tbody id="p-phases">
+          <tr><td class="row-name">Rough</td><td class="r">$38,500</td><td class="r">$16,800</td><td class="r">52.5 hrs</td><td class="r">$7,350</td><td class="r" style="color:var(--teal);font-weight:600">37%</td></tr>
+          <tr><td class="row-name">Shades</td><td class="r">$35,200</td><td class="r">$14,900</td><td class="r">38.0 hrs</td><td class="r">$5,320</td><td class="r" style="color:var(--teal);font-weight:600">43%</td></tr>
+          <tr><td class="row-name" style="color:var(--gray-400)">Trim (pending)</td><td class="r" style="color:var(--gray-400)">$15,700</td><td class="r" style="color:var(--gray-400)">$6,500</td><td class="r" style="color:var(--gray-400)">—</td><td class="r" style="color:var(--gray-400)">—</td><td class="r" style="color:var(--gray-400)">est 37%</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:8px;font-size:11px;color:var(--gray-400);display:flex;align-items:center;gap:6px">
+        <span class="src-pill sp-t">QB Time</span> Total labor: <strong style="color:var(--gray-900)">90.5 hrs</strong> · 3 techs · Avg rate $189/hr
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title"><i class="ti ti-receipt" style="font-size:14px"></i> Client payment statement</div>
+        <div class="section-sources"><span class="src-pill sp-p">Portal.io</span><span class="src-pill sp-q">QBO</span></div>
+      </div>
+      <div class="statement-box">
+        <div class="statement-header">
+          <div>
+            <div style="font-size:14px;font-weight:600;font-family:'DM Serif Display',serif">Oasis Smart Homes</div>
+            <div style="font-size:10px;color:var(--gray-400);margin-top:2px">Account statement · Morrison Residence · As of June 1, 2026</div>
+          </div>
+          <span class="badge b-amber" style="font-size:11px">Balance due: $27,100</span>
+        </div>
+        <table class="stmt-tbl">
+          <thead><tr><th>Date</th><th>Description</th><th class="r">Amount</th><th class="r">Running balance</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--gray-400)">Jan 15</td><td>Est #8241-1 — AV System approved</td><td class="r">$54,200</td><td class="r" style="color:#854F0B">$54,200</td></tr>
+            <tr><td style="color:var(--gray-400)">Jan 18</td><td>Deposit received — Est #1 (50%)</td><td class="r" style="color:var(--teal)">−$27,100</td><td class="r" style="color:#854F0B">$27,100</td></tr>
+            <tr><td style="color:var(--gray-400)">Feb 3</td><td>Est #8241-2 — Shades approved</td><td class="r">$28,750</td><td class="r" style="color:#854F0B">$55,850</td></tr>
+            <tr><td style="color:var(--gray-400)">Feb 10</td><td>Check received — Est #2 deposit</td><td class="r" style="color:var(--teal)">−$14,375</td><td class="r" style="color:#854F0B">$41,475</td></tr>
+            <tr><td style="color:var(--gray-400)">Mar 12</td><td>Change order — Est #2 (shades addition)</td><td class="r">$6,450</td><td class="r" style="color:#854F0B">$47,925</td></tr>
+            <tr><td style="color:var(--gray-400)">Mar 15</td><td>Payment in full — Est #2 + change order</td><td class="r" style="color:var(--teal)">−$20,825</td><td class="r" style="color:#854F0B">$27,100</td></tr>
+            <tr><td style="color:var(--gray-400)">Apr 30</td><td>Est #8241-3 — Lighting Control approved</td><td class="r">$44,900</td><td class="r" style="color:#854F0B">$72,000</td></tr>
+            <tr><td style="color:var(--gray-400)">Apr 30</td><td style="color:var(--gray-400)">Est #3 — billing deferred, starts Jul 2026</td><td class="r" style="color:var(--gray-400)">—</td><td class="r" style="color:#854F0B">$72,000</td></tr>
+          </tbody>
+        </table>
+        <div class="stmt-total">
+          <div style="font-size:11px;color:var(--gray-400)">Est #3 deferred · not yet due</div>
+          <div style="font-size:13px;font-weight:600;color:#854F0B">Currently due: $27,100</div>
+        </div>
+      </div>
+      <div class="action-row" style="border-top:none;margin-top:0">
+        <button class="action-btn"><i class="ti ti-download" style="font-size:12px"></i> Export as PDF</button>
+        <button class="action-btn"><i class="ti ti-mail" style="font-size:12px"></i> Email to client</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title"><i class="ti ti-camera" style="font-size:14px"></i> Site photos</div>
+        <div class="section-sources"><span class="src-pill sp-c">CompanyCam</span></div>
+      </div>
+      <div style="font-size:11px;color:var(--gray-400);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
+        <span>62 photos · 3 site visits · Last updated May 14, 2026</span>
+        <span class="badge b-green">All phases documented</span>
+      </div>
+      <div class="photo-group-label">Rough-in · Jan 28</div>
+      <div class="photo-strip">
+        <div class="photo-thumb"><i class="ti ti-camera" style="font-size:18px"></i></div>
+        <div class="photo-thumb"><i class="ti ti-camera" style="font-size:18px"></i></div>
+        <div class="photo-thumb"><i class="ti ti-camera" style="font-size:18px"></i></div>
+        <div class="photo-thumb"><i class="ti ti-camera" style="font-size:18px"></i></div>
+        <div class="photo-thumb" style="font-size:10px;font-weight:600;color:var(--gray-400)">+18</div>
+      </div>
+      <div class="photo-group-label">Shades install · Mar 10</div>
+      <div class="photo-strip">
+        <div class="photo-thumb"><i class="ti ti-camera" style="font-size:18px"></i></div>
+        <div class="photo-thumb"><i class="ti ti-camera" style="font-size:18px"></i></div>
+        <div class="photo-thumb"><i class="ti ti-camera" style="font-size:18px"></i></div>
+        <div class="photo-thumb" style="font-size:10px;font-weight:600;color:var(--gray-400)">+24</div>
+      </div>
+      <div class="photo-group-label">Progress update · May 14</div>
+      <div class="photo-strip">
+        <div class="photo-thumb"><i class="ti ti-camera" style="font-size:18px"></i></div>
+        <div class="photo-thumb"><i class="ti ti-camera" style="font-size:18px"></i></div>
+        <div class="photo-thumb" style="font-size:10px;font-weight:600;color:var(--gray-400)">+12</div>
+      </div>
+
+      <div class="tech-notes-head">
+        <div class="tech-notes-title">
+          <i class="ti ti-notes" style="font-size:13px"></i> Tech notes from site visits
+        </div>
+        <span class="badge b-gray">3 notes · synced from Monday</span>
+      </div>
+
+      <div id="cc-notes">
+        <div class="tech-note-item">
+          <div class="tn-avatar" style="background:#FCEBEB;color:#791F1F">ZL</div>
+          <div class="tn-body">
+            <div class="tn-meta">
+              <span class="tn-name">Zach Lind</span>
+              <span class="tn-time">May 14 · 1:22pm</span>
+              <span class="tn-tag tn-urgent">URGENT</span>
+            </div>
+            <div class="tn-text">Speaker rough-in in media room is 6" but estimate shows 8". Need James to confirm with client before trim install. Photos in CompanyCam.</div>
+          </div>
+        </div>
+        <div class="tech-note-item">
+          <div class="tn-avatar" style="background:#FAEEDA;color:#633806">DK</div>
+          <div class="tn-body">
+            <div class="tn-meta">
+              <span class="tn-name">Derek K.</span>
+              <span class="tn-time">May 14 · 3:42pm</span>
+              <span class="tn-tag tn-info">INFO</span>
+            </div>
+            <div class="tn-text">Client asked about adding cameras while on site today — said James mentioned it. Sales needs to clarify scope before next visit. Don't want to open that up without a change order.</div>
+          </div>
+        </div>
+        <div class="tech-note-item">
+          <div class="tn-avatar" style="background:#EAF3DE;color:#27500A">TJ</div>
+          <div class="tn-body">
+            <div class="tn-meta">
+              <span class="tn-name">Tyler J.</span>
+              <span class="tn-time">Apr 22 · 4:10pm</span>
+              <span class="tn-tag tn-info">INFO</span>
+            </div>
+            <div class="tn-text">GC crew punched through the AV conduit in the great room — east wall near fireplace. Fixed on site. Documented and photos uploaded.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tn-input-row">
+        <textarea class="tn-input" rows="2" placeholder="Add a tech note for this visit... posts to Monday and Slack #morrison-residence"></textarea>
+        <button class="tn-submit" onclick="postTechNote(this)">
+          <i class="ti ti-send" style="font-size:11px"></i> Post
+        </button>
+      </div>
+
+      <div class="action-row" style="border-top:none;margin-top:8px">
+        <button class="action-btn"><i class="ti ti-external-link" style="font-size:12px"></i> Open in CompanyCam</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title"><i class="ti ti-users" style="font-size:14px"></i> CRM contacts</div>
+      </div>
+      <div class="contacts-grid" id="j-contacts">
+        <div class="contact-card">
+          <div class="avatar" style="background:#E6F1FB;color:#0C447C">TM</div>
+          <div>
+            <div class="contact-name">Thomas Morrison</div>
+            <div class="contact-role">Homeowner · Primary</div>
+            <div class="contact-detail"><i class="ti ti-phone" style="font-size:11px"></i> (602) 555-0142</div>
+            <div class="contact-detail"><i class="ti ti-mail" style="font-size:11px"></i> <a href="#">t.morrison@email.com</a></div>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="avatar" style="background:#FBEAF0;color:#72243E">SM</div>
+          <div>
+            <div class="contact-name">Sarah Morrison</div>
+            <div class="contact-role">Homeowner · Secondary</div>
+            <div class="contact-detail"><i class="ti ti-phone" style="font-size:11px"></i> (602) 555-0198</div>
+            <div class="contact-detail"><i class="ti ti-mail" style="font-size:11px"></i> <a href="#">s.morrison@email.com</a></div>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="avatar" style="background:#EAF3DE;color:#27500A">RG</div>
+          <div>
+            <div class="contact-name">Rick Gurczak</div>
+            <div class="contact-role">Builder / GC</div>
+            <div class="contact-detail"><i class="ti ti-phone" style="font-size:11px"></i> (480) 555-0371</div>
+            <div class="contact-detail"><i class="ti ti-mail" style="font-size:11px"></i> <a href="#">rgurczak@gurczakbuilds.com</a></div>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="avatar" style="background:#FAEEDA;color:#633806">JL</div>
+          <div>
+            <div class="contact-name">James Lacek</div>
+            <div class="contact-role">Oasis PM / Rep</div>
+            <div class="contact-detail"><i class="ti ti-phone" style="font-size:11px"></i> (602) 555-0210</div>
+            <div class="contact-detail"><i class="ti ti-mail" style="font-size:11px"></i> <a href="#">james@oasissmarthomes.com</a></div>
+          </div>
+        </div>
+      </div>
+      <div class="action-row">
+        <button class="action-btn"><i class="ti ti-mail" style="font-size:12px"></i> Draft client update email</button>
+        <button class="action-btn"><i class="ti ti-messages" style="font-size:12px"></i> View comm history</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title"><i class="ti ti-adjustments" style="font-size:14px"></i> Job details</div>
+        <div class="section-sources"><span class="src-pill sp-m">Monday</span></div>
+      </div>
+      <div class="details-grid">
+        <div class="detail-row"><div class="detail-label">Job status</div><div class="detail-value" id="d-status">Install scheduled</div></div>
+        <div class="detail-row"><div class="detail-label">Phase</div><div class="detail-value" id="d-phase">Rough complete</div></div>
+        <div class="detail-row"><div class="detail-label">Next install date</div><div class="detail-value" id="d-date">June 14, 2026</div></div>
+        <div class="detail-row"><div class="detail-label">Action needed</div><div class="detail-value"><span class="badge b-red" id="d-action">Final invoice pending</span></div></div>
+        <div class="detail-row"><div class="detail-label">Referral source</div><div class="detail-value" id="d-referral">Builder — Gurczak</div></div>
+        <div class="detail-row"><div class="detail-label">Drive folder</div><div class="detail-value"><a href="#" style="color:var(--blue);font-size:12px;display:flex;align-items:center;gap:3px"><i class="ti ti-external-link" style="font-size:12px"></i> Open folder</a></div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title"><i class="ti ti-package" style="font-size:14px"></i> Parts & purchase orders</div>
+        <div class="section-sources"><span class="src-pill sp-q">QBO</span></div>
+      </div>
+      <table class="tbl">
+        <thead><tr><th>Item / vendor</th><th class="r">PO amount</th><th class="r">Invoiced to job</th><th class="c">Phase</th><th class="c">Status</th></tr></thead>
+        <tbody>
+          <tr><td><div class="row-name">Control4 EA-3 Controller</div><div class="row-sub">PO #4421 · Control4 Direct</div></td><td class="r">$4,200</td><td class="r" style="color:var(--teal)">$4,200</td><td class="c"><span class="badge b-gray">Rough</span></td><td class="c"><span class="badge b-green">Received</span></td></tr>
+          <tr><td><div class="row-name">Lutron Homeworks QSX</div><div class="row-sub">PO #4438 · Lutron</div></td><td class="r">$8,600</td><td class="r" style="color:var(--teal)">$8,600</td><td class="c"><span class="badge b-gray">Rough</span></td><td class="c"><span class="badge b-green">Received</span></td></tr>
+          <tr><td><div class="row-name">Somfy RTS Motors x12</div><div class="row-sub">PO #4455 · SOS Inventory</div></td><td class="r">$5,400</td><td class="r" style="color:var(--teal)">$5,400</td><td class="c"><span class="badge b-purple">Shades</span></td><td class="c"><span class="badge b-green">Received</span></td></tr>
+          <tr><td><div class="row-name">Ketra N3 Fixtures x24</div><div class="row-sub">PO #4502 · Ketra/Lutron</div></td><td class="r">$6,500</td><td class="r" style="color:var(--gray-400)">—</td><td class="c"><span class="badge b-green">Lighting</span></td><td class="c"><span class="badge b-amber">On order</span></td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--gray-100);display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--gray-400)">
+        <span>4 POs · Total committed: <strong style="color:var(--gray-900)">$24,700</strong> · Received: <strong style="color:var(--teal)">$18,200</strong> · Pending: <strong style="color:#854F0B">$6,500</strong></span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer">
+  <span>Oasis Smart Homes · AI Command Center · Demo prototype</span>
+  <span>Data shown is sample data · Live version connects to Portal.io, QBO, QB Time, Monday, CompanyCam</span>
+</div>
+
+<script>
+const jobs=[
+  {
+    name:"Morrison Residence",meta:"Job #8241 · Builder: Gurczak · PM: James Lacek · Phase: Rough Complete",
+    badges:'<span class="badge b-amber">In progress</span><span class="badge b-green">Rough complete</span><span class="badge b-red">Final invoice pending</span>',
+    approved:"$134,300",collected:"$62,300",owed:"$27,100",pipe:"$44,900",margin:"38%",pct:"46%",bar:"46%",
+    invoiced:"$89,400",cogs:"$38,200",labor:"$17,100",profit:"$34,100",marginPct:"38%",
+    status:"Install scheduled",phase:"Rough complete",date:"June 14, 2026",action:"Final invoice pending",referral:"Builder — Gurczak",actionBadge:"b-red"
+  },
+  {
+    name:"Patel AV",meta:"Job #10627 · Builder: Integrity · PM: James Lacek · Phase: Rough Complete",
+    badges:'<span class="badge b-green">Needs final payment</span><span class="badge b-green">Rough complete</span>',
+    approved:"$68,500",collected:"$68,500",owed:"$0",pipe:"$0",margin:"41%",pct:"100%",bar:"100%",
+    invoiced:"$68,500",cogs:"$27,800",labor:"$12,600",profit:"$28,100",marginPct:"41%",
+    status:"Needs final payment",phase:"Rough complete",date:"June 12, 2026",action:"All good",referral:"Builder — Integrity",actionBadge:"b-green"
+  },
+  {
+    name:"Dew Residence PW",meta:"Job #9141 · Builder: Cameron · PM: James Lacek",
+    badges:'<span class="badge b-gray">Waiting on site</span>',
+    approved:"$14,004",collected:"$7,002",owed:"$7,002",pipe:"$0",margin:"44%",pct:"50%",bar:"50%",
+    invoiced:"$14,004",cogs:"$5,100",labor:"$2,700",profit:"$6,204",marginPct:"44%",
+    status:"Waiting on site",phase:"PreSlab",date:"TBD",action:"Waiting on site",referral:"Builder — Cameron",actionBadge:"b-gray"
+  },
+  {
+    name:"Martin Shades",meta:"Job #6930 · Builder: Gurczak · PM: James Lacek",
+    badges:'<span class="badge b-blue">Install scheduled</span><span class="badge b-green">Paid in full</span>',
+    approved:"$67,585",collected:"$67,585",owed:"$0",pipe:"$0",margin:"39%",pct:"100%",bar:"100%",
+    invoiced:"$67,585",cogs:"$27,200",labor:"$14,100",profit:"$26,285",marginPct:"39%",
+    status:"Install scheduled",phase:"Rough complete",date:"June 6, 2026",action:"All good",referral:"Builder — Gurczak",actionBadge:"b-green"
+  }
+];
+
+function setJob(i,el){
+  document.querySelectorAll('.job-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  const j=jobs[i];
+  document.getElementById('j-name').textContent=j.name;
+  document.getElementById('j-meta').textContent=j.meta;
+  document.getElementById('j-badges').innerHTML=j.badges;
+  document.getElementById('m-approved').textContent=j.approved;
+  document.getElementById('m-collected').textContent=j.collected;
+  document.getElementById('m-owed').textContent=j.owed;
+  document.getElementById('m-pipe').textContent=j.pipe;
+  document.getElementById('m-margin').textContent=j.margin;
+  document.getElementById('j-pct').textContent=j.pct;
+  document.getElementById('j-bar').style.width=j.bar;
+  document.getElementById('p-invoiced').textContent=j.invoiced;
+  document.getElementById('p-cogs').textContent=j.cogs;
+  document.getElementById('p-labor').textContent=j.labor;
+  document.getElementById('p-profit').textContent=j.profit;
+  document.getElementById('p-margin-pct').textContent=j.marginPct;
+  document.getElementById('d-status').textContent=j.status;
+  document.getElementById('d-phase').textContent=j.phase;
+  document.getElementById('d-date').textContent=j.date;
+  const da=document.getElementById('d-action');
+  da.textContent=j.action;
+  da.className='badge '+j.actionBadge;
+  document.getElementById('d-referral').textContent=j.referral;
+}
+
+function setRep(el){
+  document.querySelectorAll('.rep-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>
+
+<div class="slack-overlay" id="slackOverlay" onclick="toggleSlack()"></div>
+<div class="slack-panel" id="slackPanel">
+  <div class="slack-panel-head">
+    <div class="slack-head-left">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M5.042 15.165a2.528 2.528 0 01-2.52 2.523A2.528 2.528 0 010 15.165a2.527 2.527 0 012.522-2.52h2.52v2.52z" fill="#E01E5A"/>
+        <path d="M6.313 15.165a2.527 2.527 0 012.521-2.52 2.527 2.527 0 012.521 2.52v6.313A2.528 2.528 0 018.834 24a2.528 2.528 0 01-2.521-2.522v-6.313z" fill="#E01E5A"/>
+        <path d="M8.834 5.042a2.528 2.528 0 01-2.521-2.52A2.528 2.528 0 018.834 0a2.527 2.527 0 012.521 2.522v2.52H8.834z" fill="#36C5F0"/>
+        <path d="M8.834 6.313a2.528 2.528 0 012.521 2.521 2.528 2.528 0 01-2.521 2.521H2.522A2.528 2.528 0 010 8.834a2.528 2.528 0 012.522-2.521h6.312z" fill="#36C5F0"/>
+        <path d="M18.956 8.834a2.528 2.528 0 012.522-2.521A2.528 2.528 0 0124 8.834a2.527 2.527 0 01-2.522 2.521h-2.522V8.834z" fill="#2EB67D"/>
+        <path d="M17.688 8.834a2.528 2.528 0 01-2.523 2.521 2.527 2.527 0 01-2.52-2.521V2.522A2.527 2.527 0 0115.165 0a2.528 2.528 0 012.523 2.522v6.312z" fill="#2EB67D"/>
+        <path d="M15.165 18.956a2.528 2.528 0 012.523 2.522A2.528 2.528 0 0115.165 24a2.527 2.527 0 01-2.52-2.522v-2.522h2.52z" fill="#ECB22E"/>
+        <path d="M15.165 17.688a2.527 2.527 0 01-2.52-2.523 2.526 2.526 0 012.52-2.52h6.313A2.527 2.527 0 0124 15.165a2.528 2.528 0 01-2.522 2.523h-6.313z" fill="#ECB22E"/>
+      </svg>
+      <div>
+        <div class="slack-channel-name" id="slackChannelName">#morrison-residence</div>
+        <div class="slack-channel-desc">Oasis Smart Homes · Team Workspace</div>
+      </div>
+    </div>
+    <button class="slack-close" onclick="toggleSlack()">&#x2715;</button>
+  </div>
+
+  <div class="slack-channel-bar">
+    <button class="slack-ch-btn active" onclick="switchChannel('morrison',this)">#morrison-residence</button>
+<button class="slack-ch-btn " onclick="switchChannel('patel',this)">#patel-av</button>
+<button class="slack-ch-btn " onclick="switchChannel('dew',this)">#dew-residence</button>
+<button class="slack-ch-btn " onclick="switchChannel('martin',this)">#martin-shades</button>
+<button class="slack-ch-btn " onclick="switchChannel('general',this)">#sales-team</button>
+
+  </div>
+
+  <div class="slack-messages" id="slackMessages"></div>
+
+  <div class="slack-compose">
+    <div class="slack-compose-box">
+      <textarea class="slack-compose-input" id="slackInput"
+        placeholder="Message #&#x2060;" rows="3"
+        onkeydown="handleCompose(event)"></textarea>
+      <div class="slack-compose-toolbar">
+        <div class="slack-toolbar-left">
+          <button class="slack-tool-btn" title="Attach file">
+            <i class="ti ti-paperclip"></i>
+          </button>
+          <button class="slack-tool-btn" title="Mention">
+            <i class="ti ti-at"></i>
+          </button>
+          <button class="slack-tool-btn" title="Emoji">
+            <i class="ti ti-mood-smile"></i>
+          </button>
+          <button class="slack-tool-btn" title="Bold">
+            <i class="ti ti-bold"></i>
+          </button>
+        </div>
+        <button class="slack-send-btn" id="slackSendBtn" onclick="sendMsg()" disabled>
+          <i class="ti ti-send"></i> Send
+        </button>
+      </div>
+    </div>
+    <div class="slack-note">
+      <i class="ti ti-brand-slack" style="font-size:11px"></i>
+      Messages post directly to Slack · <a href="#" style="color:#185FA5">Open in Slack ↗</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var allMessages = {"morrison":[{name:'James Lacek',time:'8:14 AM',text:'Morrison confirmed he\'ll be home June 14 — go ahead and lock in the trim install.',initials:'JL',color:'#633806',bg:'#FAEEDA'},{name:'Tyler Wagner',time:'8:31 AM',text:'Locked. We need the Ketra fixtures before then — @Melissa can you confirm ETA on PO #4502?',initials:'TW',color:'#0C447C',bg:'#E6F1FB'},{name:'Melissa Busse',time:'8:45 AM',text:'Checking with Ketra now. Should have an update by EOD. If they can\'t make June 14 I\'ll let you know.',initials:'MB',color:'#27500A',bg:'#EAF3DE'},{name:'James Lacek',time:'9:02 AM',text:'Also — $27,100 final payment still outstanding on Est #1. Client said he\'d send the wire this week. @Stacy keeping an eye on it?',initials:'JL',color:'#633806',bg:'#FAEEDA'},{name:'Stacy Wagner',time:'9:08 AM',text:'Yes, watching it. Will flag the AR dashboard if it doesn\'t hit by Friday.',initials:'SW',color:'#3C3489',bg:'#EEEDFE'},{name:'Melissa Busse',time:'11:23 AM',text:'Ketra confirmed shipping June 9 — will arrive before the 14th. ✓',initials:'MB',color:'#27500A',bg:'#EAF3DE'},],"patel":[{name:'Seth Pender',time:'Yesterday 4:15 PM',text:'Patel rough is done. Docs uploaded to Monday. Ready to schedule trim.',initials:'SP',color:'#791F1F',bg:'#FEE2E2'},{name:'Tyler Wagner',time:'Yesterday 4:30 PM',text:'Great — I\'ll get a date on the calendar. @Melissa please generate the trim invoice.',initials:'TW',color:'#0C447C',bg:'#E6F1FB'},{name:'Melissa Busse',time:'9:01 AM',text:'Invoice triggered in QBO. Sending to client today.',initials:'MB',color:'#27500A',bg:'#EAF3DE'},],"dew":[{name:'Scott Hensley',time:'2 days ago',text:'Still waiting on Cameron to pour the slab. ETA is week of June 16. We\'re on hold until then.',initials:'SH',color:'#0C447C',bg:'#E6F1FB'},{name:'James Lacek',time:'2 days ago',text:'Got it — I\'ll update Monday status to Waiting on Site.',initials:'JL',color:'#633806',bg:'#FAEEDA'},],"martin":[{name:'Tyler Wagner',time:'10:05 AM',text:'Martin shades install is June 6. Gurczak will have the house open by 7am. Dave and Tyler on site.',initials:'TW',color:'#0C447C',bg:'#E6F1FB'},{name:'Dave Johnson',time:'10:12 AM',text:'Confirmed. I\'ll have the motor brackets pre-wired before we get there.',initials:'DJ',color:'#27500A',bg:'#EAF3DE'},],"general":[{name:'James Lacek',time:'8:00 AM',text:'Team — reminder that all phase completions need to be marked in Monday before 5pm so billing can trigger invoices same day.',initials:'JL',color:'#633806',bg:'#FAEEDA'},{name:'Seth Pender',time:'8:04 AM',text:'Noted. Patel rough is marked now.',initials:'SP',color:'#791F1F',bg:'#FEE2E2'},{name:'Scott Hensley',time:'8:09 AM',text:'Same for Martin — shades phase logged yesterday.',initials:'SH',color:'#0C447C',bg:'#E6F1FB'},],};
+  var allReactions = {"morrison-1":"👍 2","morrison-4":"✅ 1","patel-1":"👍 3","dew-1":"👍 1","martin-1":"🔧 2","general-1":"✅ 4",};
+  var currentChannel = 'morrison';
+  var channels = [{"id": "morrison", "label": "morrison-residence"}, {"id": "patel", "label": "patel-av"}, {"id": "dew", "label": "dew-residence"}, {"id": "martin", "label": "martin-shades"}, {"id": "general", "label": "sales-team"}];
+
+  function av(initials,bg,color){
+    return '<div class="slack-avatar" style="background:'+bg+';color:'+color+'">'+initials+'</div>';
+  }
+
+  function renderMessages(chId){
+    var msgs = allMessages[chId]||[];
+    var container = document.getElementById('slackMessages');
+    var html = '<div class="slack-date-divider">Today</div>';
+    msgs.forEach(function(m,i){
+      var txt = m.text
+        .replace(/\n/g,'<br>')
+        .replace(/@(\w+)/g,'<span class="mention">@$1</span>')
+        .replace(/#([\w-]+)/g,'<span class="jobref">#$1</span>');
+      var reaction = allReactions[chId+'-'+i];
+      var reactionHtml = reaction ? '<div><span class="slack-reaction">'+reaction+'</span></div>' : '';
+      html += '<div class="slack-msg">'+av(m.initials,m.bg,m.color)+
+        '<div class="slack-msg-body">'+
+        '<div class="slack-msg-meta"><span class="slack-msg-name">'+m.name+'</span><span class="slack-msg-time">'+m.time+'</span></div>'+
+        '<div class="slack-msg-text">'+txt+'</div>'+reactionHtml+
+        '</div></div>';
+    });
+    container.innerHTML = html;
+    container.scrollTop = container.scrollHeight;
+  }
+
+  window.switchChannel = function(chId, btn){
+    currentChannel = chId;
+    document.querySelectorAll('.slack-ch-btn').forEach(function(b){b.classList.remove('active')});
+    btn.classList.add('active');
+    var ch = channels.find(function(c){return c.id===chId});
+    document.getElementById('slackChannelName').textContent = '#'+(ch?ch.label:chId);
+    document.getElementById('slackInput').placeholder = 'Message #'+(ch?ch.label:chId);
+    renderMessages(chId);
+  };
+
+  window.toggleSlack = function(){
+    var panel = document.getElementById('slackPanel');
+    var overlay = document.getElementById('slackOverlay');
+    var isOpen = panel.classList.contains('open');
+    panel.classList.toggle('open',!isOpen);
+    overlay.classList.toggle('open',!isOpen);
+    if(!isOpen) renderMessages(currentChannel);
+  };
+
+  window.sendMsg = function(){
+    var input = document.getElementById('slackInput');
+    var txt = input.value.trim();
+    if(!txt) return;
+    var msgs = allMessages[currentChannel];
+    var now = new Date();
+    var h = now.getHours()%12||12;
+    var m = String(now.getMinutes()).padStart(2,'0');
+    var ap = now.getHours()>=12?'PM':'AM';
+    msgs.push({name:'You',time:h+':'+m+' '+ap,text:txt,initials:'JW',color:'#0C447C',bg:'#E6F1FB'});
+    input.value='';
+    document.getElementById('slackSendBtn').disabled=true;
+    renderMessages(currentChannel);
+  };
+
+  window.handleCompose = function(e){
+    var btn = document.getElementById('slackSendBtn');
+    btn.disabled = e.target.value.trim().length===0;
+    if(e.key==='Enter' && (e.metaKey||e.ctrlKey)) sendMsg();
+  };
+
+  // init
+  renderMessages(currentChannel);
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oasis Smart Homes — Job Profitability Report</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --navy:#0D1B2A;--teal:#0A8754;--teal-m:#1D9E75;--teal-l:#E1F5EE;
+  --amber:#E8A020;--amber-l:#FAEEDA;--red:#DC2626;--red-l:#FEE2E2;
+  --orange:#C2410C;--orange-l:#FFF7ED;
+  --blue-l:#E6F1FB;--blue:#185FA5;--purple-l:#EEEDFE;--purple:#3C3489;
+  --green-l:#EAF3DE;--green:#27500A;
+  --gray-50:#F8F9FA;--gray-100:#F1F3F5;--gray-200:#E9ECEF;
+  --gray-400:#868E96;--gray-600:#495057;--gray-900:#212529;
+  --border:#E9ECEF;--radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#F4F6F8;color:var(--gray-900);font-size:13px;line-height:1.5}
+
+.topbar{background:var(--navy);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between}
+.wordmark{font-family:'DM Serif Display',serif;font-size:18px;color:#fff}
+.sub{font-size:10px;color:rgba(255,255,255,.4);font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--teal-m);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.live-label{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.05em}
+.src-pill{font-size:9px;font-weight:600;padding:2px 7px;border-radius:20px;letter-spacing:.04em}
+.sp-q{background:var(--green-l);color:var(--green)}
+.sp-m{background:var(--blue-l);color:var(--blue)}
+.sp-t{background:var(--red-l);color:#791F1F}
+
+.rep-bar{background:#fff;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.rep-label{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:.06em;text-transform:uppercase;margin-right:4px;white-space:nowrap}
+.rep-btn{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--gray-600);transition:all .15s;white-space:nowrap}
+.rep-btn:hover{border-color:var(--teal-m);color:var(--teal)}
+.rep-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+.content{padding:20px 24px;max-width:1300px;margin:0 auto}
+
+/* Rep scorecards */
+.rep-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:20px}
+.rep-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;cursor:pointer;transition:border-color .15s}
+.rep-card:hover{border-color:var(--teal-m)}
+.rep-card.active{border:2px solid var(--navy);background:#F8F9FA}
+.rep-card-name{font-weight:600;font-size:14px;color:var(--navy);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.rep-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.rep-stat{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;color:var(--gray-400);margin-bottom:3px}
+.rep-stat-val{font-weight:600;font-size:12px;color:var(--gray-900)}
+.margin-bar-wrap{margin-top:8px}
+.margin-bar-label{display:flex;justify-content:space-between;font-size:10px;color:var(--gray-400);margin-bottom:3px}
+.margin-track{height:5px;background:var(--gray-200);border-radius:3px;overflow:hidden}
+.margin-fill{height:100%;border-radius:3px}
+
+/* Summary metrics */
+.summary-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+.metric-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
+.metric-label{font-size:10px;font-weight:500;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px}
+.metric-value{font-size:20px;font-weight:600}
+.metric-sub{font-size:10px;color:var(--gray-400);margin-top:2px}
+
+.section{background:#fff;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden}
+.section-head{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.section-title{font-size:12px;font-weight:600;color:var(--gray-600);letter-spacing:.05em;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;letter-spacing:.02em;white-space:nowrap}
+.b-green{background:var(--green-l);color:var(--green)}
+.b-amber{background:var(--amber-l);color:#633806}
+.b-red{background:var(--red-l);color:#791F1F}
+.b-blue{background:var(--blue-l);color:var(--blue)}
+.b-gray{background:var(--gray-100);color:var(--gray-600)}
+.b-teal{background:var(--teal-l);color:#085041}
+
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase;padding:10px 14px 8px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap;cursor:pointer;user-select:none}
+.tbl th:hover{color:var(--gray-900)}
+.tbl th.r{text-align:right}
+.tbl th.c{text-align:center}
+.tbl th .sort-arrow{margin-left:4px;color:var(--gray-300);font-size:10px}
+.tbl th.sorted .sort-arrow{color:var(--navy)}
+.tbl td{padding:10px 14px;border-bottom:1px solid var(--gray-100);font-size:12px;vertical-align:middle}
+.tbl td.r{text-align:right;font-variant-numeric:tabular-nums}
+.tbl td.c{text-align:center}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr:hover{background:var(--gray-50)}
+.tbl tfoot td{padding:10px 14px;font-weight:600;font-size:12px;background:#F8F9FA;border-top:2px solid var(--border)}
+.tbl tfoot td.r{text-align:right}
+
+.margin-cell{display:flex;align-items:center;gap:8px}
+.mini-track{width:60px;height:5px;background:var(--gray-200);border-radius:3px;overflow:hidden;flex-shrink:0}
+.mini-fill{height:100%;border-radius:3px}
+.mf-great{background:var(--teal-m)}
+.mf-ok{background:var(--amber)}
+.mf-low{background:var(--red)}
+
+.search-filter{display:flex;gap:8px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border)}
+.search-filter input{font-size:12px;padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);outline:none;width:220px}
+.search-filter input:focus{border-color:var(--teal-m)}
+.filter-select{font-size:11px;padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);outline:none;color:var(--gray-600);background:#fff}
+
+/* Phase breakdown sub-rows */
+.phase-row td{padding:6px 14px 6px 36px;background:#FAFBFC;border-bottom:1px solid var(--gray-100);font-size:11px;color:var(--gray-600)}
+.phase-row td.r{text-align:right}
+.phase-row.hidden{display:none}
+.job-row{cursor:pointer}
+.job-row:hover{background:var(--gray-50) !important}
+
+.footer{background:#fff;border-top:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;font-size:10px;color:var(--gray-400);margin-top:8px}
+
+@media(max-width:768px){
+  .summary-grid{grid-template-columns:repeat(2,1fr)}
+  .rep-cards{grid-template-columns:1fr 1fr}
+}
+
+/* ══ SLACK PANEL ══════════════════════════════════════════════════ */
+.slack-toggle-btn{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+  color:#fff;padding:5px 12px;border-radius:20px;cursor:pointer;
+  font-size:11px;font-weight:600;letter-spacing:.03em;
+  transition:background .15s;position:relative;
+}
+.slack-toggle-btn:hover{background:rgba(255,255,255,.2)}
+.slack-toggle-btn .slack-logo{
+  width:16px;height:16px;display:flex;align-items:center;justify-content:center;
+}
+.slack-unread{
+  position:absolute;top:-4px;right:-4px;
+  width:15px;height:15px;border-radius:50%;
+  background:#E8A020;color:#fff;font-size:8px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--navy,#0D1B2A);
+}
+
+/* Panel overlay */
+.slack-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.2);
+  z-index:900;opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.slack-overlay.open{opacity:1;pointer-events:auto}
+
+/* Panel drawer */
+.slack-panel{
+  position:fixed;top:0;right:0;bottom:0;width:380px;
+  background:#fff;border-left:1px solid #E9ECEF;
+  box-shadow:-4px 0 24px rgba(0,0,0,.12);
+  z-index:901;display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);
+}
+.slack-panel.open{transform:translateX(0)}
+
+/* Panel header */
+.slack-panel-head{
+  background:#0D1B2A;padding:0 16px;height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.slack-head-left{display:flex;align-items:center;gap:8px}
+.slack-head-logo{
+  width:20px;height:20px;
+  display:grid;grid-template-columns:1fr 1fr;gap:2px;
+}
+.slack-head-logo span{
+  border-radius:3px;display:block;
+}
+.slack-channel-name{
+  font-size:13px;font-weight:600;color:#fff;
+}
+.slack-channel-desc{
+  font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.03em;
+}
+.slack-close{
+  background:none;border:none;color:rgba(255,255,255,.55);
+  cursor:pointer;font-size:18px;line-height:1;padding:4px;
+  transition:color .12s;
+}
+.slack-close:hover{color:#fff}
+
+/* Channel selector */
+.slack-channel-bar{
+  background:#F8F9FA;border-bottom:1px solid #E9ECEF;
+  padding:8px 12px;display:flex;gap:6px;flex-wrap:nowrap;
+  overflow-x:auto;flex-shrink:0;
+}
+.slack-ch-btn{
+  padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;
+  border:1px solid #E9ECEF;background:#fff;color:#495057;
+  cursor:pointer;white-space:nowrap;transition:all .12s;flex-shrink:0;
+}
+.slack-ch-btn:hover{border-color:#1D9E75;color:#0A8754}
+.slack-ch-btn.active{background:#0D1B2A;color:#fff;border-color:#0D1B2A}
+
+/* Messages area */
+.slack-messages{
+  flex:1;overflow-y:auto;padding:12px 16px;
+  display:flex;flex-direction:column;gap:0;
+}
+.slack-date-divider{
+  display:flex;align-items:center;gap:8px;
+  margin:12px 0 8px;font-size:10px;font-weight:600;
+  color:#868E96;letter-spacing:.04em;text-transform:uppercase;
+}
+.slack-date-divider::before,.slack-date-divider::after{
+  content:'';flex:1;height:1px;background:#E9ECEF;
+}
+.slack-msg{
+  display:flex;gap:9px;padding:4px 0;
+  position:relative;border-radius:6px;transition:background .1s;
+}
+.slack-msg:hover{background:#F8F9FA;margin:0 -8px;padding:4px 8px;}
+.slack-avatar{
+  width:30px;height:30px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;
+}
+.slack-msg-body{flex:1;min-width:0}
+.slack-msg-meta{display:flex;align-items:baseline;gap:6px;margin-bottom:2px}
+.slack-msg-name{font-size:12px;font-weight:600;color:#212529}
+.slack-msg-time{font-size:10px;color:#868E96}
+.slack-msg-text{font-size:12px;color:#343a40;line-height:1.5;word-break:break-word}
+.slack-msg-text .mention{
+  color:#185FA5;background:#E6F1FB;
+  padding:0 3px;border-radius:3px;font-weight:500;
+}
+.slack-msg-text .jobref{
+  color:#0A8754;font-weight:500;
+}
+.slack-reaction{
+  display:inline-flex;align-items:center;gap:3px;
+  background:#F1F3F5;border:1px solid #E9ECEF;
+  border-radius:12px;padding:1px 7px;font-size:11px;
+  cursor:pointer;margin-top:3px;transition:background .1s;
+}
+.slack-reaction:hover{background:#E9ECEF}
+.slack-file-attach{
+  display:flex;align-items:center;gap:8px;
+  background:#F8F9FA;border:1px solid #E9ECEF;border-radius:6px;
+  padding:8px 10px;margin-top:4px;cursor:pointer;
+  transition:border-color .12s;
+}
+.slack-file-attach:hover{border-color:#1D9E75}
+.slack-file-icon{font-size:16px;color:#868E96}
+.slack-file-name{font-size:11px;font-weight:500;color:#212529}
+.slack-file-size{font-size:10px;color:#868E96}
+
+/* Compose area */
+.slack-compose{
+  border-top:1px solid #E9ECEF;padding:12px 14px;flex-shrink:0;
+}
+.slack-compose-box{
+  border:1.5px solid #E9ECEF;border-radius:8px;
+  background:#fff;overflow:hidden;transition:border-color .15s;
+}
+.slack-compose-box:focus-within{border-color:#1D9E75}
+.slack-compose-input{
+  width:100%;border:none;outline:none;padding:10px 12px;
+  font-family:inherit;font-size:12.5px;color:#212529;
+  resize:none;min-height:70px;max-height:120px;
+  background:transparent;line-height:1.5;
+}
+.slack-compose-toolbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 8px 6px 10px;border-top:1px solid #F1F3F5;
+}
+.slack-toolbar-left{display:flex;align-items:center;gap:2px}
+.slack-tool-btn{
+  background:none;border:none;color:#868E96;cursor:pointer;
+  padding:4px 6px;border-radius:4px;font-size:13px;line-height:1;
+  transition:all .12s;
+}
+.slack-tool-btn:hover{background:#F1F3F5;color:#495057}
+.slack-send-btn{
+  background:#0D1B2A;color:#fff;border:none;
+  padding:6px 16px;border-radius:6px;font-size:12px;font-weight:600;
+  cursor:pointer;display:flex;align-items:center;gap:5px;
+  transition:background .12s;
+}
+.slack-send-btn:hover{background:#1D9E75}
+.slack-send-btn:disabled{background:#E9ECEF;color:#868E96;cursor:default}
+
+/* notification pill below compose */
+.slack-note{
+  font-size:10px;color:#868E96;margin-top:6px;
+  display:flex;align-items:center;gap:4px;
+}
+
+@media(max-width:500px){
+  .slack-panel{width:100%}
+}
+/* ══ END SLACK PANEL ══════════════════════════════════════════════ */
+
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div class="wordmark">Oasis Smart Homes</div>
+    <div class="sub">Job Profitability Report</div>
+  </div>
+  <div class="topbar-right">
+
+    <button class="slack-toggle-btn" onclick="toggleSlack()">
+      <svg class="slack-logo" width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <path d="M5.042 15.165a2.528 2.528 0 01-2.52 2.523A2.528 2.528 0 010 15.165a2.527 2.527 0 012.522-2.52h2.52v2.52z" fill="#E01E5A"/>
+        <path d="M6.313 15.165a2.527 2.527 0 012.521-2.52 2.527 2.527 0 012.521 2.52v6.313A2.528 2.528 0 018.834 24a2.528 2.528 0 01-2.521-2.522v-6.313z" fill="#E01E5A"/>
+        <path d="M8.834 5.042a2.528 2.528 0 01-2.521-2.52A2.528 2.528 0 018.834 0a2.527 2.527 0 012.521 2.522v2.52H8.834z" fill="#36C5F0"/>
+        <path d="M8.834 6.313a2.528 2.528 0 012.521 2.521 2.528 2.528 0 01-2.521 2.521H2.522A2.528 2.528 0 010 8.834a2.528 2.528 0 012.522-2.521h6.312z" fill="#36C5F0"/>
+        <path d="M18.956 8.834a2.528 2.528 0 012.522-2.521A2.528 2.528 0 0124 8.834a2.527 2.527 0 01-2.522 2.521h-2.522V8.834z" fill="#2EB67D"/>
+        <path d="M17.688 8.834a2.528 2.528 0 01-2.523 2.521 2.527 2.527 0 01-2.52-2.521V2.522A2.527 2.527 0 0115.165 0a2.528 2.528 0 012.523 2.522v6.312z" fill="#2EB67D"/>
+        <path d="M15.165 18.956a2.528 2.528 0 012.523 2.522A2.528 2.528 0 0115.165 24a2.527 2.527 0 01-2.52-2.522v-2.522h2.52z" fill="#ECB22E"/>
+        <path d="M15.165 17.688a2.527 2.527 0 01-2.52-2.523 2.526 2.526 0 012.52-2.52h6.313A2.527 2.527 0 0124 15.165a2.528 2.528 0 01-2.522 2.523h-6.313z" fill="#ECB22E"/>
+      </svg>
+      Slack
+      <span class="slack-unread">3</span>
+    </button>
+
+    <div class="live-dot"></div>
+    <div class="live-label">LIVE</div>
+    <span class="src-pill sp-q">QBO</span>
+    <span class="src-pill sp-t">QB Time</span>
+    <span class="src-pill sp-m">Monday</span>
+  </div>
+</div>
+
+<div class="rep-bar">
+  <span class="rep-label">Filter by rep</span>
+  <button class="rep-btn active" onclick="setRep('All',this)">All reps</button>
+  <button class="rep-btn" onclick="setRep('James',this)">James Lacek</button>
+  <button class="rep-btn" onclick="setRep('Buzz',this)">Buzz Jensen</button>
+  <button class="rep-btn" onclick="setRep('Seth',this)">Seth Pender</button>
+  <button class="rep-btn" onclick="setRep('Scott',this)">Scott H</button>
+  <button class="rep-btn" onclick="setRep('Ben',this)">Ben</button>
+</div>
+
+<div class="content">
+
+  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:6px">
+    <div style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--navy)">Profitability by rep</div>
+    <div style="font-size:11px;color:var(--gray-400)">YTD Jan – Jun 2026 &nbsp;·&nbsp; <span id="showing-count">24 jobs</span></div>
+  </div>
+
+  <!-- Rep scorecards -->
+  <div class="rep-cards" id="rep-scorecards"></div>
+
+  <!-- Summary metrics -->
+  <div class="summary-grid">
+    <div class="metric-card"><div class="metric-label">Total invoiced</div><div class="metric-value" style="color:var(--blue)" id="s-invoiced">$0</div><div class="metric-sub" id="s-jobs">0 jobs</div></div>
+    <div class="metric-card"><div class="metric-label">Total COGS (parts)</div><div class="metric-value" style="color:#854F0B" id="s-cogs">$0</div><div class="metric-sub">purchase orders</div></div>
+    <div class="metric-card"><div class="metric-label">Total labor cost</div><div class="metric-value" style="color:#854F0B" id="s-labor">$0</div><div class="metric-sub" id="s-hours">0 hrs total</div></div>
+    <div class="metric-card"><div class="metric-label">Gross profit</div><div class="metric-value" style="color:var(--teal)" id="s-profit">$0</div><div class="metric-sub">after parts + labor</div></div>
+    <div class="metric-card"><div class="metric-label">Avg gross margin</div><div class="metric-value" style="color:var(--teal)" id="s-margin">0%</div><div class="metric-sub">across all jobs</div></div>
+  </div>
+
+  <!-- Job table -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><i class="ti ti-table" style="font-size:15px"></i> Job profitability detail</div>
+      <div style="display:flex;gap:4px">
+        <span class="src-pill sp-q">QBO</span>
+        <span class="src-pill sp-t">QB Time</span>
+      </div>
+    </div>
+    <div class="search-filter">
+      <i class="ti ti-search" style="font-size:15px;color:var(--gray-400)"></i>
+      <input type="text" id="job-search" placeholder="Search job or client..." oninput="renderTable()">
+      <select class="filter-select" id="margin-filter" onchange="renderTable()">
+        <option value="all">All margins</option>
+        <option value="great">35%+ (great)</option>
+        <option value="ok">20–35% (ok)</option>
+        <option value="low">Under 20% (low)</option>
+      </select>
+      <select class="filter-select" id="status-filter" onchange="renderTable()">
+        <option value="all">All statuses</option>
+        <option value="complete">Completed</option>
+        <option value="active">Active</option>
+      </select>
+    </div>
+    <table class="tbl" id="job-table">
+      <thead>
+        <tr>
+          <th style="width:24px"></th>
+          <th onclick="sortBy('name')">Job <span class="sort-arrow">↕</span></th>
+          <th onclick="sortBy('rep')">Rep <span class="sort-arrow">↕</span></th>
+          <th onclick="sortBy('phase')">Phase <span class="sort-arrow">↕</span></th>
+          <th class="r" onclick="sortBy('invoiced')">Invoiced <span class="sort-arrow">↕</span></th>
+          <th class="r" onclick="sortBy('cogs')">Parts (COGS) <span class="sort-arrow">↕</span></th>
+          <th class="r" onclick="sortBy('laborHrs')">Labor hrs <span class="sort-arrow">↕</span></th>
+          <th class="r" onclick="sortBy('laborCost')">Labor $ <span class="sort-arrow">↕</span></th>
+          <th class="r" onclick="sortBy('profit')">Gross profit <span class="sort-arrow">↕</span></th>
+          <th class="c" onclick="sortBy('margin')">Margin <span class="sort-arrow">↕</span></th>
+          <th class="c">Status</th>
+        </tr>
+      </thead>
+      <tbody id="job-tbody"></tbody>
+      <tfoot id="job-tfoot"></tfoot>
+    </table>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span>Oasis Smart Homes · Profitability Report · YTD 2026</span>
+  <span>Sample data · Live version connects to QBO, QB Time, Monday.com</span>
+</div>
+
+<script>
+let currentRep='All';
+let sortCol='margin';
+let sortDir=-1;
+
+const repMeta={
+  'James':{color:'#0C447C',bg:'#E6F1FB',init:'JL'},
+  'Buzz':{color:'#27500A',bg:'#EAF3DE',init:'BZ'},
+  'Seth':{color:'#3C3489',bg:'#EEEDFE',init:'SP'},
+  'Scott':{color:'#633806',bg:'#FAEEDA',init:'SH'},
+  'Ben':{color:'#791F1F',bg:'#FCEBEB',init:'BN'},
+};
+
+const jobs=[
+  // James
+  {name:'Dew Residence — AV',client:'Dew',rep:'James',phase:'Rough Complete',invoiced:137443,cogs:58200,laborHrs:224,laborCost:31360,status:'Active',
+   phases:[{n:'Prewire',inv:14004,cogs:3200,hrs:28,lc:3920},{n:'Rough AV',inv:68000,cogs:32000,hrs:116,lc:16240},{n:'Trim (est)',inv:55439,cogs:23000,hrs:80,lc:11200}]},
+  {name:'Yates — AV System',client:'Yates',rep:'James',phase:'Rough Complete',invoiced:264308,cogs:108400,laborHrs:498,laborCost:69720,status:'Active',
+   phases:[{n:'Prewire',inv:18689,cogs:4200,hrs:32,lc:4480},{n:'Rough',inv:140000,cogs:58000,hrs:280,lc:39200},{n:'Trim (est)',inv:105619,cogs:46200,hrs:186,lc:26040}]},
+  {name:'Yates — Shades',client:'Yates',rep:'James',phase:'Rough Complete',invoiced:57237,cogs:24800,laborHrs:96,laborCost:13440,status:'Active',
+   phases:[{n:'Install',inv:57237,cogs:24800,hrs:96,lc:13440}]},
+  {name:'Yates — Lighting',client:'Yates',rep:'James',phase:'Rough Complete',invoiced:283481,cogs:116200,laborHrs:420,laborCost:58800,status:'Active',
+   phases:[{n:'Rough',inv:150000,cogs:62000,hrs:220,lc:30800},{n:'Trim (est)',inv:133481,cogs:54200,hrs:200,lc:28000}]},
+  {name:'Gardener — AV',client:'Gardener',rep:'James',phase:'Rough Complete',invoiced:68947,cogs:28400,laborHrs:118,laborCost:16520,status:'Active',
+   phases:[{n:'Rough',inv:40000,cogs:16000,hrs:68,lc:9520},{n:'Trim',inv:28947,cogs:12400,hrs:50,lc:7000}]},
+  {name:'Gardener — Lighting',client:'Gardener',rep:'James',phase:'Rough Complete',invoiced:49939,cogs:20600,laborHrs:86,laborCost:12040,status:'Active',
+   phases:[{n:'Rough',inv:30000,cogs:12400,hrs:50,lc:7000},{n:'Trim',inv:19939,cogs:8200,hrs:36,lc:5040}]},
+  {name:'Martin Horizon Trail — Shades',client:'Martin',rep:'James',phase:'Completed',invoiced:67585,cogs:27800,laborHrs:104,laborCost:14560,status:'Complete',
+   phases:[{n:'Install',inv:67585,cogs:27800,hrs:104,lc:14560}]},
+  {name:'Patel — AV System',client:'Patel',rep:'James',phase:'Rough Complete',invoiced:68500,cogs:28200,laborHrs:116,laborCost:16240,status:'Active',
+   phases:[{n:'Rough',inv:40000,cogs:16400,hrs:68,lc:9520},{n:'Trim',inv:28500,cogs:11800,hrs:48,lc:6720}]},
+  {name:'Lane/Terry — AV',client:'Lane/Terry',rep:'James',phase:'Completed',invoiced:34416,cogs:14200,laborHrs:62,laborCost:8680,status:'Complete',
+   phases:[{n:'Install',inv:34416,cogs:14200,hrs:62,lc:8680}]},
+  {name:'Lane/Terry — Lighting',client:'Lane/Terry',rep:'James',phase:'Completed',invoiced:15428,cogs:6400,laborHrs:28,laborCost:3920,status:'Complete',
+   phases:[{n:'Install',inv:15428,cogs:6400,hrs:28,lc:3920}]},
+  {name:'Lane/Terry — Prewire',client:'Lane/Terry',rep:'James',phase:'Completed',invoiced:5935,cogs:2400,laborHrs:12,laborCost:1680,status:'Complete',
+   phases:[{n:'Install',inv:5935,cogs:2400,hrs:12,lc:1680}]},
+  {name:'Bloom — Lighting',client:'Bloom',rep:'James',phase:'Rough Complete',invoiced:40999,cogs:17200,laborHrs:74,laborCost:10360,status:'Active',
+   phases:[{n:'Rough',inv:22000,cogs:9200,hrs:40,lc:5600},{n:'Trim (est)',inv:18999,cogs:8000,hrs:34,lc:4760}]},
+  {name:'Bogue — AV',client:'Bogue',rep:'James',phase:'Rough Complete',invoiced:113687,cogs:46800,laborHrs:176,laborCost:24640,status:'Active',
+   phases:[{n:'Rough',inv:60000,cogs:24800,hrs:92,lc:12880},{n:'Trim (est)',inv:53687,cogs:22000,hrs:84,lc:11760}]},
+  {name:'Gemini ELE SF117',client:'Gemini',rep:'James',phase:'Rough Complete',invoiced:175560,cogs:72200,laborHrs:326,laborCost:45640,status:'Active',
+   phases:[{n:'Rough',inv:95000,cogs:39000,hrs:176,lc:24640},{n:'Trim (est)',inv:80560,cogs:33200,hrs:150,lc:21000}]},
+  {name:'Kendrick — Shades',client:'Kendrick',rep:'James',phase:'Need Scheduled',invoiced:34147,cogs:14100,laborHrs:56,laborCost:7840,status:'Active',
+   phases:[{n:'Install',inv:34147,cogs:14100,hrs:56,lc:7840}]},
+  // Buzz
+  {name:'Fontani — Lighting',client:'Fontani',rep:'Buzz',phase:'Completed',invoiced:1239,cogs:480,laborHrs:4,laborCost:560,status:'Complete',
+   phases:[{n:'Install',inv:1239,cogs:480,hrs:4,lc:560}]},
+  {name:'Tinker Personal Home — AV',client:'Tinker',rep:'Buzz',phase:'Rough Complete',invoiced:23266,cogs:9600,laborHrs:42,laborCost:5880,status:'Active',
+   phases:[{n:'Rough',inv:12000,cogs:4900,hrs:22,lc:3080},{n:'Trim',inv:11266,cogs:4700,hrs:20,lc:2800}]},
+  {name:'Buzz Job — Desert Ridge AV',client:'Desert Ridge',rep:'Buzz',phase:'Rough Complete',invoiced:48200,cogs:19800,laborHrs:88,laborCost:12320,status:'Active',
+   phases:[{n:'Rough',inv:26000,cogs:10600,hrs:46,lc:6440},{n:'Trim',inv:22200,cogs:9200,hrs:42,lc:5880}]},
+  {name:'Buzz Job — Camelback Lighting',client:'Camelback',rep:'Buzz',phase:'Completed',invoiced:31500,cogs:12900,laborHrs:58,laborCost:8120,status:'Complete',
+   phases:[{n:'Install',inv:31500,cogs:12900,hrs:58,lc:8120}]},
+  // Seth
+  {name:'Seth Job — Scottsdale AV',client:'Scottsdale',rep:'Seth',phase:'Rough Complete',invoiced:72400,cogs:29800,laborHrs:132,laborCost:18480,status:'Active',
+   phases:[{n:'Rough',inv:38000,cogs:15600,hrs:70,lc:9800},{n:'Trim',inv:34400,cogs:14200,hrs:62,lc:8680}]},
+  {name:'Seth Job — Paradise Valley Shades',client:'Paradise Valley',rep:'Seth',phase:'Completed',invoiced:28900,cogs:11900,laborHrs:52,laborCost:7280,status:'Complete',
+   phases:[{n:'Install',inv:28900,cogs:11900,hrs:52,lc:7280}]},
+  // Scott
+  {name:'Scott Job — McCormick AV',client:'McCormick',rep:'Scott',phase:'Rough Complete',invoiced:55600,cogs:22900,laborHrs:102,laborCost:14280,status:'Active',
+   phases:[{n:'Rough',inv:29000,cogs:11800,hrs:54,lc:7560},{n:'Trim',inv:26600,cogs:11100,hrs:48,lc:6720}]},
+  {name:'Scott Job — Kierland Lighting',client:'Kierland',rep:'Scott',phase:'Completed',invoiced:19800,cogs:8200,laborHrs:36,laborCost:5040,status:'Complete',
+   phases:[{n:'Install',inv:19800,cogs:8200,hrs:36,lc:5040}]},
+  // Ben
+  {name:'Ben Job — Tempe AV',client:'Tempe',rep:'Ben',phase:'Rough Complete',invoiced:38400,cogs:15800,laborHrs:70,laborCost:9800,status:'Active',
+   phases:[{n:'Rough',inv:20000,cogs:8200,hrs:36,lc:5040},{n:'Trim',inv:18400,cogs:7600,hrs:34,lc:4760}]},
+];
+
+jobs.forEach(j=>{
+  j.profit=j.invoiced-j.cogs-j.laborCost;
+  j.margin=Math.round(j.profit/j.invoiced*100);
+});
+
+function fmt(n){return '$'+Math.round(n).toLocaleString()}
+function pct(n){return Math.round(n)+'%'}
+
+function marginClass(m){
+  if(m>=35) return {fill:'mf-great',badge:'b-teal'};
+  if(m>=20) return {fill:'mf-ok',badge:'b-amber'};
+  return {fill:'mf-low',badge:'b-red'};
+}
+
+function marginColor(m){
+  if(m>=35) return 'var(--teal)';
+  if(m>=20) return '#854F0B';
+  return 'var(--red)';
+}
+
+function filtered(){
+  const search=document.getElementById('job-search').value.toLowerCase();
+  const mf=document.getElementById('margin-filter').value;
+  const sf=document.getElementById('status-filter').value;
+  return jobs.filter(j=>{
+    if(currentRep!=='All'&&j.rep!==currentRep) return false;
+    if(search&&!j.name.toLowerCase().includes(search)&&!j.client.toLowerCase().includes(search)) return false;
+    if(mf==='great'&&j.margin<35) return false;
+    if(mf==='ok'&&(j.margin<20||j.margin>=35)) return false;
+    if(mf==='low'&&j.margin>=20) return false;
+    if(sf==='complete'&&j.status!=='Complete') return false;
+    if(sf==='active'&&j.status!=='Active') return false;
+    return true;
+  });
+}
+
+function sortBy(col){
+  if(sortCol===col) sortDir*=-1;
+  else{sortCol=col;sortDir=-1;}
+  renderTable();
+}
+
+function renderRepCards(){
+  const reps=['James','Buzz','Seth','Scott','Ben'];
+  const el=document.getElementById('rep-scorecards');
+  el.innerHTML='';
+  reps.forEach(rep=>{
+    const repJobs=jobs.filter(j=>j.rep===rep);
+    if(!repJobs.length) return;
+    const inv=repJobs.reduce((a,j)=>a+j.invoiced,0);
+    const prof=repJobs.reduce((a,j)=>a+j.profit,0);
+    const margin=Math.round(prof/inv*100);
+    const hrs=repJobs.reduce((a,j)=>a+j.laborHrs,0);
+    const meta=repMeta[rep];
+    const isActive=currentRep===rep||currentRep==='All';
+    el.innerHTML+=`<div class="rep-card ${currentRep===rep?'active':''}" onclick="setRep('${rep}',null)" style="opacity:${isActive?1:0.5}">
+      <div class="rep-card-name">
+        <div class="rep-avatar" style="background:${meta.bg};color:${meta.color}">${meta.init}</div>
+        ${rep==='James'?'James Lacek':rep==='Buzz'?'Buzz Jensen':rep==='Seth'?'Seth Pender':rep==='Scott'?'Scott H':'Ben'}
+      </div>
+      <div class="rep-stat"><span>${repJobs.length} jobs</span><span class="rep-stat-val">${fmt(inv)}</span></div>
+      <div class="rep-stat"><span>Gross profit</span><span class="rep-stat-val" style="color:var(--teal)">${fmt(prof)}</span></div>
+      <div class="rep-stat"><span>Labor hrs</span><span class="rep-stat-val">${hrs} hrs</span></div>
+      <div class="margin-bar-wrap">
+        <div class="margin-bar-label"><span style="color:var(--gray-400)">Avg margin</span><span style="font-weight:600;color:${marginColor(margin)}">${margin}%</span></div>
+        <div class="margin-track"><div class="margin-fill ${marginClass(margin).fill}" style="width:${Math.min(margin,60)/60*100}%"></div></div>
+      </div>
+    </div>`;
+  });
+}
+
+function renderTable(){
+  const data=[...filtered()].sort((a,b)=>{
+    const av=typeof a[sortCol]==='string'?a[sortCol].toLowerCase():a[sortCol];
+    const bv=typeof b[sortCol]==='string'?b[sortCol].toLowerCase():b[sortCol];
+    return av<bv?sortDir:av>bv?-sortDir:0;
+  });
+
+  const tbody=document.getElementById('job-tbody');
+  const tfoot=document.getElementById('job-tfoot');
+  tbody.innerHTML='';
+
+  let totInv=0,totCogs=0,totHrs=0,totLab=0,totProfit=0;
+
+  data.forEach((j,idx)=>{
+    const mc=marginClass(j.margin);
+    const hasPhases=j.phases&&j.phases.length>1;
+    totInv+=j.invoiced;totCogs+=j.cogs;totHrs+=j.laborHrs;totLab+=j.laborCost;totProfit+=j.profit;
+    const rid='jr-'+idx;
+    tbody.innerHTML+=`<tr class="job-row" onclick="${hasPhases?`togglePhase('${rid}')`:''}" id="row-${rid}">
+      <td style="color:var(--gray-300);font-size:12px">${hasPhases?'<i class="ti ti-chevron-right" style="transition:transform .2s"></i>':''}</td>
+      <td>
+        <div style="font-weight:500;font-size:12px;color:var(--gray-900)">${j.name}</div>
+        <div style="font-size:10px;color:var(--gray-400)">${j.client}</div>
+      </td>
+      <td>
+        <div style="display:flex;align-items:center;gap:5px">
+          <div style="width:18px;height:18px;border-radius:50%;background:${repMeta[j.rep]?.bg||'#eee'};display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:${repMeta[j.rep]?.color||'#666'}">${repMeta[j.rep]?.init||j.rep[0]}</div>
+          <span style="font-size:11px">${j.rep}</span>
+        </div>
+      </td>
+      <td><span class="badge b-gray" style="font-size:9px">${j.phase}</span></td>
+      <td class="r" style="font-weight:500">${fmt(j.invoiced)}</td>
+      <td class="r" style="color:#854F0B">${fmt(j.cogs)}</td>
+      <td class="r">${j.laborHrs} hrs</td>
+      <td class="r" style="color:#854F0B">${fmt(j.laborCost)}</td>
+      <td class="r" style="font-weight:600;color:var(--teal)">${fmt(j.profit)}</td>
+      <td class="c">
+        <div class="margin-cell" style="justify-content:center">
+          <div class="mini-track"><div class="mini-fill ${mc.fill}" style="width:${Math.min(j.margin,60)/60*100}%"></div></div>
+          <span style="font-weight:600;font-size:11px;color:${marginColor(j.margin)};min-width:32px">${j.margin}%</span>
+        </div>
+      </td>
+      <td class="c"><span class="badge ${j.status==='Complete'?'b-teal':'b-blue'}">${j.status}</span></td>
+    </tr>`;
+
+    if(hasPhases){
+      j.phases.forEach(p=>{
+        const pProfit=p.inv-p.cogs-p.lc;
+        const pMargin=Math.round(pProfit/p.inv*100);
+        tbody.innerHTML+=`<tr class="phase-row hidden" data-parent="${rid}">
+          <td></td>
+          <td style="color:var(--gray-600);padding-left:36px"><i class="ti ti-arrow-right" style="font-size:10px;margin-right:4px;color:var(--gray-300)"></i>${p.n}</td>
+          <td></td><td></td>
+          <td class="r" style="color:var(--gray-600)">${fmt(p.inv)}</td>
+          <td class="r" style="color:var(--gray-400)">${fmt(p.cogs)}</td>
+          <td class="r" style="color:var(--gray-400)">${p.hrs} hrs</td>
+          <td class="r" style="color:var(--gray-400)">${fmt(p.lc)}</td>
+          <td class="r" style="color:var(--gray-400)">${fmt(pProfit)}</td>
+          <td class="c" style="color:${marginColor(pMargin)};font-size:11px;font-weight:600">${pMargin}%</td>
+          <td></td>
+        </tr>`;
+      });
+    }
+  });
+
+  const avgMargin=totInv>0?Math.round((totProfit/totInv)*100):0;
+  tfoot.innerHTML=`<tr>
+    <td></td>
+    <td style="font-weight:600">Totals — ${data.length} jobs</td>
+    <td></td><td></td>
+    <td class="r" style="color:var(--blue)">${fmt(totInv)}</td>
+    <td class="r" style="color:#854F0B">${fmt(totCogs)}</td>
+    <td class="r">${totHrs} hrs</td>
+    <td class="r" style="color:#854F0B">${fmt(totLab)}</td>
+    <td class="r" style="color:var(--teal)">${fmt(totProfit)}</td>
+    <td class="c" style="color:${marginColor(avgMargin)};font-weight:700">${avgMargin}%</td>
+    <td></td>
+  </tr>`;
+
+  document.getElementById('s-invoiced').textContent=fmt(totInv);
+  document.getElementById('s-cogs').textContent=fmt(totCogs);
+  document.getElementById('s-labor').textContent=fmt(totLab);
+  document.getElementById('s-hours').textContent=totHrs+' hrs total';
+  document.getElementById('s-profit').textContent=fmt(totProfit);
+  document.getElementById('s-margin').textContent=avgMargin+'%';
+  document.getElementById('s-jobs').textContent=data.length+' jobs';
+  document.getElementById('showing-count').textContent=data.length+' jobs';
+}
+
+function togglePhase(rid){
+  const row=document.getElementById('row-'+rid);
+  const icon=row.querySelector('.ti-chevron-right');
+  const subs=document.querySelectorAll(`[data-parent="${rid}"]`);
+  const open=icon&&icon.style.transform==='rotate(90deg)';
+  if(icon) icon.style.transform=open?'':'rotate(90deg)';
+  subs.forEach(r=>r.classList.toggle('hidden',open));
+}
+
+function setRep(rep,el){
+  if(el){
+    document.querySelectorAll('.rep-btn').forEach(b=>b.classList.remove('active'));
+    el.classList.add('active');
+  } else {
+    document.querySelectorAll('.rep-btn').forEach(b=>{
+      b.classList.toggle('active', b.textContent.trim().startsWith(rep)||(rep==='All'&&b.textContent.trim()==='All reps'));
+    });
+    if(rep==='All'){
+      document.querySelectorAll('.rep-btn')[0].classList.add('active');
+    }
+  }
+  currentRep=rep;
+  renderRepCards();
+  renderTable();
+}
+
+renderRepCards();
+renderTable();
+</script>
+
+<div class="slack-overlay" id="slackOverlay" onclick="toggleSlack()"></div>
+<div class="slack-panel" id="slackPanel">
+  <div class="slack-panel-head">
+    <div class="slack-head-left">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M5.042 15.165a2.528 2.528 0 01-2.52 2.523A2.528 2.528 0 010 15.165a2.527 2.527 0 012.522-2.52h2.52v2.52z" fill="#E01E5A"/>
+        <path d="M6.313 15.165a2.527 2.527 0 012.521-2.52 2.527 2.527 0 012.521 2.52v6.313A2.528 2.528 0 018.834 24a2.528 2.528 0 01-2.521-2.522v-6.313z" fill="#E01E5A"/>
+        <path d="M8.834 5.042a2.528 2.528 0 01-2.521-2.52A2.528 2.528 0 018.834 0a2.527 2.527 0 012.521 2.522v2.52H8.834z" fill="#36C5F0"/>
+        <path d="M8.834 6.313a2.528 2.528 0 012.521 2.521 2.528 2.528 0 01-2.521 2.521H2.522A2.528 2.528 0 010 8.834a2.528 2.528 0 012.522-2.521h6.312z" fill="#36C5F0"/>
+        <path d="M18.956 8.834a2.528 2.528 0 012.522-2.521A2.528 2.528 0 0124 8.834a2.527 2.527 0 01-2.522 2.521h-2.522V8.834z" fill="#2EB67D"/>
+        <path d="M17.688 8.834a2.528 2.528 0 01-2.523 2.521 2.527 2.527 0 01-2.52-2.521V2.522A2.527 2.527 0 0115.165 0a2.528 2.528 0 012.523 2.522v6.312z" fill="#2EB67D"/>
+        <path d="M15.165 18.956a2.528 2.528 0 012.523 2.522A2.528 2.528 0 0115.165 24a2.527 2.527 0 01-2.52-2.522v-2.522h2.52z" fill="#ECB22E"/>
+        <path d="M15.165 17.688a2.527 2.527 0 01-2.52-2.523 2.526 2.526 0 012.52-2.52h6.313A2.527 2.527 0 0124 15.165a2.528 2.528 0 01-2.522 2.523h-6.313z" fill="#ECB22E"/>
+      </svg>
+      <div>
+        <div class="slack-channel-name" id="slackChannelName">#exec-team</div>
+        <div class="slack-channel-desc">Oasis Smart Homes · Team Workspace</div>
+      </div>
+    </div>
+    <button class="slack-close" onclick="toggleSlack()">&#x2715;</button>
+  </div>
+
+  <div class="slack-channel-bar">
+    <button class="slack-ch-btn active" onclick="switchChannel('exec',this)">#exec-team</button>
+<button class="slack-ch-btn " onclick="switchChannel('profitability',this)">#profitability</button>
+<button class="slack-ch-btn " onclick="switchChannel('pipeline',this)">#sales-pipeline</button>
+
+  </div>
+
+  <div class="slack-messages" id="slackMessages"></div>
+
+  <div class="slack-compose">
+    <div class="slack-compose-box">
+      <textarea class="slack-compose-input" id="slackInput"
+        placeholder="Message #&#x2060;" rows="3"
+        onkeydown="handleCompose(event)"></textarea>
+      <div class="slack-compose-toolbar">
+        <div class="slack-toolbar-left">
+          <button class="slack-tool-btn" title="Attach file">
+            <i class="ti ti-paperclip"></i>
+          </button>
+          <button class="slack-tool-btn" title="Mention">
+            <i class="ti ti-at"></i>
+          </button>
+          <button class="slack-tool-btn" title="Emoji">
+            <i class="ti ti-mood-smile"></i>
+          </button>
+          <button class="slack-tool-btn" title="Bold">
+            <i class="ti ti-bold"></i>
+          </button>
+        </div>
+        <button class="slack-send-btn" id="slackSendBtn" onclick="sendMsg()" disabled>
+          <i class="ti ti-send"></i> Send
+        </button>
+      </div>
+    </div>
+    <div class="slack-note">
+      <i class="ti ti-brand-slack" style="font-size:11px"></i>
+      Messages post directly to Slack · <a href="#" style="color:#185FA5">Open in Slack ↗</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var allMessages = {"exec":[{name:'Justin Wagner',time:'8:00 AM',text:'Q2 profitability is tracking at 38% gross margin across active jobs. Target was 36% — we\'re ahead.',initials:'JW',color:'#0C447C',bg:'#E6F1FB'},{name:'Stacy Wagner',time:'8:14 AM',text:'AR is the concern — $39k outstanding across 2 accounts. Morrison wire expected today.',initials:'SW',color:'#3C3489',bg:'#EEEDFE'},{name:'Justin Wagner',time:'8:22 AM',text:'Once Morrison clears we\'re in good shape for payroll. Keep monitoring Henderson.',initials:'JW',color:'#0C447C',bg:'#E6F1FB'},{name:'Stacy Wagner',time:'8:30 AM',text:'Henderson should clear by Monday per Melissa\'s call this morning.',initials:'SW',color:'#3C3489',bg:'#EEEDFE'},],"profitability":[{name:'Justin Wagner',time:'Yesterday 5:00 PM',text:'EOD profitability snapshot:\n• Morrison: 38% margin (above target)\n• Patel: 41% margin (strong)\n• Martin: 39% margin (on target)\n• Dew: 44% margin (small job, high margin)',initials:'JW',color:'#0C447C',bg:'#E6F1FB'},{name:'James Lacek',time:'Yesterday 5:10 PM',text:'Patel at 41% — control4 job with minimal change orders. Cleanest execution of the quarter.',initials:'JL',color:'#633806',bg:'#FAEEDA'},],"pipeline":[{name:'James Lacek',time:'9:00 AM',text:'2 new estimates out this week: Goldstein ($89k AV) and Park ($44k shades). Both with Gurczak builds.',initials:'JL',color:'#633806',bg:'#FAEEDA'},{name:'Seth Pender',time:'9:15 AM',text:'Goldstein is a strong close — they\'ve already toured the showroom twice. I\'d say 80% probability.',initials:'SP',color:'#791F1F',bg:'#FEE2E2'},{name:'Justin Wagner',time:'9:22 AM',text:'Good pipeline. Let\'s make sure estimates are marked accepted in Portal the day they sign — not a week later.',initials:'JW',color:'#0C447C',bg:'#E6F1FB'},],};
+  var allReactions = {"exec-0":"💪 4","exec-3":"👍 3","profitability-1":"⭐ 2","pipeline-1":"🤞 2",};
+  var currentChannel = 'exec';
+  var channels = [{"id": "exec", "label": "exec-team"}, {"id": "profitability", "label": "profitability"}, {"id": "pipeline", "label": "sales-pipeline"}];
+
+  function av(initials,bg,color){
+    return '<div class="slack-avatar" style="background:'+bg+';color:'+color+'">'+initials+'</div>';
+  }
+
+  function renderMessages(chId){
+    var msgs = allMessages[chId]||[];
+    var container = document.getElementById('slackMessages');
+    var html = '<div class="slack-date-divider">Today</div>';
+    msgs.forEach(function(m,i){
+      var txt = m.text
+        .replace(/\n/g,'<br>')
+        .replace(/@(\w+)/g,'<span class="mention">@$1</span>')
+        .replace(/#([\w-]+)/g,'<span class="jobref">#$1</span>');
+      var reaction = allReactions[chId+'-'+i];
+      var reactionHtml = reaction ? '<div><span class="slack-reaction">'+reaction+'</span></div>' : '';
+      html += '<div class="slack-msg">'+av(m.initials,m.bg,m.color)+
+        '<div class="slack-msg-body">'+
+        '<div class="slack-msg-meta"><span class="slack-msg-name">'+m.name+'</span><span class="slack-msg-time">'+m.time+'</span></div>'+
+        '<div class="slack-msg-text">'+txt+'</div>'+reactionHtml+
+        '</div></div>';
+    });
+    container.innerHTML = html;
+    container.scrollTop = container.scrollHeight;
+  }
+
+  window.switchChannel = function(chId, btn){
+    currentChannel = chId;
+    document.querySelectorAll('.slack-ch-btn').forEach(function(b){b.classList.remove('active')});
+    btn.classList.add('active');
+    var ch = channels.find(function(c){return c.id===chId});
+    document.getElementById('slackChannelName').textContent = '#'+(ch?ch.label:chId);
+    document.getElementById('slackInput').placeholder = 'Message #'+(ch?ch.label:chId);
+    renderMessages(chId);
+  };
+
+  window.toggleSlack = function(){
+    var panel = document.getElementById('slackPanel');
+    var overlay = document.getElementById('slackOverlay');
+    var isOpen = panel.classList.contains('open');
+    panel.classList.toggle('open',!isOpen);
+    overlay.classList.toggle('open',!isOpen);
+    if(!isOpen) renderMessages(currentChannel);
+  };
+
+  window.sendMsg = function(){
+    var input = document.getElementById('slackInput');
+    var txt = input.value.trim();
+    if(!txt) return;
+    var msgs = allMessages[currentChannel];
+    var now = new Date();
+    var h = now.getHours()%12||12;
+    var m = String(now.getMinutes()).padStart(2,'0');
+    var ap = now.getHours()>=12?'PM':'AM';
+    msgs.push({name:'You',time:h+':'+m+' '+ap,text:txt,initials:'JW',color:'#0C447C',bg:'#E6F1FB'});
+    input.value='';
+    document.getElementById('slackSendBtn').disabled=true;
+    renderMessages(currentChannel);
+  };
+
+  window.handleCompose = function(e){
+    var btn = document.getElementById('slackSendBtn');
+    btn.disabled = e.target.value.trim().length===0;
+    if(e.key==='Enter' && (e.metaKey||e.ctrlKey)) sendMsg();
+  };
+
+  // init
+  renderMessages(currentChannel);
+})();
+</script>
+
+</body>
+</html>

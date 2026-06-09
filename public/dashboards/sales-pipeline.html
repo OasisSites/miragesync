@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oasis Smart Homes — Sales Pipeline</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --navy:#0D1B2A;--teal:#0A8754;--teal-m:#1D9E75;--teal-l:#E1F5EE;
+  --amber:#E8A020;--amber-l:#FAEEDA;--red:#DC2626;--red-l:#FEE2E2;
+  --orange:#C2410C;--orange-l:#FFF7ED;
+  --blue-l:#E6F1FB;--blue:#185FA5;--purple-l:#EEEDFE;--purple:#3C3489;
+  --green-l:#EAF3DE;--green:#27500A;
+  --gray-50:#F8F9FA;--gray-100:#F1F3F5;--gray-200:#E9ECEF;
+  --gray-400:#868E96;--gray-600:#495057;--gray-900:#212529;
+  --border:#E9ECEF;--radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#F4F6F8;color:var(--gray-900);font-size:13px;line-height:1.5}
+
+/* ── Topbar ── */
+.topbar{background:var(--navy);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-brand{display:flex;align-items:center;gap:10px}
+.wordmark{font-family:'DM Serif Display',serif;font-size:18px;color:#fff}
+.sub{font-size:10px;color:rgba(255,255,255,.45);font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--teal-m);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.live-label{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.05em}
+.src-pill{font-size:9px;font-weight:600;padding:2px 7px;border-radius:20px;letter-spacing:.04em}
+.sp-p{background:var(--purple-l);color:var(--purple)}
+.sp-q{background:var(--green-l);color:var(--green)}
+.sp-m{background:var(--blue-l);color:var(--blue)}
+
+/* ── Filter bar ── */
+.filter-bar{background:#fff;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;overflow-x:auto}
+.filter-group{display:flex;align-items:center;gap:6px}
+.filter-label{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.filter-btn{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--gray-600);transition:all .15s;white-space:nowrap}
+.filter-btn:hover{border-color:var(--teal-m);color:var(--teal)}
+.filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.filter-sep{width:1px;height:20px;background:var(--border)}
+
+/* ── Content ── */
+.content{padding:20px 24px;max-width:1400px;margin:0 auto}
+
+/* ── Top metric cards ── */
+.metrics-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+.metric-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;position:relative;overflow:hidden}
+.metric-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.mc-pipeline::before{background:var(--blue)}
+.mc-collected::before{background:var(--teal-m)}
+.mc-outstanding::before{background:var(--amber)}
+.mc-av::before{background:var(--purple)}
+.mc-elec::before{background:var(--orange)}
+.metric-label{font-size:10px;font-weight:500;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
+.metric-value{font-size:22px;font-weight:600;color:var(--gray-900)}
+.metric-sub{font-size:10px;color:var(--gray-400);margin-top:3px}
+.metric-delta{font-size:10px;font-weight:600;margin-top:3px}
+.delta-up{color:var(--teal-m)}
+.delta-down{color:var(--red)}
+
+/* ── Two-col layout ── */
+.two-col{display:grid;grid-template-columns:1fr 340px;gap:14px;margin-bottom:14px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
+
+/* ── Section cards ── */
+.section{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.section-head{padding:13px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.section-title{font-size:11px;font-weight:600;color:var(--gray-600);letter-spacing:.05em;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.section-body{padding:14px 16px}
+
+/* ── Rep scorecards ── */
+.rep-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px 16px}
+.rep-card{background:var(--gray-50);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;cursor:pointer;transition:border-color .15s}
+.rep-card:hover,.rep-card.active{border-color:var(--teal-m);background:var(--teal-l)}
+.rep-card-top{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.rep-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.rep-name{font-size:12px;font-weight:600;color:var(--navy)}
+.rep-code{font-size:10px;color:var(--gray-400)}
+.rep-stats{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px}
+.rep-stat-item{display:flex;flex-direction:column;gap:1px}
+.rep-stat-label{font-size:9px;color:var(--gray-400);letter-spacing:.03em;text-transform:uppercase}
+.rep-stat-value{font-size:12px;font-weight:600;color:var(--gray-900)}
+.rep-stat-value.collected{color:var(--teal)}
+.rep-stat-value.outstanding{color:#854F0B}
+.rep-goal-row{display:flex;justify-content:space-between;font-size:10px;color:var(--gray-400);margin-bottom:3px}
+.rep-progress{height:5px;background:var(--gray-200);border-radius:3px;overflow:hidden}
+.rep-progress-fill{height:100%;border-radius:3px;background:var(--teal-m);transition:width .5s ease}
+
+/* ── Division split ── */
+.div-bars{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.div-item{}
+.div-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
+.div-name{font-size:12px;font-weight:600;color:var(--gray-900)}
+.div-amount{font-size:12px;font-weight:600;color:var(--gray-900)}
+.div-sub{font-size:10px;color:var(--gray-400)}
+.div-track{height:8px;background:var(--gray-100);border-radius:4px;overflow:hidden;margin-bottom:4px}
+.div-fill{height:100%;border-radius:4px}
+.div-breakdown{display:flex;gap:12px;font-size:10px;color:var(--gray-400)}
+.div-breakdown span{display:flex;align-items:center;gap:3px}
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+
+/* ── Location split ── */
+.loc-items{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.loc-item{display:flex;align-items:center;gap:10px}
+.loc-flag{font-size:18px;width:28px;text-align:center}
+.loc-body{flex:1}
+.loc-name{font-size:12px;font-weight:600;color:var(--gray-900);margin-bottom:3px}
+.loc-track{height:6px;background:var(--gray-100);border-radius:3px;overflow:hidden}
+.loc-fill{height:100%;border-radius:3px}
+.loc-amount{font-size:12px;font-weight:600;color:var(--gray-900);white-space:nowrap;min-width:80px;text-align:right}
+
+/* ── Pipeline table ── */
+.tbl-wrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase;padding:0 8px 8px;border-bottom:2px solid var(--border);text-align:left;white-space:nowrap}
+.tbl th.r{text-align:right}
+.tbl td{padding:8px;border-bottom:1px solid var(--gray-100);font-size:12px;color:var(--gray-900);vertical-align:middle}
+.tbl td.r{text-align:right}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--gray-50)}
+.job-name{font-weight:500;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.job-status{font-size:10px;color:var(--gray-400);margin-top:1px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:600;padding:2px 7px;border-radius:20px;letter-spacing:.02em;white-space:nowrap}
+.b-final{background:var(--red-l);color:#791F1F}
+.b-deposit{background:var(--blue-l);color:var(--blue)}
+.b-partial{background:var(--amber-l);color:#633806}
+.b-green{background:var(--green-l);color:var(--green)}
+.b-gray{background:var(--gray-100);color:var(--gray-600)}
+.b-purple{background:var(--purple-l);color:var(--purple)}
+.rep-pill{font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;letter-spacing:.03em}
+.div-pill{font-size:9px;font-weight:600;padding:2px 7px;border-radius:20px}
+.dp-av{background:var(--purple-l);color:var(--purple)}
+.dp-el{background:var(--orange-l);color:var(--orange)}
+.loc-pill{font-size:9px;color:var(--gray-400)}
+
+/* Search / sort */
+.table-controls{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.search-box{flex:1;display:flex;align-items:center;gap:6px;background:var(--gray-50);border:1px solid var(--border);border-radius:6px;padding:5px 10px}
+.search-box input{border:none;background:transparent;outline:none;font-family:inherit;font-size:12px;color:var(--gray-900);width:100%}
+.search-box input::placeholder{color:var(--gray-400)}
+.tbl-count{font-size:11px;color:var(--gray-400);white-space:nowrap}
+
+/* Phase col color */
+.amt-final{color:var(--red);font-weight:600}
+.amt-deposit{color:var(--blue);font-weight:600}
+.amt-partial{color:#854F0B;font-weight:600}
+
+/* Footer */
+.footer{background:#fff;border-top:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;font-size:10px;color:var(--gray-400);margin-top:14px}
+
+/* ══ SLACK PANEL ══ */
+.slack-toggle-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;padding:5px 12px;border-radius:20px;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:.03em;transition:background .15s;position:relative}
+.slack-toggle-btn:hover{background:rgba(255,255,255,.2)}
+.slack-unread{position:absolute;top:-4px;right:-4px;width:15px;height:15px;border-radius:50%;background:#E8A020;color:#fff;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid var(--navy)}
+.slack-overlay{position:fixed;inset:0;background:rgba(0,0,0,.2);z-index:900;opacity:0;pointer-events:none;transition:opacity .2s}
+.slack-overlay.open{opacity:1;pointer-events:auto}
+.slack-panel{position:fixed;top:0;right:0;bottom:0;width:380px;background:#fff;border-left:1px solid #E9ECEF;box-shadow:-4px 0 24px rgba(0,0,0,.12);z-index:901;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1)}
+.slack-panel.open{transform:translateX(0)}
+.slack-panel-head{background:#0D1B2A;padding:0 16px;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.slack-head-left{display:flex;align-items:center;gap:8px}
+.slack-channel-name{font-size:13px;font-weight:600;color:#fff}
+.slack-channel-desc{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.03em}
+.slack-close{background:none;border:none;color:rgba(255,255,255,.55);cursor:pointer;font-size:18px;line-height:1;padding:4px;transition:color .12s}
+.slack-close:hover{color:#fff}
+.slack-channel-bar{background:#F8F9FA;border-bottom:1px solid #E9ECEF;padding:8px 12px;display:flex;gap:6px;overflow-x:auto;flex-shrink:0}
+.slack-ch-btn{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid #E9ECEF;background:#fff;color:#495057;cursor:pointer;white-space:nowrap;transition:all .12s;flex-shrink:0}
+.slack-ch-btn:hover{border-color:#1D9E75;color:#0A8754}
+.slack-ch-btn.active{background:#0D1B2A;color:#fff;border-color:#0D1B2A}
+.slack-messages{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:0}
+.slack-date-divider{display:flex;align-items:center;gap:8px;margin:12px 0 8px;font-size:10px;font-weight:600;color:#868E96;letter-spacing:.04em;text-transform:uppercase}
+.slack-date-divider::before,.slack-date-divider::after{content:'';flex:1;height:1px;background:#E9ECEF}
+.slack-msg{display:flex;gap:9px;padding:4px 0;position:relative;border-radius:6px;transition:background .1s}
+.slack-msg:hover{background:#F8F9FA;margin:0 -8px;padding:4px 8px}
+.slack-avatar{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px}
+.slack-msg-body{flex:1;min-width:0}
+.slack-msg-meta{display:flex;align-items:baseline;gap:6px;margin-bottom:2px}
+.slack-msg-name{font-size:12px;font-weight:600;color:#212529}
+.slack-msg-time{font-size:10px;color:#868E96}
+.slack-msg-text{font-size:12px;color:#343a40;line-height:1.5;word-break:break-word}
+.slack-msg-text .mention{color:#185FA5;background:#E6F1FB;padding:0 3px;border-radius:3px;font-weight:500}
+.slack-reaction{display:inline-flex;align-items:center;gap:3px;background:#F1F3F5;border:1px solid #E9ECEF;border-radius:12px;padding:1px 7px;font-size:11px;cursor:pointer;margin-top:3px;transition:background .1s}
+.slack-reaction:hover{background:#E9ECEF}
+.slack-compose{border-top:1px solid #E9ECEF;padding:12px 14px;flex-shrink:0}
+.slack-compose-box{border:1.5px solid #E9ECEF;border-radius:8px;background:#fff;overflow:hidden;transition:border-color .15s}
+.slack-compose-box:focus-within{border-color:#1D9E75}
+.slack-compose-input{width:100%;border:none;outline:none;padding:10px 12px;font-family:inherit;font-size:12.5px;color:#212529;resize:none;min-height:70px;max-height:120px;background:transparent;line-height:1.5}
+.slack-compose-toolbar{display:flex;align-items:center;justify-content:space-between;padding:6px 8px 6px 10px;border-top:1px solid #F1F3F5}
+.slack-toolbar-left{display:flex;align-items:center;gap:2px}
+.slack-tool-btn{background:none;border:none;color:#868E96;cursor:pointer;padding:4px 6px;border-radius:4px;font-size:13px;line-height:1;transition:all .12s}
+.slack-tool-btn:hover{background:#F1F3F5;color:#495057}
+.slack-send-btn{background:#0D1B2A;color:#fff;border:none;padding:6px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:background .12s}
+.slack-send-btn:hover{background:#1D9E75}
+.slack-send-btn:disabled{background:#E9ECEF;color:#868E96;cursor:default}
+.slack-note{font-size:10px;color:#868E96;margin-top:6px;display:flex;align-items:center;gap:4px}
+
+@media(max-width:900px){
+  .metrics-row{grid-template-columns:repeat(2,1fr)}
+  .two-col{grid-template-columns:1fr}
+  .three-col{grid-template-columns:1fr}
+  .rep-grid{grid-template-columns:1fr 1fr}
+  .slack-panel{width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- Topbar -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div>
+      <div class="wordmark">Oasis Smart Homes</div>
+      <div class="sub">Sales Pipeline — Monthly</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="live-dot"></div>
+    <div class="live-label">LIVE DATA</div>
+    <div class="src-pill sp-p">Portal.io</div>
+    <div class="src-pill sp-q">QBO</div>
+    <div class="src-pill sp-m">Monday</div>
+    <button class="slack-toggle-btn" onclick="toggleSlack()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <path d="M5.042 15.165a2.528 2.528 0 01-2.52 2.523A2.528 2.528 0 010 15.165a2.527 2.527 0 012.522-2.52h2.52v2.52z" fill="#E01E5A"/>
+        <path d="M6.313 15.165a2.527 2.527 0 012.521-2.52 2.527 2.527 0 012.521 2.52v6.313A2.528 2.528 0 018.834 24a2.528 2.528 0 01-2.521-2.522v-6.313z" fill="#E01E5A"/>
+        <path d="M8.834 5.042a2.528 2.528 0 01-2.521-2.52A2.528 2.528 0 018.834 0a2.527 2.527 0 012.521 2.522v2.52H8.834z" fill="#36C5F0"/>
+        <path d="M8.834 6.313a2.528 2.528 0 012.521 2.521 2.528 2.528 0 01-2.521 2.521H2.522A2.528 2.528 0 010 8.834a2.528 2.528 0 012.522-2.521h6.312z" fill="#36C5F0"/>
+        <path d="M18.956 8.834a2.528 2.528 0 012.522-2.521A2.528 2.528 0 0124 8.834a2.527 2.527 0 01-2.522 2.521h-2.522V8.834z" fill="#2EB67D"/>
+        <path d="M17.688 8.834a2.528 2.528 0 01-2.523 2.521 2.527 2.527 0 01-2.52-2.521V2.522A2.527 2.527 0 0115.165 0a2.528 2.528 0 012.523 2.522v6.312z" fill="#2EB67D"/>
+        <path d="M15.165 18.956a2.528 2.528 0 012.523 2.522A2.528 2.528 0 0115.165 24a2.527 2.527 0 01-2.52-2.522v-2.522h2.52z" fill="#ECB22E"/>
+        <path d="M15.165 17.688a2.527 2.527 0 01-2.52-2.523 2.526 2.526 0 012.52-2.52h6.313A2.527 2.527 0 0124 15.165a2.528 2.528 0 01-2.522 2.523h-6.313z" fill="#ECB22E"/>
+      </svg>
+      Slack
+      <span class="slack-unread">4</span>
+    </button>
+  </div>
+</div>
+
+<!-- Filter bar -->
+<div class="filter-bar">
+  <div class="filter-group">
+    <span class="filter-label">Rep</span>
+    <button class="filter-btn active" onclick="setFilter('rep','all',this)">All reps</button>
+    <button class="filter-btn" onclick="setFilter('rep','JL',this)">James L</button>
+    <button class="filter-btn" onclick="setFilter('rep','SP',this)">Seth P</button>
+    <button class="filter-btn" onclick="setFilter('rep','BK',this)">Ben K</button>
+    <button class="filter-btn" onclick="setFilter('rep','SH',this)">Scott H</button>
+    <button class="filter-btn" onclick="setFilter('rep','BZ',this)">Buzz J</button>
+    <button class="filter-btn" onclick="setFilter('rep','ZL',this)">Zach L</button>
+    <button class="filter-btn" onclick="setFilter('rep','JW',this)">Justin W</button>
+  </div>
+  <div class="filter-sep"></div>
+  <div class="filter-group">
+    <span class="filter-label">Division</span>
+    <button class="filter-btn active" onclick="setFilter('div','all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter('div','AV',this)">AV</button>
+    <button class="filter-btn" onclick="setFilter('div','Electrical',this)">Electrical</button>
+  </div>
+  <div class="filter-sep"></div>
+  <div class="filter-group">
+    <span class="filter-label">Location</span>
+    <button class="filter-btn active" onclick="setFilter('loc','all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter('loc','Arizona',this)">Arizona</button>
+    <button class="filter-btn" onclick="setFilter('loc','California',this)">California</button>
+  </div>
+  <div class="filter-sep"></div>
+  <div class="filter-group">
+    <span class="filter-label">Phase</span>
+    <button class="filter-btn active" onclick="setFilter('phase','all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter('phase','Final',this)">Final</button>
+    <button class="filter-btn" onclick="setFilter('phase','Deposit',this)">Deposit</button>
+    <button class="filter-btn" onclick="setFilter('phase','Partial',this)">Partial</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- Summary metrics -->
+  <div class="metrics-row">
+    <div class="metric-card mc-pipeline">
+      <div class="metric-label">Total pipeline</div>
+      <div class="metric-value" id="m-total">$607,502</div>
+      <div class="metric-sub">All anticipated this month</div>
+    </div>
+    <div class="metric-card mc-collected">
+      <div class="metric-label">Collected to date</div>
+      <div class="metric-value" style="color:var(--teal)" id="m-collected">$94,818</div>
+      <div class="metric-sub">Cash in this month</div>
+    </div>
+    <div class="metric-card mc-outstanding">
+      <div class="metric-label">Outstanding</div>
+      <div class="metric-value" style="color:#854F0B" id="m-outstanding">$512,684</div>
+      <div class="metric-sub">Invoiced, not yet collected</div>
+    </div>
+    <div class="metric-card mc-av">
+      <div class="metric-label">AV division</div>
+      <div class="metric-value" style="color:var(--purple)" id="m-av">$253,741</div>
+      <div class="metric-sub" id="m-av-jobs">30 open jobs</div>
+    </div>
+    <div class="metric-card mc-elec">
+      <div class="metric-label">Electrical division</div>
+      <div class="metric-value" style="color:var(--orange)" id="m-elec">$258,944</div>
+      <div class="metric-sub" id="m-elec-jobs">8 open jobs</div>
+    </div>
+  </div>
+
+  <!-- Rep scorecards + splits -->
+  <div class="two-col" style="margin-bottom:14px">
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title"><i class="ti ti-users" style="font-size:14px"></i> Rep performance vs goal</div>
+        <span class="src-pill sp-q">QBO</span>
+      </div>
+      <div class="rep-grid" id="rep-grid"></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <!-- Division split -->
+      <div class="section">
+        <div class="section-head">
+          <div class="section-title"><i class="ti ti-chart-bar" style="font-size:14px"></i> Division split</div>
+        </div>
+        <div class="div-bars">
+          <div class="div-item">
+            <div class="div-header">
+              <div><div class="div-name">AV</div></div>
+              <div class="div-amount">$253,741</div>
+            </div>
+            <div class="div-track"><div class="div-fill" style="width:49.5%;background:var(--purple)"></div></div>
+            <div class="div-breakdown">
+              <span><span class="dot" style="background:var(--teal-m)"></span>Collected $94,818</span>
+              <span><span class="dot" style="background:#854F0B"></span>Outstanding $158,923</span>
+            </div>
+          </div>
+          <div class="div-item">
+            <div class="div-header">
+              <div><div class="div-name">Electrical</div></div>
+              <div class="div-amount">$258,944</div>
+            </div>
+            <div class="div-track"><div class="div-fill" style="width:50.5%;background:var(--orange)"></div></div>
+            <div class="div-breakdown">
+              <span><span class="dot" style="background:var(--teal-m)"></span>Collected $0</span>
+              <span><span class="dot" style="background:#854F0B"></span>Outstanding $258,944</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Location split -->
+      <div class="section">
+        <div class="section-head">
+          <div class="section-title"><i class="ti ti-map-pin" style="font-size:14px"></i> By location</div>
+        </div>
+        <div class="loc-items">
+          <div class="loc-item">
+            <div class="loc-flag">🌵</div>
+            <div class="loc-body">
+              <div class="loc-name">Arizona</div>
+              <div class="loc-track"><div class="loc-fill" style="width:90%;background:var(--blue)"></div></div>
+            </div>
+            <div class="loc-amount">$511,139</div>
+          </div>
+          <div class="loc-item">
+            <div class="loc-flag">🌊</div>
+            <div class="loc-body">
+              <div class="loc-name">California</div>
+              <div class="loc-track"><div class="loc-fill" style="width:10%;background:var(--teal-m)"></div></div>
+            </div>
+            <div class="loc-amount">$54,386</div>
+          </div>
+          <div class="loc-item">
+            <div class="loc-flag">🔧</div>
+            <div class="loc-body">
+              <div class="loc-name">Service & RMR</div>
+              <div class="loc-track"><div class="loc-fill" style="width:7%;background:var(--purple)"></div></div>
+            </div>
+            <div class="loc-amount">$41,977</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pipeline table -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><i class="ti ti-table" style="font-size:14px"></i> Full pipeline — <span id="tbl-title">all jobs</span></div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <span class="src-pill sp-p">Portal.io</span>
+        <span class="src-pill sp-q">QBO</span>
+      </div>
+    </div>
+    <div class="table-controls">
+      <div class="search-box">
+        <i class="ti ti-search" style="font-size:13px;color:var(--gray-400)"></i>
+        <input type="text" placeholder="Search job name or status..." id="job-search" oninput="renderTable()">
+      </div>
+      <span class="tbl-count" id="tbl-count">53 jobs</span>
+    </div>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Job / project</th>
+            <th>Rep</th>
+            <th>Division</th>
+            <th>Location</th>
+            <th>Phase</th>
+            <th class="r">Amount</th>
+            <th>Status notes</th>
+          </tr>
+        </thead>
+        <tbody id="pipeline-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span>Oasis Smart Homes · Sales Pipeline Monthly · Demo prototype</span>
+  <span>Source: Google Sheets → Portal.io · QBO · Monday.com</span>
+</div>
+
+<!-- Slack panel -->
+<div class="slack-overlay" id="slackOverlay" onclick="toggleSlack()"></div>
+<div class="slack-panel" id="slackPanel">
+  <div class="slack-panel-head">
+    <div class="slack-head-left">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M5.042 15.165a2.528 2.528 0 01-2.52 2.523A2.528 2.528 0 010 15.165a2.527 2.527 0 012.522-2.52h2.52v2.52z" fill="#E01E5A"/>
+        <path d="M6.313 15.165a2.527 2.527 0 012.521-2.52 2.527 2.527 0 012.521 2.52v6.313A2.528 2.528 0 018.834 24a2.528 2.528 0 01-2.521-2.522v-6.313z" fill="#E01E5A"/>
+        <path d="M8.834 5.042a2.528 2.528 0 01-2.521-2.52A2.528 2.528 0 018.834 0a2.527 2.527 0 012.521 2.522v2.52H8.834z" fill="#36C5F0"/>
+        <path d="M8.834 6.313a2.528 2.528 0 012.521 2.521 2.528 2.528 0 01-2.521 2.521H2.522A2.528 2.528 0 010 8.834a2.528 2.528 0 012.522-2.521h6.312z" fill="#36C5F0"/>
+        <path d="M18.956 8.834a2.528 2.528 0 012.522-2.521A2.528 2.528 0 0124 8.834a2.527 2.527 0 01-2.522 2.521h-2.522V8.834z" fill="#2EB67D"/>
+        <path d="M17.688 8.834a2.528 2.528 0 01-2.523 2.521 2.527 2.527 0 01-2.52-2.521V2.522A2.527 2.527 0 0115.165 0a2.528 2.528 0 012.523 2.522v6.312z" fill="#2EB67D"/>
+        <path d="M15.165 18.956a2.528 2.528 0 012.523 2.522A2.528 2.528 0 0115.165 24a2.527 2.527 0 01-2.52-2.522v-2.522h2.52z" fill="#ECB22E"/>
+        <path d="M15.165 17.688a2.527 2.527 0 01-2.52-2.523 2.526 2.526 0 012.52-2.52h6.313A2.527 2.527 0 0124 15.165a2.528 2.528 0 01-2.522 2.523h-6.313z" fill="#ECB22E"/>
+      </svg>
+      <div>
+        <div class="slack-channel-name" id="slackChannelName">#sales-pipeline</div>
+        <div class="slack-channel-desc">Oasis Smart Homes · Team Workspace</div>
+      </div>
+    </div>
+    <button class="slack-close" onclick="toggleSlack()">&#x2715;</button>
+  </div>
+  <div class="slack-channel-bar">
+    <button class="slack-ch-btn active" onclick="switchChannel('pipeline',this)">#sales-pipeline</button>
+    <button class="slack-ch-btn" onclick="switchChannel('billing',this)">#billing-team</button>
+    <button class="slack-ch-btn" onclick="switchChannel('james',this)">#james-lacek</button>
+    <button class="slack-ch-btn" onclick="switchChannel('general',this)">#sales-team</button>
+  </div>
+  <div class="slack-messages" id="slackMessages"></div>
+  <div class="slack-compose">
+    <div class="slack-compose-box">
+      <textarea class="slack-compose-input" id="slackInput" placeholder="Message #sales-pipeline" rows="3" onkeydown="handleCompose(event)"></textarea>
+      <div class="slack-compose-toolbar">
+        <div class="slack-toolbar-left">
+          <button class="slack-tool-btn"><i class="ti ti-paperclip"></i></button>
+          <button class="slack-tool-btn"><i class="ti ti-at"></i></button>
+          <button class="slack-tool-btn"><i class="ti ti-mood-smile"></i></button>
+        </div>
+        <button class="slack-send-btn" id="slackSendBtn" onclick="sendMsg()" disabled>
+          <i class="ti ti-send"></i> Send
+        </button>
+      </div>
+    </div>
+    <div class="slack-note"><i class="ti ti-brand-slack" style="font-size:11px"></i> Posts directly to Slack · <a href="#" style="color:#185FA5">Open in Slack ↗</a></div>
+  </div>
+</div>
+
+<script>
+// ── Data ────────────────────────────────────────────────────────────────────
+const REPS = {
+  JL:{name:'James Lacek',  cashIn:25375.03, anticipated:363722.22, remainder:338347.19, goal:93306.81,  pct:27, bg:'#FAEEDA',color:'#633806'},
+  SP:{name:'Seth Pender',  cashIn:22190.68, anticipated:67668.81,  remainder:45478.13,  goal:0,         pct:0,  bg:'#FEE2E2',color:'#791F1F'},
+  BK:{name:'Ben Kayl',     cashIn:0,        anticipated:75432.56,  remainder:75432.56,  goal:93306.81,  pct:0,  bg:'#E6F1FB',color:'#0C447C'},
+  SH:{name:'Scott Hensley',cashIn:3123.50,  anticipated:49426.89,  remainder:46303.39,  goal:167301.05, pct:2,  bg:'#EAF3DE',color:'#27500A'},
+  BZ:{name:'Buzz Jensen',  cashIn:535.74,   anticipated:798.64,    remainder:262.90,    goal:40083.71,  pct:1,  bg:'#EEEDFE',color:'#3C3489'},
+  ZL:{name:'Zach Lind',    cashIn:1615.65,  anticipated:4958.91,   remainder:3343.26,   goal:64924.03,  pct:2,  bg:'#E8F4F0',color:'#065F46'},
+  JW:{name:'Justin Worley',cashIn:0,        anticipated:3516.82,   remainder:3516.82,   goal:0,         pct:0,  bg:'#F3F0FF',color:'#3730A3'},
+};
+
+const JOBS = [
+  {loc:'Service & RMR',rep:'*RMR',    div:'AV',        name:'RMR',                        amt:1481.87,  phase:'Final',   status:''},
+  {loc:'Service & RMR',rep:'*Service',div:'AV',        name:'Service',                    amt:40495.24, phase:'Final',   status:''},
+  {loc:'Arizona',      rep:'BK',      div:'AV',        name:'wr84',                       amt:447.00,   phase:'Final',   status:'accounting checking on approval'},
+  {loc:'Arizona',      rep:'BK',      div:'AV',        name:'Mountain Springs',           amt:7448.37,  phase:'Final',   status:'client reviewing'},
+  {loc:'Arizona',      rep:'BK',      div:'Electrical',name:'WR54 rough',                 amt:29116.50, phase:'Partial', status:'5.8.2026 Invoice sent'},
+  {loc:'Arizona',      rep:'BK',      div:'Electrical',name:'GQ52',                       amt:15316.25, phase:'Final',   status:'5.8.2026 Invoice sent'},
+  {loc:'Arizona',      rep:'BK',      div:'Electrical',name:'GQ29 rough',                 amt:23104.44, phase:'Partial', status:'5.8.2026 Invoice sent'},
+  {loc:'Arizona',      rep:'BZ',      div:'AV',        name:'Williams 11089',             amt:262.90,   phase:'Final',   status:'sent follow up'},
+  {loc:'Arizona',      rep:'BZ',      div:'AV',        name:'Baldwin',                    amt:535.74,   phase:'Final',   status:''},
+  {loc:'Arizona',      rep:'JL',      div:'AV',        name:'Jefferies 10120',            amt:4355.87,  phase:'Final',   status:'re-sent F/U 12/17/2025'},
+  {loc:'Arizona',      rep:'JL',      div:'AV',        name:'Desert Chateau',             amt:10850.00, phase:'Deposit', status:'next month'},
+  {loc:'Arizona',      rep:'JL',      div:'AV',        name:'Patel AV',                   amt:15900.00, phase:'Final',   status:'jen to get invoice ready for payment'},
+  {loc:'Arizona',      rep:'JL',      div:'AV',        name:'Simon 11205',                amt:2400.63,  phase:'Final',   status:'needs a new screen'},
+  {loc:'Arizona',      rep:'JL',      div:'Electrical',name:'Lot 165',                    amt:30674.75, phase:'Final',   status:'resent 5.8.2026'},
+  {loc:'Arizona',      rep:'JL',      div:'AV',        name:'Gardner AV',                 amt:19517.38, phase:'Final',   status:'sent 19517.38'},
+  {loc:'Arizona',      rep:'JL',      div:'AV',        name:'Gardner lighting',           amt:9704.64,  phase:'Final',   status:'sent 9704.64'},
+  {loc:'Arizona',      rep:'JL',      div:'AV',        name:'Gardner Warm lighting',      amt:5277.10,  phase:'Final',   status:'sent 5277.10'},
+  {loc:'Arizona',      rep:'JL',      div:'AV',        name:'Gardner 11690',              amt:936.52,   phase:'Final',   status:'invoice sent 936.52'},
+  {loc:'Arizona',      rep:'JL',      div:'AV',        name:'Gardner 11506',              amt:290.34,   phase:'Final',   status:'invoice sent 290.34'},
+  {loc:'Arizona',      rep:'JL',      div:'AV',        name:'Tinker Personal — IN REVIEW',amt:0,        phase:'Final',   status:'IN REVIEW 47435'},
+  {loc:'Arizona',      rep:'JL',      div:'Electrical',name:'DM27',                       amt:27374.64, phase:'Final',   status:'invoice sent'},
+  {loc:'Arizona',      rep:'JL',      div:'Electrical',name:'Fullerton co 1113',          amt:4337.40,  phase:'Final',   status:'invoice sent'},
+  {loc:'Arizona',      rep:'JL',      div:'Electrical',name:'Fullerton CO 11270',         amt:7292.97,  phase:'Final',   status:'invoice sent'},
+  {loc:'Arizona',      rep:'JL',      div:'Electrical',name:'Sears 11916',                amt:22788.99, phase:'Deposit', status:'invoice sent 5/19/2026'},
+  {loc:'Arizona',      rep:'JL',      div:'Electrical',name:'SF117 11609',                amt:87799.77, phase:'Deposit', status:'inv sent to Amy Per JL — Portal/Email'},
+  {loc:'Arizona',      rep:'JL',      div:'AV',        name:'Cabalo 11982 / 11988',       amt:31998.98, phase:'Deposit', status:'invoice sent'},
+  {loc:'Arizona',      rep:'JL',      div:'AV',        name:'Sears 9774',                 amt:9944.78,  phase:'Deposit', status:'invoice sent'},
+  {loc:'Arizona',      rep:'JL',      div:'AV',        name:'Valley Vista 11986',         amt:21240.01, phase:'Deposit', status:'5/21 invoice sent'},
+  {loc:'Arizona',      rep:'JL',      div:'Electrical',name:'Valley Vista 12019',         amt:11137.96, phase:'Deposit', status:'5/21 invoice sent'},
+  {loc:'Arizona',      rep:'JL',      div:'AV',        name:'Lane/Terry Beacon Rock',     amt:21704.90, phase:'Final',   status:'Invoice sent through QBO'},
+  {loc:'Arizona',      rep:'JL',      div:'AV',        name:'Martin 11661',               amt:2764.34,  phase:'Final',   status:'Invoice sent'},
+  {loc:'Arizona',      rep:'JL',      div:'AV',        name:'Bogue drywall repair',       amt:3200.00,  phase:'Final',   status:'check in the mail'},
+  {loc:'Arizona',      rep:'JL',      div:'AV',        name:'Lee 12097',                  amt:4372.25,  phase:'Deposit', status:''},
+  {loc:'Arizona',      rep:'JL',      div:'AV',        name:'Apex 11678',                 amt:7858.00,  phase:'Final',   status:''},
+  {loc:'Arizona',      rep:'JW',      div:'AV',        name:'Hatcher',                    amt:0,        phase:'Final',   status:'9094.43'},
+  {loc:'Arizona',      rep:'JW',      div:'AV',        name:'Martin ADD ORDER',           amt:3516.82,  phase:'Final',   status:'client wants to review'},
+  {loc:'California',   rep:'SH',      div:'AV',        name:'Southpointe 11828',          amt:5473.44,  phase:'Final',   status:'invoice sent'},
+  {loc:'California',   rep:'SH',      div:'AV',        name:'South Pointe Mar Vista 11820',amt:30689.72,phase:'Deposit', status:''},
+  {loc:'California',   rep:'SH',      div:'AV',        name:'Mahaffey 11869',             amt:5717.29,  phase:'Final',   status:'Sent Follow up Via email'},
+  {loc:'California',   rep:'SH',      div:'AV',        name:'Cayir Final',                amt:4422.94,  phase:'Final',   status:'Invoice sent'},
+  {loc:'California',   rep:'SH',      div:'AV',        name:'Mahaffey 12115',             amt:3123.50,  phase:'Deposit', status:''},
+  {loc:'Arizona',      rep:'SP',      div:'AV',        name:'Benson 11330',               amt:0,        phase:'Final',   status:'meeting with him'},
+  {loc:'Arizona',      rep:'SP',      div:'AV',        name:'Benson 11442',               amt:4643.52,  phase:'Final',   status:'invoice sent'},
+  {loc:'Arizona',      rep:'SP',      div:'AV',        name:'Urlik Final',                amt:26704.90, phase:'Final',   status:'Invoice sent'},
+  {loc:'Arizona',      rep:'SP',      div:'AV',        name:'Aspect 11299',               amt:769.50,   phase:'Final',   status:'Jen to follow up with new contractor'},
+  {loc:'Arizona',      rep:'SP',      div:'AV',        name:'Anderson 11925',             amt:4512.56,  phase:'Final',   status:'invoice sent'},
+  {loc:'Arizona',      rep:'SP',      div:'AV',        name:'Anderson 11943',             amt:514.02,   phase:'Final',   status:'Invoice sent'},
+  {loc:'Arizona',      rep:'SP',      div:'AV',        name:'Critchfield',                amt:13360.21, phase:'Final',   status:'invoice sent'},
+  {loc:'Arizona',      rep:'SP',      div:'AV',        name:'Carl Anderson 11941',        amt:302.49,   phase:'Final',   status:''},
+  {loc:'Arizona',      rep:'SP',      div:'AV',        name:'Stein 12011',                amt:16861.61, phase:'Deposit', status:''},
+  {loc:'California',   rep:'ZL',      div:'AV',        name:'Del Toro 10270',             amt:3343.26,  phase:'Final',   status:'resent invoice'},
+  {loc:'California',   rep:'ZL',      div:'AV',        name:'Rotman 12113',               amt:1615.65,  phase:'Final',   status:''},
+];
+
+// Rep colors for pills
+const REP_COLORS = {
+  JL:{bg:'#FAEEDA',color:'#633806'},
+  SP:{bg:'#FEE2E2',color:'#791F1F'},
+  BK:{bg:'#E6F1FB',color:'#0C447C'},
+  SH:{bg:'#EAF3DE',color:'#27500A'},
+  BZ:{bg:'#EEEDFE',color:'#3C3489'},
+  ZL:{bg:'#E8F4F0',color:'#065F46'},
+  JW:{bg:'#F3F0FF',color:'#3730A3'},
+};
+
+// Active filters
+let filters = {rep:'all', div:'all', loc:'all', phase:'all'};
+
+function fmt(n){ return n>0?'$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';}
+function fmtK(n){ return n>=1000?'$'+(n/1000).toFixed(0)+'k':'$'+n.toFixed(0);}
+
+// ── Rep scorecards ───────────────────────────────────────────────
+function buildRepGrid(){
+  const grid = document.getElementById('rep-grid');
+  grid.innerHTML = '';
+  Object.entries(REPS).forEach(([code,r])=>{
+    const pct = r.goal>0?Math.min(100,Math.round((r.cashIn/r.goal)*100)):r.cashIn>0?100:0;
+    const goalTxt = r.goal>0?`Goal ${fmtK(r.goal)}`:'No goal set';
+    grid.innerHTML += `
+    <div class="rep-card" onclick="setRepFilter('${code}',this)">
+      <div class="rep-card-top">
+        <div class="rep-avatar" style="background:${r.bg};color:${r.color}">${code}</div>
+        <div><div class="rep-name">${r.name}</div><div class="rep-code">${goalTxt}</div></div>
+      </div>
+      <div class="rep-stats">
+        <div class="rep-stat-item">
+          <div class="rep-stat-label">Collected</div>
+          <div class="rep-stat-value collected">${fmtK(r.cashIn)}</div>
+        </div>
+        <div class="rep-stat-item">
+          <div class="rep-stat-label">Outstanding</div>
+          <div class="rep-stat-value outstanding">${fmtK(r.remainder)}</div>
+        </div>
+      </div>
+      <div class="rep-goal-row">
+        <span>% to goal</span><span style="font-weight:600;color:${pct>=80?'var(--teal)':pct>=40?'#854F0B':'var(--red)'}">${pct}%</span>
+      </div>
+      <div class="rep-progress"><div class="rep-progress-fill" style="width:${pct}%;background:${pct>=80?'var(--teal-m)':pct>=40?'var(--amber)':'var(--red)'}"></div></div>
+    </div>`;
+  });
+}
+
+// ── Pipeline table ───────────────────────────────────────────────
+function renderTable(){
+  const search = document.getElementById('job-search').value.toLowerCase();
+  const tbody = document.getElementById('pipeline-tbody');
+  let rows = JOBS.filter(j=>{
+    if(filters.rep!=='all' && j.rep!==filters.rep) return false;
+    if(filters.div!=='all' && j.div!==filters.div) return false;
+    if(filters.loc!=='all' && j.loc!==filters.loc) return false;
+    if(filters.phase!=='all' && j.phase!==filters.phase) return false;
+    if(search && !j.name.toLowerCase().includes(search) && !j.status.toLowerCase().includes(search) && !j.rep.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  document.getElementById('tbl-count').textContent = rows.length+' job'+(rows.length!==1?'s':'');
+
+  const phaseBadge = p => p==='Final'?'b-final':p==='Deposit'?'b-deposit':'b-partial';
+  const amtClass  = p => p==='Final'?'amt-final':p==='Deposit'?'amt-deposit':'amt-partial';
+  const rc = code => REP_COLORS[code]||{bg:'#F1F3F5',color:'#495057'};
+
+  tbody.innerHTML = rows.map(j=>{
+    const c = rc(j.rep);
+    return `<tr>
+      <td>
+        <div class="job-name">${j.name}</div>
+        ${j.status?`<div class="job-status">${j.status}</div>`:''}
+      </td>
+      <td><span class="rep-pill" style="background:${c.bg};color:${c.color}">${j.rep}</span></td>
+      <td><span class="div-pill ${j.div==='AV'?'dp-av':'dp-el'}">${j.div}</span></td>
+      <td><span class="loc-pill">${j.loc==='Service & RMR'?'Service':j.loc}</span></td>
+      <td><span class="badge ${phaseBadge(j.phase)}">${j.phase}</span></td>
+      <td class="r ${amtClass(j.phase)}">${j.amt>0?'$'+j.amt.toLocaleString('en-US',{minimumFractionDigits:2}):'—'}</td>
+      <td style="max-width:200px;font-size:11px;color:var(--gray-400)">${j.status||'—'}</td>
+    </tr>`;
+  }).join('');
+
+  // Update metrics based on filtered data
+  const total = rows.reduce((s,j)=>s+j.amt,0);
+  document.getElementById('m-total').textContent = '$'+Math.round(total).toLocaleString();
+}
+
+// ── Filter controls ─────────────────────────────────────────────
+function setFilter(type, val, btn){
+  filters[type] = val;
+  btn.closest('.filter-group').querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function setRepFilter(code, card){
+  const isActive = card.classList.contains('active');
+  document.querySelectorAll('.rep-card').forEach(c=>c.classList.remove('active'));
+  if(!isActive){
+    card.classList.add('active');
+    filters.rep = code;
+    // also update rep filter bar
+    document.querySelectorAll('.filter-bar .filter-btn').forEach(b=>{
+      if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes(`'rep','${code}'`)){
+        b.closest('.filter-group').querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active'));
+        b.classList.add('active');
+      }
+    });
+  } else {
+    filters.rep = 'all';
+    document.querySelectorAll('.filter-bar .filter-btn').forEach(b=>{
+      if(b.textContent.trim()==='All reps') b.classList.add('active');
+      else b.classList.remove('active');
+    });
+  }
+  renderTable();
+}
+
+// ── Slack ────────────────────────────────────────────────────────
+const slackData = {
+  pipeline:[
+    {name:'Justin Wagner',initials:'JW',bg:'#E6F1FB',color:'#0C447C',time:'8:00 AM',text:'Morning pipeline review: $512k outstanding, $94k collected. JL is carrying 66% of the pipeline — good problem to have but let\'s get others moving.'},
+    {name:'James Lacek',initials:'JL',bg:'#FAEEDA',color:'#633806',time:'8:12 AM',text:'SF117 is the big one — $87.8k deposit. Amy confirmed she\'s processing this week. Should hit by Friday.',reaction:'👍 3'},
+    {name:'Seth Pender',initials:'SP',bg:'#FEE2E2',color:'#791F1F',time:'8:25 AM',text:'Stein 12011 deposit invoice is out — $16.8k. Client is a quick payer historically.'},
+    {name:'Stacy Wagner',initials:'SW',bg:'#EEEDFE',color:'#3C3489',time:'9:01 AM',text:'Lot 165 is 18 days out — resent 5/8. @James can you follow up directly with the client?'},
+    {name:'James Lacek',initials:'JL',bg:'#FAEEDA',color:'#633806',time:'9:08 AM',text:'On it. I\'ll call this afternoon.',reaction:'✅ 2'},
+  ],
+  billing:[
+    {name:'Stacy Wagner',initials:'SW',bg:'#EEEDFE',color:'#3C3489',time:'Yesterday 4:00 PM',text:'End of week billing: 12 invoices processed, $41.2k total. Top priority next week: SF117, Lot 165, Valley Vista x2.'},
+    {name:'Melissa Busse',initials:'MB',bg:'#EAF3DE',color:'#27500A',time:'Yesterday 4:15 PM',text:'Valley Vista 11986 and 12019 are both deposit phase — $32.4k combined. Both invoices sent 5/21.',reaction:'👍 2'},
+    {name:'Stacy Wagner',initials:'SW',bg:'#EEEDFE',color:'#3C3489',time:'9:00 AM',text:'Weekly billing kickoff: focus on collecting SF117 ($87.8k) and closing out the Gardner job cluster.'},
+  ],
+  james:[
+    {name:'James Lacek',initials:'JL',bg:'#FAEEDA',color:'#633806',time:'8:30 AM',text:'Pipeline update for my book:\n• SF117: $87.8k — Amy processing this week\n• Cabalo: $32k — invoice sent, awaiting\n• Sears 11916: $22.8k — sent 5/19\n• Valley Vista: $21.2k + $11.1k — sent 5/21'},
+    {name:'Justin Wagner',initials:'JW',bg:'#E6F1FB',color:'#0C447C',time:'8:35 AM',text:'Solid week James. Lot 165 is the one I\'m watching — 18 days is too long.',reaction:'👍 1'},
+    {name:'James Lacek',initials:'JL',bg:'#FAEEDA',color:'#633806',time:'8:40 AM',text:'Agreed — calling them today.'},
+  ],
+  general:[
+    {name:'Justin Wagner',initials:'JW',bg:'#E6F1FB',color:'#0C447C',time:'8:00 AM',text:'Team reminder: when an estimate is approved in Portal, please mark it same day. The pipeline dashboard is only as good as the data we put in.'},
+    {name:'Seth Pender',initials:'SP',bg:'#FEE2E2',color:'#791F1F',time:'8:05 AM',text:'Noted. I have Stein and Critchfield to mark this morning.',reaction:'✅ 3'},
+    {name:'Scott Hensley',initials:'SH',bg:'#EAF3DE',color:'#27500A',time:'8:10 AM',text:'South Pointe Mar Vista deposit just came in — should I mark it as collected in QBO or wait for the check to clear?'},
+    {name:'Stacy Wagner',initials:'SW',bg:'#EEEDFE',color:'#3C3489',time:'8:14 AM',text:'Wait for it to clear, then mark. Should be 2 business days.',reaction:'👍 2'},
+  ],
+};
+
+let currentChannel = 'pipeline';
+const channelNames = {pipeline:'sales-pipeline',billing:'billing-team',james:'james-lacek',general:'sales-team'};
+
+function renderSlackMessages(chId){
+  const msgs = slackData[chId]||[];
+  const el = document.getElementById('slackMessages');
+  let html = '<div class="slack-date-divider">Today</div>';
+  msgs.forEach((m,i)=>{
+    const txt = m.text.replace(/\n/g,'<br>').replace(/@(\w+)/g,'<span class="mention">@$1</span>');
+    const reaction = m.reaction?`<div><span class="slack-reaction">${m.reaction}</span></div>`:'';
+    html += `<div class="slack-msg">
+      <div class="slack-avatar" style="background:${m.bg};color:${m.color};border-radius:6px">${m.initials}</div>
+      <div class="slack-msg-body">
+        <div class="slack-msg-meta"><span class="slack-msg-name">${m.name}</span><span class="slack-msg-time">${m.time}</span></div>
+        <div class="slack-msg-text">${txt}</div>${reaction}
+      </div></div>`;
+  });
+  el.innerHTML = html;
+  el.scrollTop = el.scrollHeight;
+}
+
+window.switchChannel = function(chId,btn){
+  currentChannel = chId;
+  document.querySelectorAll('.slack-ch-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('slackChannelName').textContent = '#'+(channelNames[chId]||chId);
+  document.getElementById('slackInput').placeholder = 'Message #'+(channelNames[chId]||chId);
+  renderSlackMessages(chId);
+};
+
+window.toggleSlack = function(){
+  const panel = document.getElementById('slackPanel');
+  const overlay = document.getElementById('slackOverlay');
+  const open = !panel.classList.contains('open');
+  panel.classList.toggle('open',open);
+  overlay.classList.toggle('open',open);
+  if(open) renderSlackMessages(currentChannel);
+};
+
+window.sendMsg = function(){
+  const input = document.getElementById('slackInput');
+  const txt = input.value.trim();
+  if(!txt) return;
+  const now = new Date();
+  const h=now.getHours()%12||12, m=String(now.getMinutes()).padStart(2,'0'), ap=now.getHours()>=12?'PM':'AM';
+  slackData[currentChannel].push({name:'You',initials:'JW',bg:'#E6F1FB',color:'#0C447C',time:`${h}:${m} ${ap}`,text:txt});
+  input.value='';
+  document.getElementById('slackSendBtn').disabled=true;
+  renderSlackMessages(currentChannel);
+};
+
+window.handleCompose = function(e){
+  document.getElementById('slackSendBtn').disabled = e.target.value.trim().length===0;
+  if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)) sendMsg();
+};
+
+// ── Init ─────────────────────────────────────────────────────────
+buildRepGrid();
+renderTable();
+</script>
+</body>
+</html>

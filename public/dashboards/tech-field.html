@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oasis Smart Homes — Tech Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --navy:#0D1B2A;--teal:#0A8754;--teal-m:#1D9E75;--teal-l:#E1F5EE;
+  --amber:#E8A020;--amber-l:#FAEEDA;--red:#DC2626;--red-l:#FEE2E2;
+  --orange:#C2410C;--orange-l:#FFF7ED;
+  --blue-l:#E6F1FB;--blue:#185FA5;--purple-l:#EEEDFE;--purple:#3C3489;
+  --green-l:#EAF3DE;--green:#27500A;
+  --gray-50:#F8F9FA;--gray-100:#F1F3F5;--gray-200:#E9ECEF;
+  --gray-400:#868E96;--gray-600:#495057;--gray-900:#212529;
+  --border:#E9ECEF;--radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#F4F6F8;color:var(--gray-900);font-size:13px;line-height:1.5}
+
+/* ── Topbar ── */
+.topbar{background:var(--navy);padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.wordmark{font-family:'DM Serif Display',serif;font-size:17px;color:#fff;line-height:1}
+.sub{font-size:9px;color:rgba(255,255,255,.4);font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+.urgent-btn{display:flex;align-items:center;gap:6px;background:var(--red);color:#fff;border:none;padding:8px 14px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;transition:background .15s;animation:urgentPulse 2.5s infinite}
+.urgent-btn:hover{background:#B91C1C}
+@keyframes urgentPulse{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.4)}70%{box-shadow:0 0 0 8px rgba(220,38,38,0)}}
+
+/* ── Job selector bar ── */
+.job-bar{background:#fff;border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:8px;overflow-x:auto}
+.job-label{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;margin-right:4px}
+.job-btn{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--gray-600);transition:all .15s;white-space:nowrap;flex-shrink:0}
+.job-btn:hover{border-color:var(--teal-m);color:var(--teal)}
+.job-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* ── Content ── */
+.content{padding:16px;max-width:900px;margin:0 auto}
+
+/* ── Section card ── */
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;overflow:hidden}
+.card-head{padding:13px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.card-title{font-size:12px;font-weight:600;color:var(--gray-600);letter-spacing:.05em;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.card-body{padding:14px 16px}
+
+/* ── Job header ── */
+.job-header{background:var(--navy);border-radius:var(--radius);padding:16px;margin-bottom:14px;color:#fff}
+.job-title{font-family:'DM Serif Display',serif;font-size:22px;color:#fff;margin-bottom:4px}
+.job-meta{font-size:11px;color:rgba(255,255,255,.55)}
+.job-badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.b-green{background:var(--green-l);color:var(--green)}
+.b-amber{background:var(--amber-l);color:#633806}
+.b-red{background:var(--red-l);color:#791F1F}
+.b-blue{background:var(--blue-l);color:var(--blue)}
+.b-purple{background:var(--purple-l);color:var(--purple)}
+.b-gray{background:var(--gray-100);color:var(--gray-600)}
+.b-teal{background:var(--teal-l);color:#085041}
+.b-white{background:rgba(255,255,255,.15);color:#fff}
+.b-orange{background:var(--orange-l);color:var(--orange)}
+
+/* ── CRM contacts ── */
+.contacts-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.contact-card{display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--gray-50);border-radius:var(--radius-sm);border:1px solid var(--border)}
+.avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.contact-name{font-size:12px;font-weight:600;color:var(--gray-900)}
+.contact-role{font-size:10px;color:var(--gray-400);margin-top:1px}
+.contact-detail{font-size:10px;color:var(--gray-600);margin-top:3px;display:flex;align-items:center;gap:4px}
+.contact-detail a{color:var(--blue);text-decoration:none}
+
+/* ── Password vault ── */
+.pw-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pw-item{background:var(--gray-50);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px}
+.pw-label{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px}
+.pw-value{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.pw-text{font-size:13px;font-weight:500;color:var(--gray-900);font-family:monospace;letter-spacing:.03em}
+.pw-hidden{filter:blur(4px);transition:filter .2s;cursor:pointer;user-select:none}
+.pw-hidden:hover{filter:blur(0)}
+.pw-copy{font-size:10px;color:var(--blue);cursor:pointer;border:none;background:none;padding:2px 6px;border-radius:4px}
+.pw-copy:hover{background:var(--blue-l)}
+.pw-note{font-size:10px;color:var(--gray-400);margin-top:4px}
+.reveal-btn{font-size:10px;color:var(--gray-400);background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:3px;margin-top:6px}
+.reveal-btn:hover{color:var(--blue)}
+
+/* ── Estimates ── */
+.est-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--gray-100);font-size:12px}
+.est-row:last-child{border-bottom:none}
+.est-head{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase;padding-bottom:6px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px}
+
+/* ── Labor tracker ── */
+.labor-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.labor-stat{background:var(--gray-50);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;text-align:center}
+.labor-stat-val{font-size:20px;font-weight:600;color:var(--gray-900)}
+.labor-stat-label{font-size:10px;color:var(--gray-400);margin-top:2px}
+.labor-phase-row{padding:10px 0;border-bottom:1px solid var(--gray-100)}
+.labor-phase-row:last-child{border-bottom:none}
+.labor-phase-name{font-size:12px;font-weight:500;color:var(--gray-900);margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+.labor-track{height:10px;background:var(--gray-200);border-radius:5px;overflow:hidden;margin-bottom:4px}
+.labor-fill{height:100%;border-radius:5px;transition:width .4s}
+.lf-ok{background:var(--teal-m)}
+.lf-warn{background:var(--amber)}
+.lf-crit{background:var(--red)}
+.labor-phase-meta{display:flex;justify-content:space-between;font-size:10px;color:var(--gray-400)}
+.remaining-pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.rp-ok{background:var(--teal-l);color:#085041}
+.rp-warn{background:var(--amber-l);color:#633806}
+.rp-crit{background:var(--red-l);color:#791F1F}
+
+/* ── Photos/videos ── */
+.media-strip{display:flex;gap:8px;flex-wrap:wrap}
+.media-thumb{width:80px;height:64px;border-radius:var(--radius-sm);background:var(--gray-200);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--gray-400);cursor:pointer;transition:border-color .12s;position:relative;flex-shrink:0}
+.media-thumb:hover{border-color:var(--teal-m)}
+.media-thumb .video-badge{position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;font-size:8px;font-weight:600;padding:1px 4px;border-radius:3px}
+.media-date{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase;margin:12px 0 6px;width:100%}
+.media-date:first-child{margin-top:0}
+
+/* ── Notes ── */
+.note-item{padding:12px 0;border-bottom:1px solid var(--gray-100);display:flex;gap:10px}
+.note-item:last-child{border-bottom:none}
+.note-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px}
+.note-header{display:flex;align-items:baseline;gap:6px;margin-bottom:4px}
+.note-author{font-size:12px;font-weight:600;color:var(--gray-900)}
+.note-time{font-size:10px;color:var(--gray-400)}
+.note-text{font-size:12px;color:var(--gray-700);line-height:1.55}
+.note-tag{font-size:9px;font-weight:600;padding:2px 6px;border-radius:4px;margin-left:4px}
+.nt-urgent{background:var(--red-l);color:#791F1F}
+.nt-info{background:var(--blue-l);color:var(--blue)}
+.nt-parts{background:var(--orange-l);color:var(--orange)}
+.note-input-row{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--gray-100)}
+.note-input{flex:1;font-size:12px;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);outline:none;resize:none;font-family:inherit}
+.note-input:focus{border-color:var(--teal-m)}
+.note-submit{background:var(--navy);color:#fff;border:none;padding:8px 16px;border-radius:var(--radius-sm);font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;align-self:flex-end}
+.note-submit:hover{background:#1a2f47}
+
+/* ── Urgent modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:#fff;border-radius:var(--radius);width:100%;max-width:480px;margin:16px;overflow:hidden;transform:translateY(12px);transition:transform .2s}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-head{background:var(--red);padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:14px;font-weight:600;color:#fff;display:flex;align-items:center;gap:7px}
+.modal-close{background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:18px;line-height:1}
+.modal-close:hover{color:#fff}
+.modal-body{padding:18px}
+.modal-label{font-size:11px;font-weight:600;color:var(--gray-600);letter-spacing:.04em;text-transform:uppercase;margin-bottom:5px;margin-top:12px}
+.modal-label:first-child{margin-top:0}
+.modal-input{width:100%;font-size:13px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);outline:none;font-family:inherit}
+.modal-input:focus{border-color:var(--red)}
+.modal-select{width:100%;font-size:13px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);outline:none;background:#fff;font-family:inherit}
+.modal-textarea{width:100%;font-size:13px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);outline:none;resize:none;font-family:inherit;min-height:80px}
+.modal-textarea:focus,.modal-select:focus{border-color:var(--red)}
+.modal-footer{padding:14px 18px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+.btn-cancel{background:#fff;border:1px solid var(--border);color:var(--gray-600);padding:8px 16px;border-radius:var(--radius-sm);font-size:12px;font-weight:500;cursor:pointer}
+.btn-send{background:var(--red);color:#fff;border:none;padding:8px 18px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer}
+.btn-send:hover{background:#B91C1C}
+.sent-confirm{text-align:center;padding:24px;display:none}
+.sent-confirm .check{font-size:48px;color:var(--teal);margin-bottom:10px}
+.sent-confirm p{font-size:13px;color:var(--gray-600)}
+
+.src-pill{font-size:9px;font-weight:600;padding:2px 7px;border-radius:20px;letter-spacing:.04em}
+.sp-m{background:var(--blue-l);color:var(--blue)}
+.sp-c{background:var(--amber-l);color:#633806}
+.sp-p{background:var(--purple-l);color:var(--purple)}
+.sp-q{background:var(--green-l);color:var(--green)}
+
+.divider{height:1px;background:var(--border);margin:12px 0}
+
+@media(max-width:600px){
+  .contacts-grid{grid-template-columns:1fr}
+  .pw-grid{grid-template-columns:1fr}
+  .labor-summary{grid-template-columns:repeat(2,1fr)}
+  .est-row,.est-head{grid-template-columns:2fr 1fr 1fr}
+  .est-row > *:last-child,.est-head > *:last-child{display:none}
+}
+
+/* ══ SLACK PANEL ══════════════════════════════════════════════════ */
+.slack-toggle-btn{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+  color:#fff;padding:5px 12px;border-radius:20px;cursor:pointer;
+  font-size:11px;font-weight:600;letter-spacing:.03em;
+  transition:background .15s;position:relative;
+}
+.slack-toggle-btn:hover{background:rgba(255,255,255,.2)}
+.slack-toggle-btn .slack-logo{
+  width:16px;height:16px;display:flex;align-items:center;justify-content:center;
+}
+.slack-unread{
+  position:absolute;top:-4px;right:-4px;
+  width:15px;height:15px;border-radius:50%;
+  background:#E8A020;color:#fff;font-size:8px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--navy,#0D1B2A);
+}
+
+/* Panel overlay */
+.slack-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.2);
+  z-index:900;opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.slack-overlay.open{opacity:1;pointer-events:auto}
+
+/* Panel drawer */
+.slack-panel{
+  position:fixed;top:0;right:0;bottom:0;width:380px;
+  background:#fff;border-left:1px solid #E9ECEF;
+  box-shadow:-4px 0 24px rgba(0,0,0,.12);
+  z-index:901;display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);
+}
+.slack-panel.open{transform:translateX(0)}
+
+/* Panel header */
+.slack-panel-head{
+  background:#0D1B2A;padding:0 16px;height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.slack-head-left{display:flex;align-items:center;gap:8px}
+.slack-head-logo{
+  width:20px;height:20px;
+  display:grid;grid-template-columns:1fr 1fr;gap:2px;
+}
+.slack-head-logo span{
+  border-radius:3px;display:block;
+}
+.slack-channel-name{
+  font-size:13px;font-weight:600;color:#fff;
+}
+.slack-channel-desc{
+  font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.03em;
+}
+.slack-close{
+  background:none;border:none;color:rgba(255,255,255,.55);
+  cursor:pointer;font-size:18px;line-height:1;padding:4px;
+  transition:color .12s;
+}
+.slack-close:hover{color:#fff}
+
+/* Channel selector */
+.slack-channel-bar{
+  background:#F8F9FA;border-bottom:1px solid #E9ECEF;
+  padding:8px 12px;display:flex;gap:6px;flex-wrap:nowrap;
+  overflow-x:auto;flex-shrink:0;
+}
+.slack-ch-btn{
+  padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;
+  border:1px solid #E9ECEF;background:#fff;color:#495057;
+  cursor:pointer;white-space:nowrap;transition:all .12s;flex-shrink:0;
+}
+.slack-ch-btn:hover{border-color:#1D9E75;color:#0A8754}
+.slack-ch-btn.active{background:#0D1B2A;color:#fff;border-color:#0D1B2A}
+
+/* Messages area */
+.slack-messages{
+  flex:1;overflow-y:auto;padding:12px 16px;
+  display:flex;flex-direction:column;gap:0;
+}
+.slack-date-divider{
+  display:flex;align-items:center;gap:8px;
+  margin:12px 0 8px;font-size:10px;font-weight:600;
+  color:#868E96;letter-spacing:.04em;text-transform:uppercase;
+}
+.slack-date-divider::before,.slack-date-divider::after{
+  content:'';flex:1;height:1px;background:#E9ECEF;
+}
+.slack-msg{
+  display:flex;gap:9px;padding:4px 0;
+  position:relative;border-radius:6px;transition:background .1s;
+}
+.slack-msg:hover{background:#F8F9FA;margin:0 -8px;padding:4px 8px;}
+.slack-avatar{
+  width:30px;height:30px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;
+}
+.slack-msg-body{flex:1;min-width:0}
+.slack-msg-meta{display:flex;align-items:baseline;gap:6px;margin-bottom:2px}
+.slack-msg-name{font-size:12px;font-weight:600;color:#212529}
+.slack-msg-time{font-size:10px;color:#868E96}
+.slack-msg-text{font-size:12px;color:#343a40;line-height:1.5;word-break:break-word}
+.slack-msg-text .mention{
+  color:#185FA5;background:#E6F1FB;
+  padding:0 3px;border-radius:3px;font-weight:500;
+}
+.slack-msg-text .jobref{
+  color:#0A8754;font-weight:500;
+}
+.slack-reaction{
+  display:inline-flex;align-items:center;gap:3px;
+  background:#F1F3F5;border:1px solid #E9ECEF;
+  border-radius:12px;padding:1px 7px;font-size:11px;
+  cursor:pointer;margin-top:3px;transition:background .1s;
+}
+.slack-reaction:hover{background:#E9ECEF}
+.slack-file-attach{
+  display:flex;align-items:center;gap:8px;
+  background:#F8F9FA;border:1px solid #E9ECEF;border-radius:6px;
+  padding:8px 10px;margin-top:4px;cursor:pointer;
+  transition:border-color .12s;
+}
+.slack-file-attach:hover{border-color:#1D9E75}
+.slack-file-icon{font-size:16px;color:#868E96}
+.slack-file-name{font-size:11px;font-weight:500;color:#212529}
+.slack-file-size{font-size:10px;color:#868E96}
+
+/* Compose area */
+.slack-compose{
+  border-top:1px solid #E9ECEF;padding:12px 14px;flex-shrink:0;
+}
+.slack-compose-box{
+  border:1.5px solid #E9ECEF;border-radius:8px;
+  background:#fff;overflow:hidden;transition:border-color .15s;
+}
+.slack-compose-box:focus-within{border-color:#1D9E75}
+.slack-compose-input{
+  width:100%;border:none;outline:none;padding:10px 12px;
+  font-family:inherit;font-size:12.5px;color:#212529;
+  resize:none;min-height:70px;max-height:120px;
+  background:transparent;line-height:1.5;
+}
+.slack-compose-toolbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 8px 6px 10px;border-top:1px solid #F1F3F5;
+}
+.slack-toolbar-left{display:flex;align-items:center;gap:2px}
+.slack-tool-btn{
+  background:none;border:none;color:#868E96;cursor:pointer;
+  padding:4px 6px;border-radius:4px;font-size:13px;line-height:1;
+  transition:all .12s;
+}
+.slack-tool-btn:hover{background:#F1F3F5;color:#495057}
+.slack-send-btn{
+  background:#0D1B2A;color:#fff;border:none;
+  padding:6px 16px;border-radius:6px;font-size:12px;font-weight:600;
+  cursor:pointer;display:flex;align-items:center;gap:5px;
+  transition:background .12s;
+}
+.slack-send-btn:hover{background:#1D9E75}
+.slack-send-btn:disabled{background:#E9ECEF;color:#868E96;cursor:default}
+
+/* notification pill below compose */
+.slack-note{
+  font-size:10px;color:#868E96;margin-top:6px;
+  display:flex;align-items:center;gap:4px;
+}
+
+@media(max-width:500px){
+  .slack-panel{width:100%}
+}
+/* ══ END SLACK PANEL ══════════════════════════════════════════════ */
+
+
+/* ── Tech notes in CompanyCam section ── */
+.tech-notes-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin:14px 0 8px;padding-top:12px;border-top:1px solid var(--gray-100);
+}
+.tech-notes-title{
+  font-size:11px;font-weight:600;color:var(--gray-600);
+  letter-spacing:.05em;text-transform:uppercase;
+  display:flex;align-items:center;gap:6px;
+}
+.tech-note-item{
+  display:flex;gap:9px;padding:9px 0;
+  border-bottom:1px solid var(--gray-100);
+}
+.tech-note-item:last-of-type{border-bottom:none}
+.tn-avatar{
+  width:28px;height:28px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;flex-shrink:0;
+}
+.tn-body{flex:1;min-width:0}
+.tn-meta{display:flex;align-items:center;gap:6px;margin-bottom:3px;flex-wrap:wrap}
+.tn-name{font-size:11px;font-weight:600;color:var(--gray-900)}
+.tn-time{font-size:10px;color:var(--gray-400)}
+.tn-tag{
+  font-size:9px;font-weight:700;padding:1px 6px;
+  border-radius:10px;letter-spacing:.04em;
+}
+.tn-urgent{background:var(--red-l);color:#791F1F}
+.tn-parts{background:var(--amber-l);color:#633806}
+.tn-info{background:var(--blue-l);color:var(--blue)}
+.tn-text{font-size:11.5px;color:var(--gray-600);line-height:1.55}
+.tn-input-row{
+  display:flex;gap:8px;align-items:flex-start;margin-top:10px;
+}
+.tn-input{
+  flex:1;border:1px solid var(--border);border-radius:6px;
+  padding:7px 10px;font-family:inherit;font-size:12px;
+  color:var(--gray-900);resize:none;outline:none;
+  transition:border-color .15s;
+}
+.tn-input:focus{border-color:var(--teal-m)}
+.tn-submit{
+  background:var(--navy);color:#fff;border:none;
+  padding:7px 14px;border-radius:6px;font-size:11px;
+  font-weight:600;cursor:pointer;white-space:nowrap;
+  display:flex;align-items:center;gap:4px;transition:background .12s;
+}
+.tn-submit:hover{background:var(--teal-m)}
+
+</style>
+</head>
+<body>
+
+<!-- Urgent modal -->
+<div class="modal-overlay" id="urgent-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title"><i class="ti ti-alert-triangle"></i> Urgent — Flag for Sales Rep</div>
+      <button class="modal-close" onclick="closeUrgent()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-form">
+      <div class="modal-label">Your name</div>
+      <input class="modal-input" type="text" placeholder="Tech name..." id="u-tech">
+      <div class="modal-label">Job</div>
+      <select class="modal-select" id="u-job">
+        <option>Morrison Residence</option>
+        <option>Patel AV</option>
+        <option>Dew Residence PW</option>
+        <option>Yates AV</option>
+        <option>Gardener AV</option>
+        <option>Martin Shades</option>
+      </select>
+      <div class="modal-label">Priority</div>
+      <select class="modal-select" id="u-priority">
+        <option>🔴 Urgent — needs response today</option>
+        <option>🟡 Important — needs response this week</option>
+        <option>🔵 FYI — no rush</option>
+      </select>
+      <div class="modal-label">Category</div>
+      <select class="modal-select" id="u-category">
+        <option>Client issue</option>
+        <option>Parts / materials problem</option>
+        <option>Scope change needed</option>
+        <option>Site access issue</option>
+        <option>Safety concern</option>
+        <option>Change order required</option>
+        <option>Other</option>
+      </select>
+      <div class="modal-label">Details</div>
+      <textarea class="modal-textarea" id="u-details" placeholder="Describe what's happening and what the sales rep needs to know or do..."></textarea>
+    </div>
+    <div class="sent-confirm" id="modal-confirm">
+      <div class="check"><i class="ti ti-circle-check"></i></div>
+      <div style="font-size:16px;font-weight:600;color:var(--gray-900);margin-bottom:6px">Sent to sales rep</div>
+      <p>Your alert has been sent to Monday.com and the assigned rep has been notified.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeUrgent()">Cancel</button>
+      <button class="btn-send" onclick="sendUrgent()"><i class="ti ti-send" style="font-size:12px"></i> Send alert to rep</button>
+    </div>
+  </div>
+</div>
+
+<!-- Topbar -->
+<div class="topbar">
+  <div>
+    <div class="wordmark">Oasis Smart Homes</div>
+    <div class="sub">Tech field dashboard</div>
+  </div>
+
+    <button class="slack-toggle-btn" onclick="toggleSlack()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <path d="M5.042 15.165a2.528 2.528 0 01-2.52 2.523A2.528 2.528 0 010 15.165a2.527 2.527 0 012.522-2.52h2.52v2.52z" fill="#E01E5A"/>
+        <path d="M6.313 15.165a2.527 2.527 0 012.521-2.52 2.527 2.527 0 012.521 2.52v6.313A2.528 2.528 0 018.834 24a2.528 2.528 0 01-2.521-2.522v-6.313z" fill="#E01E5A"/>
+        <path d="M8.834 5.042a2.528 2.528 0 01-2.521-2.52A2.528 2.528 0 018.834 0a2.527 2.527 0 012.521 2.522v2.52H8.834z" fill="#36C5F0"/>
+        <path d="M8.834 6.313a2.528 2.528 0 012.521 2.521 2.528 2.528 0 01-2.521 2.521H2.522A2.528 2.528 0 010 8.834a2.528 2.528 0 012.522-2.521h6.312z" fill="#36C5F0"/>
+        <path d="M18.956 8.834a2.528 2.528 0 012.522-2.521A2.528 2.528 0 0124 8.834a2.527 2.527 0 01-2.522 2.521h-2.522V8.834z" fill="#2EB67D"/>
+        <path d="M17.688 8.834a2.528 2.528 0 01-2.523 2.521 2.527 2.527 0 01-2.52-2.521V2.522A2.527 2.527 0 0115.165 0a2.528 2.528 0 012.523 2.522v6.312z" fill="#2EB67D"/>
+        <path d="M15.165 18.956a2.528 2.528 0 012.523 2.522A2.528 2.528 0 0115.165 24a2.527 2.527 0 01-2.52-2.522v-2.522h2.52z" fill="#ECB22E"/>
+        <path d="M15.165 17.688a2.527 2.527 0 01-2.52-2.523 2.526 2.526 0 012.52-2.52h6.313A2.527 2.527 0 0124 15.165a2.528 2.528 0 01-2.522 2.523h-6.313z" fill="#ECB22E"/>
+      </svg>
+      Slack
+      <span class="slack-unread">3</span>
+    </button>
+  <button class="urgent-btn" onclick="openUrgent()">
+    <i class="ti ti-alert-triangle" style="font-size:14px"></i> Urgent — flag for rep
+  </button>
+</div>
+
+<!-- Job selector -->
+<div class="job-bar">
+  <span class="job-label">Job</span>
+  <button class="job-btn active" onclick="setJob(0,this)">Morrison Residence</button>
+  <button class="job-btn" onclick="setJob(1,this)">Patel AV</button>
+  <button class="job-btn" onclick="setJob(2,this)">Dew Residence PW</button>
+  <button class="job-btn" onclick="setJob(3,this)">Yates AV</button>
+  <button class="job-btn" onclick="setJob(4,this)">Gardener AV</button>
+  <button class="job-btn" onclick="setJob(5,this)">Martin Shades</button>
+</div>
+
+<div class="content">
+
+  <!-- Job header -->
+  <div class="job-header">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div>
+        <div class="job-title" id="j-title">Morrison Residence</div>
+        <div class="job-meta" id="j-meta">Job #8241 · Builder: Gurczak · PM: James Lacek · Phase: Rough Complete</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:11px;color:rgba(255,255,255,.5)">Install date</div>
+        <div style="font-size:14px;font-weight:600;color:#fff" id="j-date">June 14, 2026</div>
+      </div>
+    </div>
+    <div class="job-badges" id="j-badges">
+      <span class="badge b-white"><i class="ti ti-map-pin" style="font-size:11px"></i> 4821 E Camelback Rd, Phoenix AZ</span>
+      <span class="badge b-amber">In progress</span>
+      <span class="badge b-white">Rough complete</span>
+      <span class="badge b-white"><i class="ti ti-user" style="font-size:11px"></i> James Lacek</span>
+    </div>
+  </div>
+
+  <!-- CRM Contacts -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title"><i class="ti ti-users" style="font-size:14px"></i> Client contacts</div>
+      <span class="src-pill sp-m">Monday</span>
+    </div>
+    <div class="card-body">
+      <div class="contacts-grid" id="j-contacts">
+        <div class="contact-card">
+          <div class="avatar" style="background:#E6F1FB;color:#0C447C">TM</div>
+          <div>
+            <div class="contact-name">Thomas Morrison</div>
+            <div class="contact-role">Homeowner · Primary</div>
+            <div class="contact-detail"><i class="ti ti-phone" style="font-size:11px"></i> <a href="tel:6025550142">(602) 555-0142</a></div>
+            <div class="contact-detail"><i class="ti ti-mail" style="font-size:11px"></i> <a href="#">t.morrison@email.com</a></div>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="avatar" style="background:#FBEAF0;color:#72243E">SM</div>
+          <div>
+            <div class="contact-name">Sarah Morrison</div>
+            <div class="contact-role">Homeowner · Secondary</div>
+            <div class="contact-detail"><i class="ti ti-phone" style="font-size:11px"></i> <a href="tel:6025550198">(602) 555-0198</a></div>
+            <div class="contact-detail"><i class="ti ti-mail" style="font-size:11px"></i> <a href="#">s.morrison@email.com</a></div>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="avatar" style="background:#EAF3DE;color:#27500A">RG</div>
+          <div>
+            <div class="contact-name">Rick Gurczak</div>
+            <div class="contact-role">Builder / GC</div>
+            <div class="contact-detail"><i class="ti ti-phone" style="font-size:11px"></i> <a href="tel:4805550371">(480) 555-0371</a></div>
+            <div class="contact-detail"><i class="ti ti-mail" style="font-size:11px"></i> <a href="#">rick@gurczakbuilds.com</a></div>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="avatar" style="background:#FAEEDA;color:#633806">JL</div>
+          <div>
+            <div class="contact-name">James Lacek</div>
+            <div class="contact-role">Oasis Rep / PM</div>
+            <div class="contact-detail"><i class="ti ti-phone" style="font-size:11px"></i> <a href="tel:6025550210">(602) 555-0210</a></div>
+            <div class="contact-detail"><i class="ti ti-mail" style="font-size:11px"></i> <a href="#">james@oasissmarthomes.com</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Password vault -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title"><i class="ti ti-lock" style="font-size:14px"></i> Site passwords & access</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:10px;color:var(--gray-400);display:flex;align-items:center;gap:3px"><i class="ti ti-eye-off" style="font-size:11px"></i> Tap to reveal</span>
+        <span class="src-pill sp-m">Monday</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="pw-grid" id="j-passwords">
+        <div class="pw-item">
+          <div class="pw-label"><i class="ti ti-wifi" style="font-size:11px"></i> WiFi network</div>
+          <div class="pw-value">
+            <span class="pw-text">MorrisonGuest</span>
+          </div>
+          <div class="pw-note">Guest network for devices during install</div>
+        </div>
+        <div class="pw-item">
+          <div class="pw-label"><i class="ti ti-wifi" style="font-size:11px"></i> WiFi password</div>
+          <div class="pw-value">
+            <span class="pw-text pw-hidden" onclick="revealPw(this)">M0rrison2024!</span>
+            <button class="pw-copy" onclick="copyPw(this,'M0rrison2024!')">Copy</button>
+          </div>
+          <div class="pw-note">Click to reveal</div>
+        </div>
+        <div class="pw-item">
+          <div class="pw-label"><i class="ti ti-smart-home" style="font-size:11px"></i> Control4 login</div>
+          <div class="pw-value">
+            <span class="pw-text pw-hidden" onclick="revealPw(this)">admin / oasis2024</span>
+            <button class="pw-copy" onclick="copyPw(this,'admin / oasis2024')">Copy</button>
+          </div>
+          <div class="pw-note">Control4 director IP: 192.168.1.100</div>
+        </div>
+        <div class="pw-item">
+          <div class="pw-label"><i class="ti ti-device-cctv" style="font-size:11px"></i> Gate code</div>
+          <div class="pw-value">
+            <span class="pw-text pw-hidden" onclick="revealPw(this)">4821#</span>
+            <button class="pw-copy" onclick="copyPw(this,'4821#')">Copy</button>
+          </div>
+          <div class="pw-note">Front gate entry — works 7am–5pm</div>
+        </div>
+        <div class="pw-item">
+          <div class="pw-label"><i class="ti ti-router" style="font-size:11px"></i> Router admin</div>
+          <div class="pw-value">
+            <span class="pw-text pw-hidden" onclick="revealPw(this)">admin / Gurczak2024</span>
+            <button class="pw-copy" onclick="copyPw(this,'admin / Gurczak2024')">Copy</button>
+          </div>
+          <div class="pw-note">Ubiquiti — 192.168.1.1</div>
+        </div>
+        <div class="pw-item">
+          <div class="pw-label"><i class="ti ti-sun" style="font-size:11px"></i> Lutron login</div>
+          <div class="pw-value">
+            <span class="pw-text pw-hidden" onclick="revealPw(this)">oasis / Lutron24!</span>
+            <button class="pw-copy" onclick="copyPw(this,'oasis / Lutron24!')">Copy</button>
+          </div>
+          <div class="pw-note">Homeworks QSX processor</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;padding:8px 10px;background:var(--amber-l);border-radius:var(--radius-sm);font-size:11px;color:#633806;display:flex;align-items:center;gap:6px">
+        <i class="ti ti-info-circle" style="font-size:13px"></i> Passwords synced from Monday.com. Do not screenshot or share externally.
+      </div>
+    </div>
+  </div>
+
+  <!-- Approved estimates -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title"><i class="ti ti-file-check" style="font-size:14px"></i> Approved estimates</div>
+      <div style="display:flex;gap:4px"><span class="src-pill sp-p">Portal.io</span><span class="src-pill sp-q">QBO</span></div>
+    </div>
+    <div class="card-body">
+      <div class="est-head">
+        <div>Estimate</div><div style="text-align:right">Amount</div><div style="text-align:right">Status</div><div style="text-align:right">Phase</div>
+      </div>
+      <div id="j-estimates">
+        <div class="est-row">
+          <div><div style="font-weight:500">Est #1 — AV System</div><div style="font-size:10px;color:var(--gray-400)">Approved Jan 15 · Deposit received</div></div>
+          <div style="text-align:right;font-weight:500">$54,200</div>
+          <div style="text-align:right"><span class="badge b-amber">Final due</span></div>
+          <div style="text-align:right"><span class="badge b-gray" style="font-size:9px">Rough</span></div>
+        </div>
+        <div class="est-row">
+          <div><div style="font-weight:500">Est #2 — Shades + CO</div><div style="font-size:10px;color:var(--gray-400)">Paid in full</div></div>
+          <div style="text-align:right;font-weight:500">$35,200</div>
+          <div style="text-align:right"><span class="badge b-green">Paid</span></div>
+          <div style="text-align:right"><span class="badge b-gray" style="font-size:9px">Shades</span></div>
+        </div>
+        <div class="est-row">
+          <div><div style="font-weight:500">Est #3 — Lighting Control</div><div style="font-size:10px;color:var(--gray-400)">Approved · billing deferred Jul</div></div>
+          <div style="text-align:right;font-weight:500">$44,900</div>
+          <div style="text-align:right"><span class="badge b-purple">Deferred</span></div>
+          <div style="text-align:right"><span class="badge b-gray" style="font-size:9px">Lighting</span></div>
+        </div>
+      </div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--gray-100);display:flex;justify-content:space-between;font-size:12px">
+        <span style="color:var(--gray-400)">Total approved</span>
+        <span style="font-weight:600;color:var(--blue)">$134,300</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Labor hours tracker -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title"><i class="ti ti-clock-hour-4" style="font-size:14px"></i> Labor hours tracker</div>
+      <span class="src-pill" style="background:var(--red-l);color:#791F1F">QB Time</span>
+    </div>
+    <div class="card-body">
+      <div class="labor-summary">
+        <div class="labor-stat">
+          <div class="labor-stat-val" id="l-budgeted">380</div>
+          <div class="labor-stat-label">Budgeted hrs</div>
+        </div>
+        <div class="labor-stat">
+          <div class="labor-stat-val" style="color:#854F0B" id="l-used">247</div>
+          <div class="labor-stat-label">Hours used</div>
+        </div>
+        <div class="labor-stat">
+          <div class="labor-stat-val" style="color:var(--teal)" id="l-remaining">133</div>
+          <div class="labor-stat-label">Hours remaining</div>
+        </div>
+        <div class="labor-stat">
+          <div class="labor-stat-val" id="l-pct" style="color:#854F0B">65%</div>
+          <div class="labor-stat-label">Budget used</div>
+        </div>
+      </div>
+
+      <div id="j-labor-phases">
+        <div class="labor-phase-row">
+          <div class="labor-phase-name">
+            <span>AV System — Rough</span>
+            <span class="remaining-pill rp-ok"><i class="ti ti-check" style="font-size:11px"></i> Complete</span>
+          </div>
+          <div class="labor-track"><div class="labor-fill lf-ok" style="width:100%"></div></div>
+          <div class="labor-phase-meta"><span>120 / 120 hrs used</span><span style="color:var(--teal);font-weight:600">100%</span></div>
+        </div>
+        <div class="labor-phase-row">
+          <div class="labor-phase-name">
+            <span>Shades Install</span>
+            <span class="remaining-pill rp-ok"><i class="ti ti-check" style="font-size:11px"></i> Complete</span>
+          </div>
+          <div class="labor-track"><div class="labor-fill lf-ok" style="width:100%"></div></div>
+          <div class="labor-phase-meta"><span>82 / 80 hrs used</span><span style="color:var(--amber);font-weight:600">103% — 2 hrs over</span></div>
+        </div>
+        <div class="labor-phase-row">
+          <div class="labor-phase-name">
+            <span>AV System — Trim</span>
+            <span class="remaining-pill rp-warn"><i class="ti ti-clock" style="font-size:11px"></i> 43 hrs remaining</span>
+          </div>
+          <div class="labor-track"><div class="labor-fill lf-warn" style="width:49%"></div></div>
+          <div class="labor-phase-meta"><span>45 / 88 hrs used</span><span style="color:#854F0B;font-weight:600">51%</span></div>
+        </div>
+        <div class="labor-phase-row">
+          <div class="labor-phase-name">
+            <span>Lighting Control</span>
+            <span class="remaining-pill rp-ok"><i class="ti ti-calendar" style="font-size:11px"></i> Not started · 92 hrs budgeted</span>
+          </div>
+          <div class="labor-track"><div class="labor-fill lf-ok" style="width:0%"></div></div>
+          <div class="labor-phase-meta"><span>0 / 92 hrs used</span><span style="color:var(--gray-400);font-weight:600">0% · Starts Jul</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Site photos & videos -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title"><i class="ti ti-camera" style="font-size:14px"></i> Site photos & videos</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:11px;color:var(--gray-400)">62 files</span>
+        <span class="src-pill sp-c" style="background:var(--amber-l);color:#633806">CompanyCam</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="media-strip">
+        <div class="media-date" style="width:100%">Rough-in · Jan 28, 2026</div>
+        <div class="media-thumb"><i class="ti ti-camera" style="font-size:20px"></i></div>
+        <div class="media-thumb"><i class="ti ti-camera" style="font-size:20px"></i></div>
+        <div class="media-thumb"><i class="ti ti-camera" style="font-size:20px"></i></div>
+        <div class="media-thumb"><i class="ti ti-camera" style="font-size:20px"></i></div>
+        <div class="media-thumb" style="background:var(--blue-l)"><i class="ti ti-video" style="font-size:20px;color:var(--blue)"></i><div class="video-badge">VIDEO</div></div>
+        <div class="media-thumb" style="font-size:10px;font-weight:600;color:var(--gray-400)">+17 more</div>
+
+        <div class="media-date">Shades install · Mar 10, 2026</div>
+        <div class="media-thumb"><i class="ti ti-camera" style="font-size:20px"></i></div>
+        <div class="media-thumb"><i class="ti ti-camera" style="font-size:20px"></i></div>
+        <div class="media-thumb" style="background:var(--blue-l)"><i class="ti ti-video" style="font-size:20px;color:var(--blue)"></i><div class="video-badge">VIDEO</div></div>
+        <div class="media-thumb" style="font-size:10px;font-weight:600;color:var(--gray-400)">+22 more</div>
+
+        <div class="media-date">Progress update · May 14, 2026</div>
+        <div class="media-thumb"><i class="ti ti-camera" style="font-size:20px"></i></div>
+        <div class="media-thumb"><i class="ti ti-camera" style="font-size:20px"></i></div>
+        <div class="media-thumb"><i class="ti ti-camera" style="font-size:20px"></i></div>
+        <div class="media-thumb" style="font-size:10px;font-weight:600;color:var(--gray-400)">+11 more</div>
+      </div>
+
+      <div class="tech-notes-head">
+        <div class="tech-notes-title">
+          <i class="ti ti-notes" style="font-size:13px"></i> Tech notes from site visits
+        </div>
+        <span style="font-size:10px;color:var(--gray-400)">Syncs to Monday + Slack</span>
+      </div>
+      <div id="cc-tech-notes">
+        <div class="tech-note-item">
+          <div class="tn-avatar" style="background:#FCEBEB;color:#791F1F">DK</div>
+          <div class="tn-body">
+            <div class="tn-meta">
+              <span class="tn-name">Derek K.</span>
+              <span class="tn-time">May 14 · 3:42pm</span>
+              <span class="tn-tag tn-urgent">URGENT</span>
+            </div>
+            <div class="tn-text">Client asked about adding a camera system while on site. Said James mentioned it. Sales needs to clarify scope — no change order yet.</div>
+          </div>
+        </div>
+        <div class="tech-note-item">
+          <div class="tn-avatar" style="background:#E6F1FB;color:#0C447C">MR</div>
+          <div class="tn-body">
+            <div class="tn-meta">
+              <span class="tn-name">Mike R.</span>
+              <span class="tn-time">May 8 · 9:15am</span>
+              <span class="tn-tag tn-parts">PARTS</span>
+            </div>
+            <div class="tn-text">Ketra fixtures not arrived — vendor delay, ETA June 10. Lighting trim needs to push. Builder needs heads up — house going on market June 20.</div>
+          </div>
+        </div>
+        <div class="tech-note-item">
+          <div class="tn-avatar" style="background:#EAF3DE;color:#27500A">TJ</div>
+          <div class="tn-body">
+            <div class="tn-meta">
+              <span class="tn-name">Tyler J.</span>
+              <span class="tn-time">Apr 22 · 4:10pm</span>
+              <span class="tn-tag tn-info">INFO</span>
+            </div>
+            <div class="tn-text">GC punched through AV conduit in great room — east wall near fireplace. Fixed on site. Photos uploaded to CompanyCam.</div>
+          </div>
+        </div>
+      </div>
+      <div class="tn-input-row" style="margin-top:10px">
+        <textarea class="tn-input" rows="2" placeholder="Add a note from this site visit..."></textarea>
+        <button class="tn-submit" onclick="postTechNote(this)">
+          <i class="ti ti-send" style="font-size:11px"></i> Post
+        </button>
+      </div>
+
+      <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--gray-100);display:flex;gap:8px">
+        <button style="font-size:11px;color:var(--blue);background:var(--blue-l);border:none;padding:5px 12px;border-radius:20px;cursor:pointer;display:flex;align-items:center;gap:4px">
+          <i class="ti ti-camera" style="font-size:12px"></i> Add photo
+        </button>
+        <button style="font-size:11px;color:var(--blue);background:var(--blue-l);border:none;padding:5px 12px;border-radius:20px;cursor:pointer;display:flex;align-items:center;gap:4px">
+          <i class="ti ti-external-link" style="font-size:12px"></i> Open in CompanyCam
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Internal notes -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title"><i class="ti ti-notes" style="font-size:14px"></i> Internal job notes</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:10px;color:var(--gray-400)">Visible to Oasis team only</span>
+        <span class="src-pill sp-m">Monday</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div id="j-notes">
+        <div class="note-item">
+          <div class="note-avatar" style="background:#FCEBEB;color:#791F1F">DK</div>
+          <div style="flex:1">
+            <div class="note-header">
+              <span class="note-author">Derek K.</span>
+              <span class="note-time">May 14 · 3:42pm</span>
+              <span class="note-tag nt-urgent">URGENT</span>
+            </div>
+            <div class="note-text">Client asked about adding a camera system while I was on site today. Said James had mentioned it. Need sales to clarify scope before next visit — don't want to open that up without a change order.</div>
+          </div>
+        </div>
+        <div class="note-item">
+          <div class="note-avatar" style="background:#E6F1FB;color:#0C447C">MR</div>
+          <div style="flex:1">
+            <div class="note-header">
+              <span class="note-author">Mike R.</span>
+              <span class="note-time">May 8 · 9:15am</span>
+              <span class="note-tag nt-parts">PARTS</span>
+            </div>
+            <div class="note-text">Ketra fixtures haven't arrived yet — vendor says shipping delay, ETA June 10. Lighting trim phase needs to be pushed. James and builder need heads up. House is going on market June 20.</div>
+          </div>
+        </div>
+        <div class="note-item">
+          <div class="note-avatar" style="background:#EAF3DE;color:#27500A">TJ</div>
+          <div style="flex:1">
+            <div class="note-header">
+              <span class="note-author">Tyler J.</span>
+              <span class="note-time">Apr 22 · 4:10pm</span>
+              <span class="note-tag nt-info">INFO</span>
+            </div>
+            <div class="note-text">GC crew punched through the AV conduit run in the great room — east wall near fireplace. Fixed on site but worth documenting. Photos uploaded to CompanyCam.</div>
+          </div>
+        </div>
+        <div class="note-item">
+          <div class="note-avatar" style="background:#FAEEDA;color:#633806">JL</div>
+          <div style="flex:1">
+            <div class="note-header">
+              <span class="note-author">James Lacek</span>
+              <span class="note-time">Jan 20 · 11:00am</span>
+            </div>
+            <div class="note-text">Client is very particular about cable management. Thomas specifically requested all runs to be fully concealed — no surface conduit anywhere visible. Builder confirmed walls stay open until we're done.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="note-input-row">
+        <textarea class="note-input" id="new-note" rows="2" placeholder="Add a note for the team... (syncs to Monday.com)"></textarea>
+        <button class="note-submit" onclick="addNote()"><i class="ti ti-send" style="font-size:12px"></i> Post</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const jobs=[
+  {
+    title:'Morrison Residence',meta:'Job #8241 · Builder: Gurczak · PM: James Lacek · Phase: Rough Complete',
+    date:'June 14, 2026',
+    badges:'<span class="badge b-white"><i class="ti ti-map-pin" style="font-size:11px"></i> 4821 E Camelback Rd, Phoenix</span><span class="badge b-amber">In progress</span><span class="badge b-white">Rough complete</span><span class="badge b-white"><i class="ti ti-user" style="font-size:11px"></i> James Lacek</span>',
+    lBudgeted:380,lUsed:247,lRemaining:133,lPct:'65%',lPctNum:65,
+  },
+  {
+    title:'Patel AV — Rishi & Sheena',meta:'Job #10627 · Builder: Integrity · PM: James Lacek · Phase: Rough Complete',
+    date:'June 12, 2026',
+    badges:'<span class="badge b-white"><i class="ti ti-map-pin" style="font-size:11px"></i> 6200 N 44th St, Paradise Valley</span><span class="badge b-green">Needs final payment</span><span class="badge b-white">Rough complete</span><span class="badge b-white"><i class="ti ti-user" style="font-size:11px"></i> James Lacek</span>',
+    lBudgeted:120,lUsed:116,lRemaining:4,lPct:'97%',lPctNum:97,
+  },
+  {
+    title:'Dew Residence PW',meta:'Job #9141 · Builder: Cameron · PM: James Lacek',
+    date:'TBD — waiting on site',
+    badges:'<span class="badge b-white"><i class="ti ti-map-pin" style="font-size:11px"></i> 3200 E Baseline Rd, Gilbert</span><span class="badge b-gray">Waiting on site</span><span class="badge b-white"><i class="ti ti-user" style="font-size:11px"></i> James Lacek</span>',
+    lBudgeted:60,lUsed:22,lRemaining:38,lPct:'37%',lPctNum:37,
+  },
+  {
+    title:'Yates AV — Mary & Frank',meta:'Job #7820 · Builder: Integrity · PM: James Lacek · Phase: Rough Complete',
+    date:'June 20, 2026',
+    badges:'<span class="badge b-white"><i class="ti ti-map-pin" style="font-size:11px"></i> 8100 N Pima Rd, Scottsdale</span><span class="badge b-amber">In progress</span><span class="badge b-white">Rough complete</span><span class="badge b-white"><i class="ti ti-user" style="font-size:11px"></i> James Lacek</span>',
+    lBudgeted:520,lUsed:498,lRemaining:22,lPct:'96%',lPctNum:96,
+  },
+  {
+    title:'Gardener AV — Steve & Carol',meta:'Job #8812 · Builder: Gurczak · PM: James Lacek · Phase: Rough Complete',
+    date:'June 10, 2026',
+    badges:'<span class="badge b-white"><i class="ti ti-map-pin" style="font-size:11px"></i> 5400 E Lincoln Dr, Scottsdale</span><span class="badge b-amber">In progress</span><span class="badge b-white">Rough complete</span><span class="badge b-white"><i class="ti ti-user" style="font-size:11px"></i> James Lacek</span>',
+    lBudgeted:200,lUsed:118,lRemaining:82,lPct:'59%',lPctNum:59,
+  },
+  {
+    title:'Martin Shades — Horizon Trail',meta:'Job #6930 · Builder: Gurczak · PM: James Lacek · Phase: Completed',
+    date:'Completed May 2, 2026',
+    badges:'<span class="badge b-white"><i class="ti ti-map-pin" style="font-size:11px"></i> 9200 Horizon Trail, Scottsdale</span><span class="badge b-teal">Completed</span><span class="badge b-white"><i class="ti ti-user" style="font-size:11px"></i> James Lacek</span>',
+    lBudgeted:104,lUsed:104,lRemaining:0,lPct:'100%',lPctNum:100,
+  },
+];
+
+function setJob(i,el){
+  document.querySelectorAll('.job-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  const j=jobs[i];
+  document.getElementById('j-title').textContent=j.title;
+  document.getElementById('j-meta').textContent=j.meta;
+  document.getElementById('j-date').textContent=j.date;
+  document.getElementById('j-badges').innerHTML=j.badges;
+  document.getElementById('l-budgeted').textContent=j.lBudgeted;
+  document.getElementById('l-used').textContent=j.lUsed;
+  document.getElementById('l-remaining').textContent=j.lRemaining;
+  document.getElementById('l-pct').textContent=j.lPct;
+  document.getElementById('l-pct').style.color=j.lPctNum>=95?'var(--red)':j.lPctNum>=70?'#854F0B':'var(--teal)';
+}
+
+function revealPw(el){
+  el.classList.toggle('pw-hidden');
+}
+
+function copyPw(btn,text){
+  navigator.clipboard.writeText(text).then(()=>{
+    const orig=btn.textContent;
+    btn.textContent='Copied!';
+    btn.style.color='var(--teal)';
+    setTimeout(()=>{btn.textContent=orig;btn.style.color='';},1500);
+  });
+}
+
+function addNote(){
+  const input=document.getElementById('new-note');
+  const text=input.value.trim();
+  if(!text) return;
+  const notes=document.getElementById('j-notes');
+  const now=new Date();
+  const timeStr=now.toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+  const newNote=document.createElement('div');
+  newNote.className='note-item';
+  newNote.style.background='#F0FDF4';
+  newNote.innerHTML=`
+    <div class="note-avatar" style="background:var(--teal-l);color:#085041">ME</div>
+    <div style="flex:1">
+      <div class="note-header"><span class="note-author">You</span><span class="note-time">${timeStr}</span><span class="note-tag nt-info">NEW</span></div>
+      <div class="note-text">${text}</div>
+    </div>`;
+  notes.insertBefore(newNote,notes.firstChild);
+  input.value='';
+  setTimeout(()=>newNote.style.background='',2000);
+}
+
+function openUrgent(){
+  document.getElementById('urgent-modal').classList.add('open');
+  document.getElementById('modal-form').style.display='block';
+  document.getElementById('modal-confirm').style.display='none';
+  const footer=document.querySelector('.modal-footer');
+  if(footer) footer.style.display='flex';
+}
+
+function closeUrgent(){
+  document.getElementById('urgent-modal').classList.remove('open');
+}
+
+function sendUrgent(){
+  const form=document.getElementById('modal-form');
+  const confirm=document.getElementById('modal-confirm');
+  const footer=document.querySelector('.modal-footer');
+  form.style.display='none';
+  if(footer) footer.style.display='none';
+  confirm.style.display='block';
+  setTimeout(closeUrgent,2500);
+}
+
+document.getElementById('urgent-modal').addEventListener('click',function(e){
+  if(e.target===this) closeUrgent();
+});
+</script>
+
+<div class="slack-overlay" id="slackOverlay" onclick="toggleSlack()"></div>
+<div class="slack-panel" id="slackPanel">
+  <div class="slack-panel-head">
+    <div class="slack-head-left">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M5.042 15.165a2.528 2.528 0 01-2.52 2.523A2.528 2.528 0 010 15.165a2.527 2.527 0 012.522-2.52h2.52v2.52z" fill="#E01E5A"/>
+        <path d="M6.313 15.165a2.527 2.527 0 012.521-2.52 2.527 2.527 0 012.521 2.52v6.313A2.528 2.528 0 018.834 24a2.528 2.528 0 01-2.521-2.522v-6.313z" fill="#E01E5A"/>
+        <path d="M8.834 5.042a2.528 2.528 0 01-2.521-2.52A2.528 2.528 0 018.834 0a2.527 2.527 0 012.521 2.522v2.52H8.834z" fill="#36C5F0"/>
+        <path d="M8.834 6.313a2.528 2.528 0 012.521 2.521 2.528 2.528 0 01-2.521 2.521H2.522A2.528 2.528 0 010 8.834a2.528 2.528 0 012.522-2.521h6.312z" fill="#36C5F0"/>
+        <path d="M18.956 8.834a2.528 2.528 0 012.522-2.521A2.528 2.528 0 0124 8.834a2.527 2.527 0 01-2.522 2.521h-2.522V8.834z" fill="#2EB67D"/>
+        <path d="M17.688 8.834a2.528 2.528 0 01-2.523 2.521 2.527 2.527 0 01-2.52-2.521V2.522A2.527 2.527 0 0115.165 0a2.528 2.528 0 012.523 2.522v6.312z" fill="#2EB67D"/>
+        <path d="M15.165 18.956a2.528 2.528 0 012.523 2.522A2.528 2.528 0 0115.165 24a2.527 2.527 0 01-2.52-2.522v-2.522h2.52z" fill="#ECB22E"/>
+        <path d="M15.165 17.688a2.527 2.527 0 01-2.52-2.523 2.526 2.526 0 012.52-2.52h6.313A2.527 2.527 0 0124 15.165a2.528 2.528 0 01-2.522 2.523h-6.313z" fill="#ECB22E"/>
+      </svg>
+      <div>
+        <div class="slack-channel-name" id="slackChannelName">#field-crew</div>
+        <div class="slack-channel-desc">Oasis Smart Homes · Team Workspace</div>
+      </div>
+    </div>
+    <button class="slack-close" onclick="toggleSlack()">&#x2715;</button>
+  </div>
+
+  <div class="slack-channel-bar">
+    <button class="slack-ch-btn active" onclick="switchChannel('field-crew',this)">#field-crew</button>
+<button class="slack-ch-btn " onclick="switchChannel('morrison',this)">#morrison-residence</button>
+<button class="slack-ch-btn " onclick="switchChannel('martin',this)">#martin-shades</button>
+<button class="slack-ch-btn " onclick="switchChannel('urgent',this)">#urgent-flags</button>
+
+  </div>
+
+  <div class="slack-messages" id="slackMessages"></div>
+
+  <div class="slack-compose">
+    <div class="slack-compose-box">
+      <textarea class="slack-compose-input" id="slackInput"
+        placeholder="Message #&#x2060;" rows="3"
+        onkeydown="handleCompose(event)"></textarea>
+      <div class="slack-compose-toolbar">
+        <div class="slack-toolbar-left">
+          <button class="slack-tool-btn" title="Attach file">
+            <i class="ti ti-paperclip"></i>
+          </button>
+          <button class="slack-tool-btn" title="Mention">
+            <i class="ti ti-at"></i>
+          </button>
+          <button class="slack-tool-btn" title="Emoji">
+            <i class="ti ti-mood-smile"></i>
+          </button>
+          <button class="slack-tool-btn" title="Bold">
+            <i class="ti ti-bold"></i>
+          </button>
+        </div>
+        <button class="slack-send-btn" id="slackSendBtn" onclick="sendMsg()" disabled>
+          <i class="ti ti-send"></i> Send
+        </button>
+      </div>
+    </div>
+    <div class="slack-note">
+      <i class="ti ti-brand-slack" style="font-size:11px"></i>
+      Messages post directly to Slack · <a href="#" style="color:#185FA5">Open in Slack ↗</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var allMessages = {"field-crew":[{name:'Tyler Wagner',time:'7:45 AM',text:'Good morning crew — June 6 schedule:\n• Martin shades: Tyler + Dave, 8am Gurczak site\n• Morrison check-in: Zach, after noon\n• Parts pickup: Somfy motors from shop before 8',initials:'TW',color:'#0C447C',bg:'#E6F1FB'},{name:'Dave Johnson',time:'7:52 AM',text:'On it — motor brackets pre-wired and in the van. See you at Martin site.',initials:'DJ',color:'#27500A',bg:'#EAF3DE'},{name:'Zach Lind',time:'8:01 AM',text:'Morrison — I\'ll be there around 12:30. Anything specific to check on or just a status walk?',initials:'ZL',color:'#633806',bg:'#FAEEDA'},{name:'Tyler Wagner',time:'8:05 AM',text:'Status walk + confirm the conduit run in the master is complete before James talks to client about trim date.',initials:'TW',color:'#0C447C',bg:'#E6F1FB'},{name:'Zach Lind',time:'8:08 AM',text:'Got it. Will document in CompanyCam and tag you.',initials:'ZL',color:'#633806',bg:'#FAEEDA'},],"morrison":[{name:'Zach Lind',time:'1:15 PM',text:'On site at Morrison. Conduit run in master is complete — looks clean. Panel has room for the Ketra dimmers.',initials:'ZL',color:'#633806',bg:'#FAEEDA'},{name:'Zach Lind',time:'1:22 PM',text:'One issue: the speaker rough in the media room is 6\" but we spec\'d 8\". Need to confirm with James before trim.',initials:'ZL',color:'#633806',bg:'#FAEEDA'},{name:'Tyler Wagner',time:'1:28 PM',text:'@James can you confirm speaker size for Morrison media room? Zach flagged a potential mismatch on site.',initials:'TW',color:'#0C447C',bg:'#E6F1FB'},{name:'James Lacek',time:'1:35 PM',text:'Checking the estimate now. Pretty sure client upgraded to 8\" — I\'ll verify with Portal and confirm in 10.',initials:'JL',color:'#633806',bg:'#FAEEDA'},],"martin":[{name:'Dave Johnson',time:'8:45 AM',text:'On site at Martin. Gurczak opened the house on time. Starting in the master bedroom first.',initials:'DJ',color:'#27500A',bg:'#EAF3DE'},{name:'Dave Johnson',time:'11:30 AM',text:'Master and guest rooms done — motors are running clean. Heading to great room after lunch.',initials:'DJ',color:'#27500A',bg:'#EAF3DE'},{name:'Tyler Wagner',time:'11:35 AM',text:'Great progress. Photo the great room fabric seam before install — client was particular about that.',initials:'TW',color:'#0C447C',bg:'#E6F1FB'},{name:'Dave Johnson',time:'2:45 PM',text:'All shades installed and tested. CompanyCam updated. Job is done — marking complete in Monday now.',initials:'DJ',color:'#27500A',bg:'#EAF3DE'},],"urgent":[{name:'Zach Lind',time:'1:22 PM',text:'🚩 FLAG — Morrison media room speaker rough-in size mismatch. 6\" installed, estimate may show 8\". Needs PM confirmation before trim date.',initials:'ZL',color:'#633806',bg:'#FAEEDA'},{name:'James Lacek',time:'1:40 PM',text:'Confirmed — client did upgrade to 8\". We need to open the rough and resize before trim install. Scheduling with Zach for next week.',initials:'JL',color:'#633806',bg:'#FAEEDA'},],};
+  var allReactions = {"field-crew-1":"🔧 2","field-crew-4":"👍 3","morrison-1":"⚠️ 2","morrison-3":"👍 1","martin-1":"✅ 3","martin-3":"🎉 4","urgent-1":"⚠️ 2",};
+  var currentChannel = 'field-crew';
+  var channels = [{"id": "field-crew", "label": "field-crew"}, {"id": "morrison", "label": "morrison-residence"}, {"id": "martin", "label": "martin-shades"}, {"id": "urgent", "label": "urgent-flags"}];
+
+  function av(initials,bg,color){
+    return '<div class="slack-avatar" style="background:'+bg+';color:'+color+'">'+initials+'</div>';
+  }
+
+  function renderMessages(chId){
+    var msgs = allMessages[chId]||[];
+    var container = document.getElementById('slackMessages');
+    var html = '<div class="slack-date-divider">Today</div>';
+    msgs.forEach(function(m,i){
+      var txt = m.text
+        .replace(/\n/g,'<br>')
+        .replace(/@(\w+)/g,'<span class="mention">@$1</span>')
+        .replace(/#([\w-]+)/g,'<span class="jobref">#$1</span>');
+      var reaction = allReactions[chId+'-'+i];
+      var reactionHtml = reaction ? '<div><span class="slack-reaction">'+reaction+'</span></div>' : '';
+      html += '<div class="slack-msg">'+av(m.initials,m.bg,m.color)+
+        '<div class="slack-msg-body">'+
+        '<div class="slack-msg-meta"><span class="slack-msg-name">'+m.name+'</span><span class="slack-msg-time">'+m.time+'</span></div>'+
+        '<div class="slack-msg-text">'+txt+'</div>'+reactionHtml+
+        '</div></div>';
+    });
+    container.innerHTML = html;
+    container.scrollTop = container.scrollHeight;
+  }
+
+  window.switchChannel = function(chId, btn){
+    currentChannel = chId;
+    document.querySelectorAll('.slack-ch-btn').forEach(function(b){b.classList.remove('active')});
+    btn.classList.add('active');
+    var ch = channels.find(function(c){return c.id===chId});
+    document.getElementById('slackChannelName').textContent = '#'+(ch?ch.label:chId);
+    document.getElementById('slackInput').placeholder = 'Message #'+(ch?ch.label:chId);
+    renderMessages(chId);
+  };
+
+  window.toggleSlack = function(){
+    var panel = document.getElementById('slackPanel');
+    var overlay = document.getElementById('slackOverlay');
+    var isOpen = panel.classList.contains('open');
+    panel.classList.toggle('open',!isOpen);
+    overlay.classList.toggle('open',!isOpen);
+    if(!isOpen) renderMessages(currentChannel);
+  };
+
+  window.sendMsg = function(){
+    var input = document.getElementById('slackInput');
+    var txt = input.value.trim();
+    if(!txt) return;
+    var msgs = allMessages[currentChannel];
+    var now = new Date();
+    var h = now.getHours()%12||12;
+    var m = String(now.getMinutes()).padStart(2,'0');
+    var ap = now.getHours()>=12?'PM':'AM';
+    msgs.push({name:'You',time:h+':'+m+' '+ap,text:txt,initials:'JW',color:'#0C447C',bg:'#E6F1FB'});
+    input.value='';
+    document.getElementById('slackSendBtn').disabled=true;
+    renderMessages(currentChannel);
+  };
+
+  window.handleCompose = function(e){
+    var btn = document.getElementById('slackSendBtn');
+    btn.disabled = e.target.value.trim().length===0;
+    if(e.key==='Enter' && (e.metaKey||e.ctrlKey)) sendMsg();
+  };
+
+  // init
+  renderMessages(currentChannel);
+})();
+</script>
+
+</body>
+</html>

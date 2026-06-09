@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oasis Smart Homes — A/R Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --navy:#0D1B2A;--teal:#0A8754;--teal-m:#1D9E75;--teal-l:#E1F5EE;
+  --amber:#E8A020;--amber-l:#FAEEDA;--red:#DC2626;--red-l:#FEE2E2;
+  --orange:#C2410C;--orange-l:#FFF7ED;
+  --blue-l:#E6F1FB;--blue:#185FA5;--purple-l:#EEEDFE;--purple:#3C3489;
+  --green-l:#EAF3DE;--green:#27500A;
+  --gray-50:#F8F9FA;--gray-100:#F1F3F5;--gray-200:#E9ECEF;
+  --gray-400:#868E96;--gray-600:#495057;--gray-900:#212529;
+  --border:#E9ECEF;--radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#F4F6F8;color:var(--gray-900);font-size:13px;line-height:1.5}
+
+.topbar{background:var(--navy);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between}
+.wordmark{font-family:'DM Serif Display',serif;font-size:18px;color:#fff}
+.sub{font-size:10px;color:rgba(255,255,255,.4);font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--teal-m);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.live-label{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.05em}
+.src-pill{font-size:9px;font-weight:600;padding:2px 7px;border-radius:20px;letter-spacing:.04em}
+.sp-p{background:var(--purple-l);color:var(--purple)}
+.sp-q{background:var(--green-l);color:var(--green)}
+.sp-m{background:var(--blue-l);color:var(--blue)}
+.sp-t{background:var(--red-l);color:#791F1F}
+
+.rep-bar{background:#fff;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.rep-label{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:.06em;text-transform:uppercase;margin-right:4px;white-space:nowrap}
+.rep-btn{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--gray-600);transition:all .15s;white-space:nowrap}
+.rep-btn:hover{border-color:var(--teal-m);color:var(--teal)}
+.rep-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+.content{padding:20px 24px;max-width:1200px;margin:0 auto}
+
+.summary-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+.metric-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
+.metric-label{font-size:10px;font-weight:500;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px}
+.metric-value{font-size:20px;font-weight:600}
+.metric-sub{font-size:10px;color:var(--gray-400);margin-top:2px}
+.mv-red{color:var(--red)}
+.mv-amber{color:#854F0B}
+.mv-green{color:var(--teal)}
+.mv-blue{color:var(--blue)}
+.mv-orange{color:var(--orange)}
+
+.section{background:#fff;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden}
+.section-head{padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.section-title{font-size:12px;font-weight:600;color:var(--gray-600);letter-spacing:.05em;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.section-count{font-size:11px;font-weight:600;color:#fff;padding:2px 8px;border-radius:20px}
+.section-sources{display:flex;gap:4px;align-items:center}
+
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;letter-spacing:.02em;white-space:nowrap}
+.b-red{background:var(--red-l);color:#791F1F}
+.b-amber{background:var(--amber-l);color:#633806}
+.b-green{background:var(--green-l);color:var(--green)}
+.b-blue{background:var(--blue-l);color:var(--blue)}
+.b-purple{background:var(--purple-l);color:var(--purple)}
+.b-gray{background:var(--gray-100);color:var(--gray-600)}
+.b-orange{background:var(--orange-l);color:var(--orange)}
+
+.labor-bar-wrap{display:flex;align-items:center;gap:8px}
+.labor-track{flex:1;height:8px;background:var(--gray-200);border-radius:4px;overflow:hidden;min-width:80px}
+.labor-fill{height:100%;border-radius:4px}
+.lf-warn{background:var(--amber)}
+.lf-crit{background:var(--red)}
+.labor-pct{font-size:11px;font-weight:600;min-width:34px;text-align:right}
+.lp-warn{color:#854F0B}
+.lp-crit{color:var(--red)}
+
+.flag-card{background:var(--orange-l);border:1px solid #FED7AA;border-radius:var(--radius-sm);padding:10px 14px;display:flex;align-items:flex-start;gap:10px;margin:12px 14px}
+.flag-icon{color:var(--orange);font-size:16px;margin-top:1px;flex-shrink:0}
+.flag-text{font-size:11px;color:var(--orange);font-weight:500}
+.flag-sub{font-size:10px;color:#9A3412;margin-top:2px}
+
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase;padding:10px 14px 8px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+.tbl th.r{text-align:right}
+.tbl th.c{text-align:center}
+.tbl td{padding:10px 14px;border-bottom:1px solid var(--gray-100);font-size:12px;vertical-align:middle}
+.tbl td.r{text-align:right;font-variant-numeric:tabular-nums}
+.tbl td.c{text-align:center}
+.tbl tr:last-child td{border-bottom:none}
+
+/* Client parent rows */
+.client-row{cursor:pointer;transition:background .1s}
+.client-row:hover{background:#F8F9FA}
+.client-row td{padding:12px 14px;border-bottom:1px solid var(--border)}
+.client-name{font-weight:600;font-size:13px;color:var(--gray-900);display:flex;align-items:center;gap:6px}
+.client-sub{font-size:10px;color:var(--gray-400);margin-top:1px}
+.expand-icon{font-size:13px;color:var(--gray-400);transition:transform .2s;display:inline-block}
+.expanded .expand-icon{transform:rotate(90deg)}
+
+/* Invoice subitem rows */
+.inv-row td{padding:7px 14px 7px 40px;background:#FAFBFC;border-bottom:1px solid var(--gray-100);font-size:11px}
+.inv-row td.r{text-align:right}
+.inv-row td.c{text-align:center}
+.inv-row:last-of-type td{border-bottom:1px solid var(--border)}
+.inv-row.hidden{display:none}
+
+/* Total pending row */
+.pending-total-row{background:#FFF9F0}
+.pending-total-row td{padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px}
+
+.aging-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:14px 16px}
+.aging-cell{border-radius:var(--radius-sm);padding:10px 12px;border:1px solid transparent}
+.aging-label{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px}
+.aging-amount{font-size:18px;font-weight:600}
+.aging-count{font-size:10px;margin-top:2px}
+.ag-current{background:#F0FDF4;border-color:#BBF7D0}.ag-current .aging-label{color:var(--teal)}.ag-current .aging-amount{color:var(--teal)}.ag-current .aging-count{color:#166534}
+.ag-30{background:#FFFBEB;border-color:#FDE68A}.ag-30 .aging-label{color:#92400E}.ag-30 .aging-amount{color:#B45309}.ag-30 .aging-count{color:#92400E}
+.ag-60{background:var(--orange-l);border-color:#FED7AA}.ag-60 .aging-label{color:var(--orange)}.ag-60 .aging-amount{color:var(--orange)}.ag-60 .aging-count{color:#9A3412}
+.ag-90{background:var(--red-l);border-color:#FCA5A5}.ag-90 .aging-label{color:var(--red)}.ag-90 .aging-amount{color:var(--red)}.ag-90 .aging-count{color:#991B1B}
+
+.search-bar{display:flex;gap:8px;align-items:center;padding:12px 16px 0}
+.search-bar input{flex:1;font-size:12px;padding:7px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);outline:none;color:var(--gray-900);background:#fff}
+.search-bar input:focus{border-color:var(--teal-m)}
+
+.ready-tbl th{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase;padding:10px 14px 8px;border-bottom:1px solid var(--border);text-align:left}
+.ready-tbl th.r{text-align:right}
+.ready-tbl th.c{text-align:center}
+.ready-tbl td{padding:10px 14px;border-bottom:1px solid var(--gray-100);font-size:12px;vertical-align:middle}
+.ready-tbl td.r{text-align:right}
+.ready-tbl td.c{text-align:center}
+.ready-tbl tr:last-child td{border-bottom:none}
+.ready-tbl tbody tr:hover{background:var(--gray-50)}
+
+.footer{background:#fff;border-top:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;font-size:10px;color:var(--gray-400);margin-top:8px}
+
+@media(max-width:700px){
+  .summary-grid{grid-template-columns:repeat(2,1fr)}
+  .aging-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+/* ══ SLACK PANEL ══════════════════════════════════════════════════ */
+.slack-toggle-btn{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+  color:#fff;padding:5px 12px;border-radius:20px;cursor:pointer;
+  font-size:11px;font-weight:600;letter-spacing:.03em;
+  transition:background .15s;position:relative;
+}
+.slack-toggle-btn:hover{background:rgba(255,255,255,.2)}
+.slack-toggle-btn .slack-logo{
+  width:16px;height:16px;display:flex;align-items:center;justify-content:center;
+}
+.slack-unread{
+  position:absolute;top:-4px;right:-4px;
+  width:15px;height:15px;border-radius:50%;
+  background:#E8A020;color:#fff;font-size:8px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--navy,#0D1B2A);
+}
+
+/* Panel overlay */
+.slack-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.2);
+  z-index:900;opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.slack-overlay.open{opacity:1;pointer-events:auto}
+
+/* Panel drawer */
+.slack-panel{
+  position:fixed;top:0;right:0;bottom:0;width:380px;
+  background:#fff;border-left:1px solid #E9ECEF;
+  box-shadow:-4px 0 24px rgba(0,0,0,.12);
+  z-index:901;display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);
+}
+.slack-panel.open{transform:translateX(0)}
+
+/* Panel header */
+.slack-panel-head{
+  background:#0D1B2A;padding:0 16px;height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.slack-head-left{display:flex;align-items:center;gap:8px}
+.slack-head-logo{
+  width:20px;height:20px;
+  display:grid;grid-template-columns:1fr 1fr;gap:2px;
+}
+.slack-head-logo span{
+  border-radius:3px;display:block;
+}
+.slack-channel-name{
+  font-size:13px;font-weight:600;color:#fff;
+}
+.slack-channel-desc{
+  font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.03em;
+}
+.slack-close{
+  background:none;border:none;color:rgba(255,255,255,.55);
+  cursor:pointer;font-size:18px;line-height:1;padding:4px;
+  transition:color .12s;
+}
+.slack-close:hover{color:#fff}
+
+/* Channel selector */
+.slack-channel-bar{
+  background:#F8F9FA;border-bottom:1px solid #E9ECEF;
+  padding:8px 12px;display:flex;gap:6px;flex-wrap:nowrap;
+  overflow-x:auto;flex-shrink:0;
+}
+.slack-ch-btn{
+  padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;
+  border:1px solid #E9ECEF;background:#fff;color:#495057;
+  cursor:pointer;white-space:nowrap;transition:all .12s;flex-shrink:0;
+}
+.slack-ch-btn:hover{border-color:#1D9E75;color:#0A8754}
+.slack-ch-btn.active{background:#0D1B2A;color:#fff;border-color:#0D1B2A}
+
+/* Messages area */
+.slack-messages{
+  flex:1;overflow-y:auto;padding:12px 16px;
+  display:flex;flex-direction:column;gap:0;
+}
+.slack-date-divider{
+  display:flex;align-items:center;gap:8px;
+  margin:12px 0 8px;font-size:10px;font-weight:600;
+  color:#868E96;letter-spacing:.04em;text-transform:uppercase;
+}
+.slack-date-divider::before,.slack-date-divider::after{
+  content:'';flex:1;height:1px;background:#E9ECEF;
+}
+.slack-msg{
+  display:flex;gap:9px;padding:4px 0;
+  position:relative;border-radius:6px;transition:background .1s;
+}
+.slack-msg:hover{background:#F8F9FA;margin:0 -8px;padding:4px 8px;}
+.slack-avatar{
+  width:30px;height:30px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;
+}
+.slack-msg-body{flex:1;min-width:0}
+.slack-msg-meta{display:flex;align-items:baseline;gap:6px;margin-bottom:2px}
+.slack-msg-name{font-size:12px;font-weight:600;color:#212529}
+.slack-msg-time{font-size:10px;color:#868E96}
+.slack-msg-text{font-size:12px;color:#343a40;line-height:1.5;word-break:break-word}
+.slack-msg-text .mention{
+  color:#185FA5;background:#E6F1FB;
+  padding:0 3px;border-radius:3px;font-weight:500;
+}
+.slack-msg-text .jobref{
+  color:#0A8754;font-weight:500;
+}
+.slack-reaction{
+  display:inline-flex;align-items:center;gap:3px;
+  background:#F1F3F5;border:1px solid #E9ECEF;
+  border-radius:12px;padding:1px 7px;font-size:11px;
+  cursor:pointer;margin-top:3px;transition:background .1s;
+}
+.slack-reaction:hover{background:#E9ECEF}
+.slack-file-attach{
+  display:flex;align-items:center;gap:8px;
+  background:#F8F9FA;border:1px solid #E9ECEF;border-radius:6px;
+  padding:8px 10px;margin-top:4px;cursor:pointer;
+  transition:border-color .12s;
+}
+.slack-file-attach:hover{border-color:#1D9E75}
+.slack-file-icon{font-size:16px;color:#868E96}
+.slack-file-name{font-size:11px;font-weight:500;color:#212529}
+.slack-file-size{font-size:10px;color:#868E96}
+
+/* Compose area */
+.slack-compose{
+  border-top:1px solid #E9ECEF;padding:12px 14px;flex-shrink:0;
+}
+.slack-compose-box{
+  border:1.5px solid #E9ECEF;border-radius:8px;
+  background:#fff;overflow:hidden;transition:border-color .15s;
+}
+.slack-compose-box:focus-within{border-color:#1D9E75}
+.slack-compose-input{
+  width:100%;border:none;outline:none;padding:10px 12px;
+  font-family:inherit;font-size:12.5px;color:#212529;
+  resize:none;min-height:70px;max-height:120px;
+  background:transparent;line-height:1.5;
+}
+.slack-compose-toolbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 8px 6px 10px;border-top:1px solid #F1F3F5;
+}
+.slack-toolbar-left{display:flex;align-items:center;gap:2px}
+.slack-tool-btn{
+  background:none;border:none;color:#868E96;cursor:pointer;
+  padding:4px 6px;border-radius:4px;font-size:13px;line-height:1;
+  transition:all .12s;
+}
+.slack-tool-btn:hover{background:#F1F3F5;color:#495057}
+.slack-send-btn{
+  background:#0D1B2A;color:#fff;border:none;
+  padding:6px 16px;border-radius:6px;font-size:12px;font-weight:600;
+  cursor:pointer;display:flex;align-items:center;gap:5px;
+  transition:background .12s;
+}
+.slack-send-btn:hover{background:#1D9E75}
+.slack-send-btn:disabled{background:#E9ECEF;color:#868E96;cursor:default}
+
+/* notification pill below compose */
+.slack-note{
+  font-size:10px;color:#868E96;margin-top:6px;
+  display:flex;align-items:center;gap:4px;
+}
+
+@media(max-width:500px){
+  .slack-panel{width:100%}
+}
+/* ══ END SLACK PANEL ══════════════════════════════════════════════ */
+
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div class="wordmark">Oasis Smart Homes</div>
+    <div class="sub">Accounts Receivable Dashboard</div>
+  </div>
+  <div class="topbar-right">
+
+    <button class="slack-toggle-btn" onclick="toggleSlack()">
+      <svg class="slack-logo" width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <path d="M5.042 15.165a2.528 2.528 0 01-2.52 2.523A2.528 2.528 0 010 15.165a2.527 2.527 0 012.522-2.52h2.52v2.52z" fill="#E01E5A"/>
+        <path d="M6.313 15.165a2.527 2.527 0 012.521-2.52 2.527 2.527 0 012.521 2.52v6.313A2.528 2.528 0 018.834 24a2.528 2.528 0 01-2.521-2.522v-6.313z" fill="#E01E5A"/>
+        <path d="M8.834 5.042a2.528 2.528 0 01-2.521-2.52A2.528 2.528 0 018.834 0a2.527 2.527 0 012.521 2.522v2.52H8.834z" fill="#36C5F0"/>
+        <path d="M8.834 6.313a2.528 2.528 0 012.521 2.521 2.528 2.528 0 01-2.521 2.521H2.522A2.528 2.528 0 010 8.834a2.528 2.528 0 012.522-2.521h6.312z" fill="#36C5F0"/>
+        <path d="M18.956 8.834a2.528 2.528 0 012.522-2.521A2.528 2.528 0 0124 8.834a2.527 2.527 0 01-2.522 2.521h-2.522V8.834z" fill="#2EB67D"/>
+        <path d="M17.688 8.834a2.528 2.528 0 01-2.523 2.521 2.527 2.527 0 01-2.52-2.521V2.522A2.527 2.527 0 0115.165 0a2.528 2.528 0 012.523 2.522v6.312z" fill="#2EB67D"/>
+        <path d="M15.165 18.956a2.528 2.528 0 012.523 2.522A2.528 2.528 0 0115.165 24a2.527 2.527 0 01-2.52-2.522v-2.522h2.52z" fill="#ECB22E"/>
+        <path d="M15.165 17.688a2.527 2.527 0 01-2.52-2.523 2.526 2.526 0 012.52-2.52h6.313A2.527 2.527 0 0124 15.165a2.528 2.528 0 01-2.522 2.523h-6.313z" fill="#ECB22E"/>
+      </svg>
+      Slack
+      <span class="slack-unread">3</span>
+    </button>
+
+    <div class="live-dot"></div>
+    <div class="live-label">LIVE</div>
+    <span class="src-pill sp-p">Portal.io</span>
+    <span class="src-pill sp-q">QBO</span>
+    <span class="src-pill sp-t">QB Time</span>
+    <span class="src-pill sp-m">Monday</span>
+  </div>
+</div>
+
+<div class="rep-bar">
+  <span class="rep-label">Rep</span>
+  <button class="rep-btn active" onclick="setRep('All',this)">All reps</button>
+  <button class="rep-btn" onclick="setRep('James',this)">James Lacek</button>
+  <button class="rep-btn" onclick="setRep('Buzz',this)">Buzz Jensen</button>
+  <button class="rep-btn" onclick="setRep('Seth',this)">Seth Pender</button>
+  <button class="rep-btn" onclick="setRep('Scott',this)">Scott H</button>
+</div>
+
+<div class="content">
+
+  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:6px">
+    <div style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--navy)">A/R Overview</div>
+    <div style="font-size:11px;color:var(--gray-400)">As of June 1, 2026 &nbsp;·&nbsp; <span id="showing-count">28 jobs shown</span></div>
+  </div>
+
+  <div class="summary-grid">
+    <div class="metric-card"><div class="metric-label">Total outstanding</div><div class="metric-value mv-red" id="s-total">$892,400</div><div class="metric-sub" id="s-jobs">across 28 jobs</div></div>
+    <div class="metric-card"><div class="metric-label">Overdue now</div><div class="metric-value mv-red" id="s-overdue">$187,200</div><div class="metric-sub" id="s-overdue-ct">6 invoices past due</div></div>
+    <div class="metric-card"><div class="metric-label">Due within 30 days</div><div class="metric-value mv-amber" id="s-soon">$341,600</div><div class="metric-sub" id="s-soon-ct">11 invoices</div></div>
+    <div class="metric-card"><div class="metric-label">Pending invoices to send</div><div class="metric-value mv-orange" id="s-pending">$114,958</div><div class="metric-sub" id="s-pending-ct">estimated when invoiced</div></div>
+    <div class="metric-card"><div class="metric-label">Labor 95%+ warning</div><div class="metric-value mv-orange" id="s-labor">4 jobs</div><div class="metric-sub">final invoice approaching</div></div>
+  </div>
+
+  <!-- LABOR WARNING -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <i class="ti ti-alert-triangle" style="font-size:15px;color:var(--orange)"></i>
+        Labor burn — 95%+ hours used, final invoice not yet created
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="section-count" style="background:var(--orange)" id="labor-count">4</span>
+        <span class="src-pill sp-t">QB Time</span><span class="src-pill sp-q">QBO</span>
+      </div>
+    </div>
+    <div class="flag-card">
+      <i class="ti ti-info-circle flag-icon"></i>
+      <div>
+        <div class="flag-text">These jobs have consumed 95% or more of their budgeted labor hours. A final invoice has not yet been created in QBO.</div>
+        <div class="flag-sub">Action: Confirm remaining scope, create final invoice in QBO, and send before the crew finishes.</div>
+      </div>
+    </div>
+    <table class="tbl">
+      <thead><tr>
+        <th>Job</th>
+        <th>Rep</th>
+        <th>Phase</th>
+        <th class="r">Est. value</th>
+        <th class="r">Est. final invoice</th>
+        <th>Labor used</th>
+        <th class="r">Budgeted</th>
+        <th class="r">Used</th>
+        <th class="c">Invoice status</th>
+      </tr></thead>
+      <tbody id="labor-tbody"></tbody>
+    </table>
+    <div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:#FAFBFC">
+      <div style="font-size:11px;color:var(--gray-400)">Estimated revenue once these jobs are invoiced</div>
+      <div style="font-size:14px;font-weight:600;color:var(--orange)" id="labor-total-due">$0</div>
+    </div>
+  </div>
+
+  <!-- A/R SECTION -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><i class="ti ti-file-invoice" style="font-size:15px;color:var(--red)"></i> Invoices due & outstanding</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="section-count" style="background:var(--red)" id="ar-count">8</span>
+        <span class="src-pill sp-q">QBO</span><span class="src-pill sp-p">Portal.io</span>
+      </div>
+    </div>
+
+    <div class="aging-grid">
+      <div class="aging-cell ag-current"><div class="aging-label">Current</div><div class="aging-amount" id="age-current">$341,600</div><div class="aging-count" id="age-current-ct">4 clients</div></div>
+      <div class="aging-cell ag-30"><div class="aging-label">1–30 days</div><div class="aging-amount" id="age-30">$198,400</div><div class="aging-count" id="age-30-ct">2 clients</div></div>
+      <div class="aging-cell ag-60"><div class="aging-label">31–60 days</div><div class="aging-amount" id="age-60">$127,300</div><div class="aging-count" id="age-60-ct">1 client</div></div>
+      <div class="aging-cell ag-90"><div class="aging-label">60+ days</div><div class="aging-amount" id="age-90">$59,900</div><div class="aging-count" id="age-90-ct">1 client</div></div>
+    </div>
+
+    <div class="search-bar">
+      <i class="ti ti-search" style="font-size:15px;color:var(--gray-400)"></i>
+      <input type="text" id="ar-search" placeholder="Search client..." oninput="filterAR(this.value)">
+    </div>
+    <div style="height:10px"></div>
+
+    <table class="tbl" id="ar-table">
+      <thead><tr>
+        <th style="width:28px"></th>
+        <th>Client</th>
+        <th>Rep</th>
+        <th class="r">Total invoiced</th>
+        <th class="r">Total collected</th>
+        <th class="r">Total balance due</th>
+        <th class="c">Oldest days out</th>
+        <th class="c">Status</th>
+        <th class="c">Action</th>
+      </tr></thead>
+      <tbody id="ar-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- READY TO INVOICE -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><i class="ti ti-send" style="font-size:15px;color:var(--blue)"></i> Invoice ready — needs to be sent</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="section-count" style="background:var(--blue)" id="ready-count">5</span>
+        <span class="src-pill sp-m">Monday</span><span class="src-pill sp-q">QBO</span>
+      </div>
+    </div>
+    <table class="ready-tbl" style="width:100%;border-collapse:collapse">
+      <thead><tr>
+        <th>Client / job</th>
+        <th>Rep</th>
+        <th class="r">Est. invoice value</th>
+        <th>Phase</th>
+        <th class="c">Monday status</th>
+        <th class="c">Action</th>
+      </tr></thead>
+      <tbody id="ready-tbody"></tbody>
+    </table>
+    <div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:#FAFBFC">
+      <div style="font-size:11px;color:var(--gray-400)">Total estimated revenue once sent</div>
+      <div style="font-size:14px;font-weight:600;color:var(--blue)" id="ready-total">$0</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span>Oasis Smart Homes · A/R Dashboard · June 1, 2026</span>
+  <span>Sample data · Live version connects to Portal.io, QBO, QB Time, Monday.com</span>
+</div>
+
+<script>
+let currentRep='All';
+
+const laborJobs=[
+  {name:'Patel AV — Rishi & Sheena',client:'Patel',rep:'James',phase:'Rough Complete',est:68500,finalEst:34250,budgeted:120,used:116,status:'Final Sent',statusBadge:'b-amber'},
+  {name:'Dew Residence AV',client:'Dew',rep:'James',phase:'Rough Complete',est:137443,finalEst:68722,budgeted:280,used:270,status:'No invoice yet',statusBadge:'b-red'},
+  {name:'Yates AV — Mary & Frank',client:'Yates',rep:'James',phase:'Rough Complete',est:264308,finalEst:132154,budgeted:520,used:498,status:'No invoice yet',statusBadge:'b-red'},
+  {name:'Gemini ELE SF117',client:'Gemini',rep:'James',phase:'Rough Complete',est:175560,finalEst:87780,budgeted:340,used:326,status:'No invoice yet',statusBadge:'b-red'},
+];
+
+// Grouped by client
+const arClients=[
+  {
+    client:'Lane / Terry Residence',rep:'James',maxDays:42,
+    invoices:[
+      {name:'A/V System',inv:34416,deposit:17208,balance:17208,days:42},
+      {name:'Lighting Control',inv:15428,deposit:7714,balance:7714,days:42},
+      {name:'Prewire',inv:5935,deposit:2968,balance:2968,days:42},
+      {name:'Security',inv:3096,deposit:1548,balance:1548,days:42},
+    ]
+  },
+  {
+    client:'Patel — Rishi & Sheena',rep:'James',maxDays:38,
+    invoices:[
+      {name:'AV System',inv:68500,deposit:34250,balance:34250,days:38},
+    ]
+  },
+  {
+    client:'Integrity — Bloom Residence',rep:'James',maxDays:35,
+    invoices:[
+      {name:'Prewire',inv:17494,deposit:8747,balance:8747,days:35},
+    ]
+  },
+  {
+    client:'Gardener — Steve & Carol',rep:'James',maxDays:10,
+    invoices:[
+      {name:'AV System',inv:68947,deposit:34474,balance:34474,days:10},
+      {name:'Lighting',inv:49939,deposit:24970,balance:24970,days:10},
+    ]
+  },
+  {
+    client:'Yates — Mary & Frank',rep:'James',maxDays:12,
+    invoices:[
+      {name:'Shades',inv:57237,deposit:28619,balance:28619,days:15},
+      {name:'Lighting',inv:283481,deposit:141741,balance:141741,days:12},
+    ]
+  },
+  {
+    client:'Cameron — Dew Residence',rep:'James',maxDays:18,
+    invoices:[
+      {name:'AV System',inv:137443,deposit:68722,balance:68722,days:18},
+    ]
+  },
+  {
+    client:'Martin — Horizon Trail',rep:'James',maxDays:8,
+    invoices:[
+      {name:'Shades',inv:67585,deposit:33793,balance:33793,days:8},
+    ]
+  },
+  {
+    client:'Fontani — Marco',rep:'Buzz',maxDays:62,
+    invoices:[
+      {name:'Lighting',inv:1239,deposit:620,balance:620,days:62},
+    ]
+  },
+];
+
+const readyJobs=[
+  {name:'Todd Martin — Lighting',client:'Todd Martin',rep:'James',est:9214,phase:'Rough Complete',mstatus:'Invoice ready for review',badge:'b-orange'},
+  {name:'Todd Martin — AV',client:'Todd Martin',rep:'James',est:30922,phase:'Rough Complete',mstatus:'Invoice ready for review',badge:'b-orange'},
+  {name:'Tinker Personal Home — AV',client:'Tinker',rep:'Buzz',est:23266,phase:'Rough Complete',mstatus:'Invoice ready for review',badge:'b-orange'},
+  {name:'Cameron Rizzi Residence — AV',client:'Rizzi',rep:'James',est:18500,phase:'Rough Complete',mstatus:'Invoice ready for review',badge:'b-orange'},
+  {name:'Gemini Sears — Lighting',client:'Gemini Sears',rep:'James',est:32556,phase:'Rough Complete',mstatus:'Deposit Requested',badge:'b-amber'},
+];
+
+function fmt(n){return '$'+Math.round(n).toLocaleString()}
+function pct(u,b){return Math.round(u/b*100)}
+
+function matchRep(rep){
+  if(currentRep==='All') return true;
+  return rep===currentRep;
+}
+
+function ageBadge(days){
+  if(days>60) return 'b-red';
+  if(days>30) return 'b-red';
+  if(days>14) return 'b-amber';
+  return 'b-blue';
+}
+
+function ageLabel(days){
+  if(days>60) return '60+ days';
+  if(days>30) return days+'d overdue';
+  if(days>14) return days+'d';
+  return days+'d';
+}
+
+function renderLabor(){
+  const filtered=laborJobs.filter(j=>matchRep(j.rep));
+  const tbody=document.getElementById('labor-tbody');
+  tbody.innerHTML='';
+  let totalDue=0;
+  filtered.forEach(j=>{
+    const p=pct(j.used,j.budgeted);
+    const fillCls=p>=100?'lf-crit':'lf-warn';
+    const txtCls=p>=100?'lp-crit':'lp-warn';
+    totalDue+=j.finalEst;
+    tbody.innerHTML+=`<tr style="background:${p>=100?'#FFF5F5':'#FFFBF0'}">
+      <td><div style="font-weight:500;font-size:12px;color:var(--gray-900)">${j.name}</div><div style="font-size:10px;color:var(--gray-400)">${j.client}</div></td>
+      <td style="font-size:12px">${j.rep}</td>
+      <td><span class="badge b-gray" style="font-size:9px">${j.phase}</span></td>
+      <td class="r" style="font-weight:500;font-size:12px">${fmt(j.est)}</td>
+      <td class="r" style="font-weight:600;font-size:12px;color:var(--orange)">${fmt(j.finalEst)}</td>
+      <td>
+        <div class="labor-bar-wrap">
+          <div class="labor-track"><div class="labor-fill ${fillCls}" style="width:${Math.min(p,100)}%"></div></div>
+          <span class="labor-pct ${txtCls}">${p}%</span>
+        </div>
+      </td>
+      <td class="r" style="font-size:12px">${j.budgeted} hrs</td>
+      <td class="r" style="font-size:12px;font-weight:500">${j.used} hrs</td>
+      <td class="c"><span class="badge ${j.statusBadge}">${j.status}</span></td>
+    </tr>`;
+  });
+  document.getElementById('labor-count').textContent=filtered.length;
+  document.getElementById('s-labor').textContent=filtered.length+' jobs';
+  document.getElementById('labor-total-due').textContent=fmt(totalDue);
+}
+
+function renderAR(search=''){
+  const filtered=arClients.filter(c=>matchRep(c.rep)&&(!search||c.client.toLowerCase().includes(search.toLowerCase())));
+  const tbody=document.getElementById('ar-tbody');
+  tbody.innerHTML='';
+
+  let totalOut=0,overdueTot=0,overdueCount=0,soonTot=0,soonCount=0;
+  let ageCurrent=0,age30=0,age60=0,age90=0;
+  let ageCurrentCt=0,age30Ct=0,age60Ct=0,age90Ct=0;
+
+  filtered.forEach((c,idx)=>{
+    const totalInv=c.invoices.reduce((a,i)=>a+i.inv,0);
+    const totalDep=c.invoices.reduce((a,i)=>a+i.deposit,0);
+    const totalBal=c.invoices.reduce((a,i)=>a+i.balance,0);
+    totalOut+=totalBal;
+
+    const days=c.maxDays;
+    const badge=ageBadge(days);
+    const rowId='client-'+idx;
+
+    if(days>60){age90+=totalBal;age90Ct++;}
+    else if(days>30){age60+=totalBal;age60Ct++;}
+    else if(days>14){age30+=totalBal;age30Ct++;}
+    else{ageCurrent+=totalBal;ageCurrentCt++;}
+
+    if(days>30){overdueTot+=totalBal;overdueCount+=c.invoices.length;}
+    else if(days>7){soonTot+=totalBal;soonCount+=c.invoices.length;}
+
+    const hasMultiple=c.invoices.length>1;
+    const expandable=hasMultiple?`<i class="ti ti-chevron-right expand-icon"></i>`:'';
+
+    // Client row
+    tbody.innerHTML+=`<tr class="client-row" id="row-${rowId}" onclick="${hasMultiple?`toggleClient('${rowId}')`:''}" data-client="${c.client.toLowerCase()}">
+      <td style="width:28px;color:var(--gray-400);font-size:13px">${expandable}</td>
+      <td>
+        <div class="client-name">${c.client}</div>
+        <div class="client-sub">${c.invoices.length} invoice${c.invoices.length>1?'s':''} · Rep: ${c.rep}</div>
+      </td>
+      <td style="font-size:12px">${c.rep}</td>
+      <td class="r" style="font-size:12px;font-weight:500">${fmt(totalInv)}</td>
+      <td class="r" style="font-size:12px;color:var(--teal)">${fmt(totalDep)}</td>
+      <td class="r" style="font-size:13px;font-weight:700;color:${days>30?'var(--red)':'#854F0B'}">${fmt(totalBal)}</td>
+      <td class="c"><span style="font-size:11px;font-weight:600;color:${days>30?'var(--red)':'#854F0B'}">${days}d</span></td>
+      <td class="c"><span class="badge ${badge}">${days>30?'Overdue':days>14?'Due soon':'Current'}</span></td>
+      <td class="c"><span class="badge b-blue" style="cursor:pointer;font-size:9px">Send reminder</span></td>
+    </tr>`;
+
+    // Invoice subitems (hidden by default)
+    if(hasMultiple){
+      c.invoices.forEach((inv,ii)=>{
+        tbody.innerHTML+=`<tr class="inv-row hidden" data-parent="${rowId}">
+          <td></td>
+          <td style="color:var(--gray-600)"><i class="ti ti-receipt" style="font-size:11px;margin-right:4px;color:var(--gray-400)"></i>${inv.name}</td>
+          <td></td>
+          <td class="r" style="color:var(--gray-600)">${fmt(inv.inv)}</td>
+          <td class="r" style="color:var(--teal)">${fmt(inv.deposit)}</td>
+          <td class="r" style="font-weight:600;color:${inv.days>30?'var(--red)':'#854F0B'}">${fmt(inv.balance)}</td>
+          <td class="c" style="color:var(--gray-400);font-size:10px">${inv.days}d</td>
+          <td class="c"><span class="badge b-gray" style="font-size:9px">Invoice #${8200+ii+idx*4}</span></td>
+          <td></td>
+        </tr>`;
+      });
+    }
+  });
+
+  document.getElementById('ar-count').textContent=filtered.length;
+  document.getElementById('s-overdue').textContent=fmt(overdueTot);
+  document.getElementById('s-overdue-ct').textContent=overdueCount+' invoices past due';
+  document.getElementById('s-soon').textContent=fmt(soonTot);
+  document.getElementById('s-soon-ct').textContent=soonCount+' invoices';
+
+  document.getElementById('age-current').textContent=fmt(ageCurrent);
+  document.getElementById('age-current-ct').textContent=ageCurrentCt+' client'+(ageCurrentCt!==1?'s':'');
+  document.getElementById('age-30').textContent=fmt(age30);
+  document.getElementById('age-30-ct').textContent=age30Ct+' client'+(age30Ct!==1?'s':'');
+  document.getElementById('age-60').textContent=fmt(age60);
+  document.getElementById('age-60-ct').textContent=age60Ct+' client'+(age60Ct!==1?'s':'');
+  document.getElementById('age-90').textContent=fmt(age90);
+  document.getElementById('age-90-ct').textContent=age90Ct+' client'+(age90Ct!==1?'s':'');
+}
+
+function toggleClient(rowId){
+  const row=document.getElementById('row-'+rowId);
+  const subrows=document.querySelectorAll(`[data-parent="${rowId}"]`);
+  const isOpen=row.classList.contains('expanded');
+  if(isOpen){
+    row.classList.remove('expanded');
+    subrows.forEach(r=>r.classList.add('hidden'));
+  } else {
+    row.classList.add('expanded');
+    subrows.forEach(r=>r.classList.remove('hidden'));
+  }
+}
+
+function filterAR(val){renderAR(val)}
+
+function renderReady(){
+  const filtered=readyJobs.filter(j=>matchRep(j.rep));
+  const tbody=document.getElementById('ready-tbody');
+  tbody.innerHTML='';
+  let total=0;
+  filtered.forEach(j=>{
+    total+=j.est;
+    tbody.innerHTML+=`<tr style="border-bottom:1px solid var(--gray-100)">
+      <td><div style="font-weight:500;font-size:12px">${j.name}</div><div style="font-size:10px;color:var(--gray-400)">${j.client}</div></td>
+      <td style="font-size:12px">${j.rep}</td>
+      <td class="r" style="font-weight:600;font-size:12px;color:var(--blue)">${fmt(j.est)}</td>
+      <td><span class="badge b-gray" style="font-size:9px">${j.phase}</span></td>
+      <td class="c"><span class="badge ${j.badge}">${j.mstatus}</span></td>
+      <td class="c"><span class="badge b-green" style="cursor:pointer;font-size:9px">Create invoice</span></td>
+    </tr>`;
+  });
+  document.getElementById('ready-count').textContent=filtered.length;
+  document.getElementById('ready-total').textContent=fmt(total);
+  document.getElementById('s-pending').textContent=fmt(total);
+  document.getElementById('s-pending-ct').textContent='estimated when invoiced';
+}
+
+function updateSummary(){
+  const arF=arClients.filter(c=>matchRep(c.rep));
+  const readyF=readyJobs.filter(j=>matchRep(j.rep));
+  const labF=laborJobs.filter(j=>matchRep(j.rep));
+  const arTotal=arF.reduce((a,c)=>a+c.invoices.reduce((b,i)=>b+i.balance,0),0);
+  const readyTotal=readyF.reduce((a,j)=>a+j.est,0);
+  document.getElementById('s-total').textContent=fmt(arTotal+readyTotal);
+  document.getElementById('s-jobs').textContent='across '+(arF.length+readyF.length)+' clients';
+  document.getElementById('showing-count').textContent=(arF.length+labF.length+readyF.length)+' jobs shown';
+}
+
+function setRep(rep,el){
+  document.querySelectorAll('.rep-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  currentRep=rep;
+  renderAll();
+}
+
+function renderAll(){
+  renderLabor();
+  renderAR(document.getElementById('ar-search').value);
+  renderReady();
+  updateSummary();
+}
+
+renderAll();
+</script>
+
+<div class="slack-overlay" id="slackOverlay" onclick="toggleSlack()"></div>
+<div class="slack-panel" id="slackPanel">
+  <div class="slack-panel-head">
+    <div class="slack-head-left">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M5.042 15.165a2.528 2.528 0 01-2.52 2.523A2.528 2.528 0 010 15.165a2.527 2.527 0 012.522-2.52h2.52v2.52z" fill="#E01E5A"/>
+        <path d="M6.313 15.165a2.527 2.527 0 012.521-2.52 2.527 2.527 0 012.521 2.52v6.313A2.528 2.528 0 018.834 24a2.528 2.528 0 01-2.521-2.522v-6.313z" fill="#E01E5A"/>
+        <path d="M8.834 5.042a2.528 2.528 0 01-2.521-2.52A2.528 2.528 0 018.834 0a2.527 2.527 0 012.521 2.522v2.52H8.834z" fill="#36C5F0"/>
+        <path d="M8.834 6.313a2.528 2.528 0 012.521 2.521 2.528 2.528 0 01-2.521 2.521H2.522A2.528 2.528 0 010 8.834a2.528 2.528 0 012.522-2.521h6.312z" fill="#36C5F0"/>
+        <path d="M18.956 8.834a2.528 2.528 0 012.522-2.521A2.528 2.528 0 0124 8.834a2.527 2.527 0 01-2.522 2.521h-2.522V8.834z" fill="#2EB67D"/>
+        <path d="M17.688 8.834a2.528 2.528 0 01-2.523 2.521 2.527 2.527 0 01-2.52-2.521V2.522A2.527 2.527 0 0115.165 0a2.528 2.528 0 012.523 2.522v6.312z" fill="#2EB67D"/>
+        <path d="M15.165 18.956a2.528 2.528 0 012.523 2.522A2.528 2.528 0 0115.165 24a2.527 2.527 0 01-2.52-2.522v-2.522h2.52z" fill="#ECB22E"/>
+        <path d="M15.165 17.688a2.527 2.527 0 01-2.52-2.523 2.526 2.526 0 012.52-2.52h6.313A2.527 2.527 0 0124 15.165a2.528 2.528 0 01-2.522 2.523h-6.313z" fill="#ECB22E"/>
+      </svg>
+      <div>
+        <div class="slack-channel-name" id="slackChannelName">#ar-alerts</div>
+        <div class="slack-channel-desc">Oasis Smart Homes · Team Workspace</div>
+      </div>
+    </div>
+    <button class="slack-close" onclick="toggleSlack()">&#x2715;</button>
+  </div>
+
+  <div class="slack-channel-bar">
+    <button class="slack-ch-btn active" onclick="switchChannel('ar-alerts',this)">#ar-alerts</button>
+<button class="slack-ch-btn " onclick="switchChannel('billing',this)">#billing-team</button>
+<button class="slack-ch-btn " onclick="switchChannel('morrison',this)">#morrison-residence</button>
+<button class="slack-ch-btn " onclick="switchChannel('overdue',this)">#overdue-review</button>
+
+  </div>
+
+  <div class="slack-messages" id="slackMessages"></div>
+
+  <div class="slack-compose">
+    <div class="slack-compose-box">
+      <textarea class="slack-compose-input" id="slackInput"
+        placeholder="Message #&#x2060;" rows="3"
+        onkeydown="handleCompose(event)"></textarea>
+      <div class="slack-compose-toolbar">
+        <div class="slack-toolbar-left">
+          <button class="slack-tool-btn" title="Attach file">
+            <i class="ti ti-paperclip"></i>
+          </button>
+          <button class="slack-tool-btn" title="Mention">
+            <i class="ti ti-at"></i>
+          </button>
+          <button class="slack-tool-btn" title="Emoji">
+            <i class="ti ti-mood-smile"></i>
+          </button>
+          <button class="slack-tool-btn" title="Bold">
+            <i class="ti ti-bold"></i>
+          </button>
+        </div>
+        <button class="slack-send-btn" id="slackSendBtn" onclick="sendMsg()" disabled>
+          <i class="ti ti-send"></i> Send
+        </button>
+      </div>
+    </div>
+    <div class="slack-note">
+      <i class="ti ti-brand-slack" style="font-size:11px"></i>
+      Messages post directly to Slack · <a href="#" style="color:#185FA5">Open in Slack ↗</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var allMessages = {"ar-alerts":[{name:'System',time:'8:00 AM',text:'🔴 Auto-alert: Morrison Residence — $27,100 outstanding for 18 days. Final payment not yet received.',initials:'⚡',color:'#791F1F',bg:'#FEE2E2'},{name:'System',time:'8:00 AM',text:'🟡 Auto-alert: Henderson job — $12,400 invoice 32 days outstanding. Follow-up recommended.',initials:'⚡',color:'#791F1F',bg:'#FEE2E2'},{name:'Stacy Wagner',time:'8:22 AM',text:'Morrison follow-up email sent. Client confirmed wire by Friday.',initials:'SW',color:'#3C3489',bg:'#EEEDFE'},{name:'Melissa Busse',time:'9:15 AM',text:'Henderson — I\'ll call them this morning. They mentioned they were waiting on their draw.',initials:'MB',color:'#27500A',bg:'#EAF3DE'},{name:'System',time:'10:30 AM',text:'✅ Auto-update: Patel AV — $68,500 payment received and applied. Balance now $0.',initials:'⚡',color:'#185FA5',bg:'#E6F1FB'},],"billing":[{name:'Stacy Wagner',time:'Yesterday 3:00 PM',text:'End of week billing summary: 4 invoices sent, $112,600 total. Morrison and Henderson still open.',initials:'SW',color:'#3C3489',bg:'#EEEDFE'},{name:'Melissa Busse',time:'Yesterday 3:14 PM',text:'Morrison wire expected Friday per James. Henderson I\'ll follow up tomorrow AM.',initials:'MB',color:'#27500A',bg:'#EAF3DE'},{name:'Stacy Wagner',time:'9:00 AM',text:'Week starting — priority list: Morrison $27k, Henderson $12k, check on Martin final.',initials:'SW',color:'#3C3489',bg:'#EEEDFE'},],"morrison":[{name:'Stacy Wagner',time:'8:20 AM',text:'Sent Morrison the account statement with balance due. Email included the QBO payment link.',initials:'SW',color:'#3C3489',bg:'#EEEDFE'},{name:'James Lacek',time:'8:35 AM',text:'Perfect. He texted me this morning — wire is going out today.',initials:'JL',color:'#633806',bg:'#FAEEDA'},],"overdue":[{name:'Stacy Wagner',time:'9:00 AM',text:'Overdue review: Morrison 18 days, Henderson 32 days. Everything else under 30.',initials:'SW',color:'#3C3489',bg:'#EEEDFE'},{name:'Melissa Busse',time:'9:08 AM',text:'Henderson called back — they\'re releasing the draw this week. Should clear by Monday.',initials:'MB',color:'#27500A',bg:'#EAF3DE'},],};
+  var allReactions = {"ar-alerts-2":"✅ 2","ar-alerts-4":"🎉 5","billing-1":"👍 2","morrison-1":"🙌 3","overdue-1":"👍 1",};
+  var currentChannel = 'ar-alerts';
+  var channels = [{"id": "ar-alerts", "label": "ar-alerts"}, {"id": "billing", "label": "billing-team"}, {"id": "morrison", "label": "morrison-residence"}, {"id": "overdue", "label": "overdue-review"}];
+
+  function av(initials,bg,color){
+    return '<div class="slack-avatar" style="background:'+bg+';color:'+color+'">'+initials+'</div>';
+  }
+
+  function renderMessages(chId){
+    var msgs = allMessages[chId]||[];
+    var container = document.getElementById('slackMessages');
+    var html = '<div class="slack-date-divider">Today</div>';
+    msgs.forEach(function(m,i){
+      var txt = m.text
+        .replace(/\n/g,'<br>')
+        .replace(/@(\w+)/g,'<span class="mention">@$1</span>')
+        .replace(/#([\w-]+)/g,'<span class="jobref">#$1</span>');
+      var reaction = allReactions[chId+'-'+i];
+      var reactionHtml = reaction ? '<div><span class="slack-reaction">'+reaction+'</span></div>' : '';
+      html += '<div class="slack-msg">'+av(m.initials,m.bg,m.color)+
+        '<div class="slack-msg-body">'+
+        '<div class="slack-msg-meta"><span class="slack-msg-name">'+m.name+'</span><span class="slack-msg-time">'+m.time+'</span></div>'+
+        '<div class="slack-msg-text">'+txt+'</div>'+reactionHtml+
+        '</div></div>';
+    });
+    container.innerHTML = html;
+    container.scrollTop = container.scrollHeight;
+  }
+
+  window.switchChannel = function(chId, btn){
+    currentChannel = chId;
+    document.querySelectorAll('.slack-ch-btn').forEach(function(b){b.classList.remove('active')});
+    btn.classList.add('active');
+    var ch = channels.find(function(c){return c.id===chId});
+    document.getElementById('slackChannelName').textContent = '#'+(ch?ch.label:chId);
+    document.getElementById('slackInput').placeholder = 'Message #'+(ch?ch.label:chId);
+    renderMessages(chId);
+  };
+
+  window.toggleSlack = function(){
+    var panel = document.getElementById('slackPanel');
+    var overlay = document.getElementById('slackOverlay');
+    var isOpen = panel.classList.contains('open');
+    panel.classList.toggle('open',!isOpen);
+    overlay.classList.toggle('open',!isOpen);
+    if(!isOpen) renderMessages(currentChannel);
+  };
+
+  window.sendMsg = function(){
+    var input = document.getElementById('slackInput');
+    var txt = input.value.trim();
+    if(!txt) return;
+    var msgs = allMessages[currentChannel];
+    var now = new Date();
+    var h = now.getHours()%12||12;
+    var m = String(now.getMinutes()).padStart(2,'0');
+    var ap = now.getHours()>=12?'PM':'AM';
+    msgs.push({name:'You',time:h+':'+m+' '+ap,text:txt,initials:'JW',color:'#0C447C',bg:'#E6F1FB'});
+    input.value='';
+    document.getElementById('slackSendBtn').disabled=true;
+    renderMessages(currentChannel);
+  };
+
+  window.handleCompose = function(e){
+    var btn = document.getElementById('slackSendBtn');
+    btn.disabled = e.target.value.trim().length===0;
+    if(e.key==='Enter' && (e.metaKey||e.ctrlKey)) sendMsg();
+  };
+
+  // init
+  renderMessages(currentChannel);
+})();
+</script>
+
+</body>
+</html>
