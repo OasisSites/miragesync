@@ -87,7 +87,7 @@ const styles = {
     marginBottom: 20,
   },
   logo: {
-    height: 72,
+    height: 140,
     width: 'auto',
     objectFit: 'contain',
   },

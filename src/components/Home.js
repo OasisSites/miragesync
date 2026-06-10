@@ -177,7 +177,7 @@ const styles = {
   header: {
     background: '#0D1B2A',
     padding: '0 32px',
-    height: 60,
+    height: 72,
     display: 'flex',
     alignItems: 'center',
   },
@@ -195,7 +195,7 @@ const styles = {
     gap: 2,
   },
   headerLogo: {
-    height: 34,
+    height: 48,
     width: 'auto',
     objectFit: 'contain',
   },
