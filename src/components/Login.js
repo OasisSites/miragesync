@@ -24,7 +24,11 @@ export default function Login({ onSuccess }) {
     <div style={styles.root}>
       <div style={styles.card} className={shaking ? 'shake' : ''}>
         <div style={styles.brand}>
-          <span style={styles.wordmark}>Oasis</span>
+          <img
+            src={process.env.PUBLIC_URL + '/logo.jpg'}
+            alt="Oasis Luxury Smart Homes"
+            style={styles.logo}
+          />
           <span style={styles.sub}>MIRAGE INTELLIGENCE</span>
         </div>
         <p style={styles.tagline}>Internal dashboard portal — authorized access only.</p>
@@ -79,14 +83,13 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: 4,
+    gap: 8,
     marginBottom: 20,
   },
-  wordmark: {
-    fontFamily: "'DM Serif Display', serif",
-    fontSize: 32,
-    color: '#0D1B2A',
-    letterSpacing: '0.01em',
+  logo: {
+    height: 72,
+    width: 'auto',
+    objectFit: 'contain',
   },
   sub: {
     fontSize: 10,

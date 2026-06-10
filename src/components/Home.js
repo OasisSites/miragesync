@@ -87,8 +87,12 @@ export default function Home({ onLogout }) {
       {/* Header */}
       <header style={styles.header}>
         <div style={styles.headerInner}>
-          <div>
-            <div style={styles.wordmark}>Oasis</div>
+          <div style={styles.headerBrand}>
+            <img
+              src={process.env.PUBLIC_URL + '/logo.jpg'}
+              alt="Oasis Luxury Smart Homes"
+              style={styles.headerLogo}
+            />
             <div style={styles.headerSub}>MIRAGE INTELLIGENCE PORTAL</div>
           </div>
           <div style={styles.headerRight}>
@@ -185,12 +189,15 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  wordmark: {
-    fontFamily: "'DM Serif Display', serif",
-    fontSize: 22,
-    color: '#fff',
-    letterSpacing: '0.01em',
-    lineHeight: 1,
+  headerBrand: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 2,
+  },
+  headerLogo: {
+    height: 34,
+    width: 'auto',
+    objectFit: 'contain',
   },
   headerSub: {
     fontSize: 9,
